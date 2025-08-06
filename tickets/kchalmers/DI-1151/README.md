@@ -89,9 +89,9 @@ DI-1151/
 
 ## Workflow Documentation
 
-📋 **[INSTRUCTIONS.md](../../../INSTRUCTIONS.md)** - Complete step-by-step workflow for future debt sale deliverable requests
+📋 **[INSTRUCTIONS.md](INSTRUCTIONS.md)** - Complete step-by-step workflow for future debt sale deliverable requests
 
-This document provides detailed instructions to ensure consistent, error-free execution of similar requests in the future.
+This comprehensive document provides detailed instructions to ensure consistent, error-free execution of similar requests in the future. The workflow covers all phases from prerequisites and setup through final deliverables and post-completion verification.
 
 ## Completion Status
 ✅ All three required files successfully generated and ready for delivery.
