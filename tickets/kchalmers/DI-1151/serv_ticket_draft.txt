@@ -1,0 +1,15 @@
+Project: SERV
+Type: Task
+Summary: Bounce Perform Bulk Uploads for Loans Sold (Q2 2025 Debt Sale)
+
+Description:
+Linked here you will find charge off loans that need to be bulk uploaded into LoanPro that have been sold to Bounce. Please wait for Mandi's confirmation before executing these bulk uploads into LoanPro. This will be done on August 6th. The sale date should be 2025-08-06, hence why the date is on there.
+
+**Bulk Upload File:**
+https://drive.google.com/open?id=1CpJcZnKYxAh8FkzuWPdUjzqlK51yxFvG&usp=drive_fs
+
+**Details:**
+- 1,483 loans for Bounce Q2 2025 Debt Sale
+- Sale Date: 2025-08-06
+- File includes: LP_LOAN_ID, loanid, SETTINGS_ID, Placement_Status, Placement_Status_StartDate
+- Related DI ticket: DI-1151

@@ -1,0 +1,31 @@
+APPLICATION_ID,ROUTING_NUMBER,ACCOUNT_TYPE,ACCOUNT_NUMBER,APPLICATION_CREATED_DATE,DAYS_SINCE_CREATION,LAST_30_DAYS_IND,ACTIVE,DELETED,ARCHIVED,APP_STATUS,CUSTOMER_ID,LEAD_GUID,FIRST_NAME,LAST_NAME,FRAUD_STATUS,FRAUD_REASON,CURRENT_FRAUD_PORTFOLIOS,LMS_LOAN_ID
+2915743,071025661,bankacct.type.checking,4853093699,2025-07-23T09:04:08,9,True,1,0,0,Originated,1428947,9c22f8db-b9ed-49f9-9115-649e9e62dd4e,Cynthia,Shultes,Pass,,,359764
+2901849,071025661,bankacct.type.checking,4853145303,2025-07-21T11:57:26,11,True,1,0,0,Originated,1427491,26cc2518-6bc6-46a7-829f-0fe81da37eb7,Kevin,Woods,Pass,,,359686
+2882876,071025661,bankacct.type.checking,0061991212,2025-07-17T17:29:55,15,True,1,0,0,Expired,1410257,493a8b7d-a161-4567-ba5f-9464a80b93b4,Miranda,Hensley,Pass,,,
+2847525,071025661,bankacct.type.checking,4853087575,2025-07-12T00:44:27,20,True,1,0,0,Originated,1421736,83dfd62e-5365-448f-a1c3-f0eb688b97bc,Melanie,Braun,Pass,,,359737
+2831679,071025661,bankacct.type.checking,4814736673,2025-07-09T20:26:58,23,True,1,0,0,Pre-Funding,1434559,d9514b3d-71e7-45f3-a45c-61e1433970bd,Michelle,Gaal,Pass,,,
+2786264,071025661,bankacct.type.checking,0040684847,2025-07-01T23:26:08,31,True,1,0,0,Originated,1415493,7c36985a-2af0-4f76-ac12-1092fe43d90a,Kenzie,Ward,Pass,,,358768
+2776363,071025661,bankacct.type.checking,30516773,2025-06-30T15:43:45,32,True,1,0,0,Originated,1414635,c553fc46-10cf-4c40-81c1-b50dd156c45e,Hiram,Escabi,Pass,,,358621
+2691385,071025661,bankacct.type.checking,4849831362,2025-06-17T20:29:29,45,False,1,0,0,Originated,1406245,2c3647e1-aaa4-47a8-b319-2859efca6fca,Mamikon,Shahinyan,Pass,,,358082
+2687292,071025661,bankacct.type.checking,0426003679,2025-06-17T08:01:18,45,False,1,0,0,Originated,1405775,751857e0-1cf0-4efb-b2f0-b8aa1bd491c5,Sarah,Hilliges,Pass,,,358045
+2685179,071025661,bankacct.type.checking,0040921967,2025-06-16T22:16:45,46,False,1,0,0,Expired,1405516,6ca48292-de93-4380-8eea-dc5cf3d47833,Gevorg,Yeghiyan,False Positive,kount_review,,
+2633121,071025661,bankacct.type.checking,0064805799,2025-06-08T17:46:04,54,False,1,0,0,Originated,1396744,fc6473c7-1e04-4a47-819e-8a12f034453b,Kara,Deise,Pass,,,357592
+2571310,071025661,bankacct.type.checking,4828579400,2025-05-31T01:49:15,62,False,1,0,0,Originated,1387393,e6857cdf-3fb4-477d-9974-14d294e4faed,Christine,Bennington,Pass,,,357232
+2558575,071025661,bankacct.type.checking,4831014664,2025-05-29T03:09:19,64,False,1,0,0,Declined,1386182,0a9489c9-eaf0-4bb5-ab94-58d4448cb636,Corey,lassiter,False Positive,"vpn_review,vpn_review,vpn_review,kount_review",,
+2552204,071025661,bankacct.type.checking,0072348717,2025-05-28T10:52:19,65,False,1,0,0,Originated,1385523,457550ae-b24e-4a79-b0bc-50bf10b94177,LIBERTY,NUNN,Pass,,,357163
+2551994,071025661,bankacct.type.checking,0170028226,2025-05-28T08:28:41,65,False,1,0,0,Originated,1385488,9704e26e-1411-44c2-a62b-cab92258b6a3,Kathleen,Beache,False Positive,kount_review,,357650
+2426964,071025661,bankacct.type.checking,0041232950,2025-05-08T13:30:05,85,False,1,0,0,Originated,1372274,093f6935-e322-41b9-9701-bd3bc9b0acd4,Jennifer,Moralez,Pass,,,356495
+2311921,071025661,bankacct.type.checking,0106144470,2025-04-23T17:08:47,100,False,1,0,0,Expired,1363405,778a3ac7-e4c4-42cf-9382-a61c8e4398d0,Veena,Kumar,False Positive,vpn_review,,
+2278282,071025661,bankacct.type.checking,4829147067,2025-04-17T15:28:17,106,False,1,0,0,Originated,1360770,d3a95d9d-8a59-4661-84d7-02c09a518d03,John,Pejlovas,Pass,,,153607
+2270048,071025661,bankacct.type.checking,4804026363,2025-04-16T01:00:05,107,False,1,0,0,Originated,1360041,b34163ea-48c4-46cc-b354-2ab6573d990f,Steven,Lorenz,Pass,,,128874
+2242878,071025661,bankacct.type.checking,4816396829,2025-04-10T22:36:58,113,False,1,0,0,Originated,413803,68de9c37-b556-4e82-9bec-626d845cd113,Sharon,Herrera,Pass,,,128824
+2242586,071025661,bankacct.type.checking,0064234826,2025-04-10T21:39:30,113,False,1,0,0,Originated,1357951,c258175c-c2a0-4fb5-a2f2-65197bb16acb,Fernie,Arcinas,Pass,,,128691
+2168747,071025661,bankacct.type.checking,4824001730,2025-04-01T18:04:51,122,False,1,0,0,Originated,1347433,921f768c-0dba-45f5-ba39-e1d25b828f61,David,Cohen,Pass,,,128427
+2106949,071025661,bankacct.type.checking,4823272277,2025-03-21T17:33:51,133,False,1,0,0,Originated,1342894,257a88ff-6fb0-4512-8571-6c8a6c70179b,Melissa,Schellenberger,Pass,,,128038
+2071846,071025661,bankacct.type.checking,0965045024,2025-03-17T17:17:29,137,False,1,0,0,Originated,104088,1f8e4eb9-1efd-4620-8f33-79c0204061b9,Lisa,Ziebell,Pass,,,127958
+2017305,071025661,bankacct.type.checking,4833871106,2025-03-09T20:27:12,145,False,1,0,0,Originated,1326154,6c4d4149-10a2-442c-bb2a-5d3b80836c65,angela,bailey,Pass,,,127647
+1149389,071025661,bankacct.type.checking,5210083322,2025-02-06T10:11:53,176,False,1,0,0,Originated,746683,1a89adf1-3f48-48cd-a5b2-9bd162f24bf6,Heather,Murphy,Pass,,,126707
+735085,071025661,bankacct.type.checking,0053864898,2025-01-19T03:04:14,194,False,1,0,0,Originated,460149,52f073bb-09db-488f-a131-eb2f6e3bd2d5,Reuben,Soberanez,Pass,,,126193
+535240,071025661,bankacct.type.checking,023824151,2024-12-28T17:16:27,216,False,1,0,0,Originated,364832,3b1081df-9909-4206-9471-892a6b129815,Gary,Scofield,Pass,,,125674
+207345,071025661,bankacct.type.checking,0050437631,2024-12-20T16:52:42,224,False,1,0,0,Originated,202880,2a01b625-612a-4501-ab94-2bab3581d8df,Mary,Hindson,Pass,,,125616
+20632,071025661,bankacct.type.checking,0053685483,2024-11-25T17:40:27,249,False,1,0,0,Originated,7095,36d8c1af-802d-49b5-88b1-bcf933c1b951,Caitlin,Erler,Pass,,,31145

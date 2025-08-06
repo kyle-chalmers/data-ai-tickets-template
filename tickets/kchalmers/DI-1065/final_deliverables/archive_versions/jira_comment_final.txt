@@ -1,0 +1,33 @@
+## DI-1065: Fortress Quarterly Due Diligence Payment History Analysis Complete
+
+[~nsharma@happymoney.com]
+
+### Summary
+Payment history analysis completed for all **80 Fortress loans** (75 from Attachment B + 5 from Attachment C) using LoanPro transaction data. The analysis extracted **193 payment transactions** with 98.75% loan coverage.
+
+### Results by Attachment
+**Attachment B (75 loans):**
+- ✅ **100% transaction coverage** (75 of 75 loans)
+- **183 payment transactions** extracted
+- Date range: April 2025 - July 2025
+
+**Attachment C (5 loans):**
+- ✅ **80% transaction coverage** (4 of 5 loans)  
+- **10 payment transactions** extracted
+- Date range: May 2025 - July 2025
+
+### Data Quality Note
+**1 loan without payment transactions:** `HM8CF472431307` (LEAD_GUID: b83177c8-327b-4d03-9fb8-8cf472431307)
+- **Loan Amount:** $20,000, **Term:** 36 months
+- **Origination Date:** April 10, 2025
+- **Status:** Active with no payment history in LoanPro (not closed or charged off)
+
+### File Format Note
+The payment transaction file format is slightly different than the standard Bounce payment transactions file, adapted specifically for Fortress quarterly due diligence requirements.
+
+### Deliverables
+**Final SQL Query:** `fortress_payment_history_final_80_loans.sql`
+**Final Dataset:** `fortress_payment_history_final_193_transactions.csv` 
+**QC Queries:** Transaction coverage analysis and loan identification tools
+
+The payment history data is ready for Fortress quarterly due diligence submission by the 7/30 deadline. The single loan without transaction history may require manual review or data validation.

@@ -1,0 +1,345 @@
+/*
+DI-1141: Sale Files for Bounce - Q2 2025 Sale
+Main debt sale population query - LOAN LEVEL REPORT
+Adapted from DI-932 (Q1 2025) for Q2 2025 date range
+
+Q2 2025 Criteria:
+- Chargeoff dates: 4/1/2025 - 6/30/2025 (Q2 2025)
+- Data as of: 7/31/2025
+- All loans charged off with charge off date on or before 6/30/25
+
+NOTE: Run this query FIRST to create the population table, then run the transaction query
+*/
+
+USE WAREHOUSE BUSINESS_INTELLIGENCE_LARGE;
+USE ROLE BUSINESS_INTELLIGENCE_PII;
+
+-- Q2 2025 chargeoff date range
+SET start_chargeoffdate = '2025-04-01';
+SET end_chargeoffdate = '2025-06-30';
+
+-- Create population table for Q2 2025 Bounce debt sale
+CREATE OR REPLACE TABLE BUSINESS_INTELLIGENCE_DEV.CRON_STORE.BOUNCE_DEBT_SALE_Q2_2025_SALE AS
+WITH MOSTRECENTDELINQUENCYDATE AS (
+    SELECT MAX(ASOFDATE) AS MOST_RECENT_DELINQUENCY_DATE,
+           PAYOFFUID
+    FROM BUSINESS_INTELLIGENCE.DATA_STORE.MVW_LOAN_TAPE_DAILY_HISTORY
+    WHERE DAYSPASTDUE = 30
+    GROUP BY 2
+)
+,LOAN_ACCOUNT_COLUMNS AS (
+    SELECT
+        a.payoffuid as LEAD_GUID
+        ,bdsl.* exclude payoffuid
+        ,fsdl.* exclude (payoffuid, loan_id, legacy_loan_id)
+
+    FROM
+        BUSINESS_INTELLIGENCE.DATA_STORE.MVW_LOAN_TAPE_MONTHLY A  
+         join BUSINESS_INTELLIGENCE.BRIDGE.VW_LMS_CUSTOM_LOAN_SETTINGS_CURRENT lclsc
+            on upper(A.PAYOFFUID) = upper(lclsc.lead_guid)
+left join (SELECT bdsl.* from development._tin.bankruptcy_debt_suspend_lookup bdsl
+QUALIFY ROW_NUMBER() OVER
+(PARTITION BY bdsl.PAYOFFUID ORDER BY bdsl.FILE_DATE DESC NULLS LAST, bdsl.POC_DEADLINE_DATE DESC NULLS LAST, bdsl.POC_COMPLETED_DATE DESC NULLS LAST ) = 1) bdsl
+            ON upper(A.PAYOFFUID) = upper(bdsl.payoffuid)
+
+        left join development._tin.fraud_scra_decease_lookup fsdl
+            ON  upper(A.PAYOFFUID) = upper(fsdl.payoffuid)
+
+    where DATE_TRUNC('month',A.ASOFDATE) = DATE_TRUNC('month',DATEADD('month',-1,current_date))
+
+)
+,DATE_OF_FIRST_DELINQUENCY AS (
+    SELECT
+        MLTDH.PAYOFFUID
+        ,MIN(MLTDH.ASOFDATE) AS DATEOFFIRSTDELINQUENCY
+        ,MIN(DAYSPASTDUE) AS DAYSPASTDUE
+    FROM
+        BUSINESS_INTELLIGENCE.DATA_STORE.MVW_LOAN_TAPE_DAILY_HISTORY MLTDH
+    WHERE
+        MLTDH.DAYSPASTDUE >= 30
+    GROUP BY 1
+)
+,PAYMENT_TRANSACTIONS_HISTORY as (
+    SELECT
+        LOWER(b.LEAD_GUID) AS PAYOFFUID,
+        sum(IFF(a.IS_SETTLED and a.is_REVERSED <> true and a.is_REJECTED <> true,a.TRANSACTION_AMOUNT,0)) as TOTALPAYMENTTRANSACTIONSAMOUNT,
+        sum(IFF(a.IS_SETTLED and a.is_REVERSED <> true and a.is_REJECTED <> true,1,0)) as NUMBEROFPAYMENTTRANSACTIONS,
+        sum(IFF(a.is_REVERSED and a.is_rejected,1,0)) as NUMBEROFPAYMENTSREVERSEDORREJECTED,
+        SUM(IFF((a.IS_SETTLED and a.is_REVERSED <> true and a.is_REJECTED <> true
+            AND a.TRANSACTION_DATE >= IFNULL(b.POC_COMPLETED_DATE,DATEADD('day',1000000,current_date()))),
+            a.TRANSACTION_AMOUNT,0)) AS PAYMENTSAMOUNTAFTERPOCCOMPLETEDDATE,
+        SUM(IFF(a.IS_SETTLED and a.is_REVERSED <> true and a.is_REJECTED <> true
+            AND a.TRANSACTION_DATE >= IFNULL(b.POC_COMPLETED_DATE,DATEADD('day',1000000,current_date())),
+            1,0)) AS PAYMENTSAFTERPOCCOMPLETEDDATE
+
+
+    FROM BUSINESS_INTELLIGENCE.ANALYTICS.VW_LP_PAYMENT_TRANSACTION a 
+    INNER JOIN  LOAN_ACCOUNT_COLUMNS b
+    on a.LOAN_ID::text = b.LOAN_ID::text
+
+    group by LOWER(b.LEAD_GUID)
+)
+,LASTDATEBEFOREFILEDATE AS (
+    select
+    A.PAYOFFUID
+    ,B.FILE_DATE AS BANKRUPTCYFILEDATE -- #20 BKY Filing Date
+    ,MAX(A.ASOFDATE) AS ASOFDATE
+    FROM
+        BUSINESS_INTELLIGENCE.DATA_STORE.MVW_LOAN_TAPE_DAILY_HISTORY A
+        INNER JOIN LOAN_ACCOUNT_COLUMNS B
+            ON A.PAYOFFUID = LOWER(B.LEAD_GUID)
+            AND A.ASOFDATE <= B.FILE_DATE
+    WHERE B.FILE_DATE IS NOT NULL
+    GROUP BY 1, 2
+)
+,PRINCIPALREMAININGATFILING AS (
+    SELECT
+    A.PAYOFFUID,
+    A.BANKRUPTCYFILEDATE,
+    IFF(B.CHARGEOFFDATE IS NULL,B.REMAININGPRINCIPAL,
+        B.PRINCIPALBALANCEATCHARGEOFF-ZEROIFNULL(B.RECOVERIESPAIDTODATE)) AS PRINCIPALREMAININGATFILING
+    -- #22 BKY Amount of debt owed at the time of the bky filing
+    FROM
+        LASTDATEBEFOREFILEDATE A
+        INNER JOIN BUSINESS_INTELLIGENCE.DATA_STORE.MVW_LOAN_TAPE_DAILY_HISTORY B
+            ON A.PAYOFFUID = B.PAYOFFUID AND A.ASOFDATE = B.ASOFDATE
+    where
+        PRINCIPALREMAININGATFILING is not null
+    qualify row_number() over (partition by A.PAYOFFUID order by a.BANKRUPTCYFILEDATE desc) = 1)
+---final query
+, cte_final as (
+SELECT
+    --F.FIRSTNAME -- #1 Consumer first and last name
+    m_pii.first_name as FIRSTNAME -- #1 Consumer first and last name
+    --,F.LASTNAME  -- #1 Consumer first and last name
+    ,m_pii.last_name as LASTNAME -- #1 Consumer first and last name
+    ---- TEMPORARY MASKING OF SSN - REMOVE LEFT WHEN IT IS DONE
+    --,regexp_replace(COALESCE(H.BUREAU_SSN,E.SSN), '[^[:digit:]]', '') AS SSN -- #2 Consumer SSN
+    --,right(m_pii.SSN, 4) SSN_4Digits
+    ,m_pii.SSN -- #2 Consumer SSN
+    --,F.STREETADDRESS1 -- #3 Consumer address
+    ,m_pii.ADDRESS_1 as STREETADDRESS1 --#3 Consumer address
+    --,F.STREETADDRESS2 -- #3 Consumer address
+    ,m_pii.ADDRESS_2 as STREETADDRESS2  --#3 Consumer address
+    --,F.CITY -- #3 Consumer address
+    ,m_pii.CITY --#3 Consumer address
+    --,F.STATE -- #3 Consumer address
+    ,m_pii.STATE --#3 Consumer address
+    --,F.ZIPCODE -- #3 Consumer address
+    ,m_pii.ZIP_CODE as ZIPCODE --#3 Consumer address
+    --,COALESCE(O.DATE_OF_BIRTH, E.DATE_OF_BIRTH) AS DATE_OF_BIRTH
+    ,m_pii.DATE_OF_BIRTH
+    --,F.EMAIL
+    ,m_pii.EMAIL
+    --,F.PHONENUMBER
+    ,m_pii.PHONE_NUMBER as PHONENUMBER
+    ,A.PORTFOLIONAME -- #4 Creditor Name
+    ,A.LOANID  -- #6 Account Number
+    ,(A.PRINCIPALBALANCEATCHARGEOFF + A.INTERESTBALANCEATCHARGEOFF
+    - A.RECOVERIESPAIDTODATE - ZEROIFNULL(B.CHARGED_OFF_PRINCIPAL_ADJUSTMENT) - ZEROIFNULL(A.TOTALPRINCIPALWAIVED)) AS UNPAIDBALANCEDUE -- #7 Unpaid Balance Due
+    ,A.CHARGEOFFDATE -- #14 Date of Charge-Off
+    ,A.PRINCIPALBALANCEATCHARGEOFF -- #15 Balance at Charge-off
+    ,A.RECOVERIESPAIDTODATE --#8 Recoveries Paid to Date
+    ,A.INTERESTBALANCEATCHARGEOFF -- #9 Current Interest Due
+    ,B.CHARGED_OFF_PRINCIPAL_ADJUSTMENT -- #8 Breakdown of interest, fees, payments and adjustments/credits or balance calculation
+    ,A.INTERESTPAIDTODATE -- #8 Breakdown of interest
+    ,A.PRINCIPALPAIDTODATE -- #8 Breakdown of balance
+    ,A.LASTPAYMENTDATE -- #10 Date of Last Payment
+    ,A.LASTPAYMENTAMOUNT -- #11 Amount of Last Payment
+    ,IFNULL(D.DATEOFFIRSTDELINQUENCY,DATEADD(DAY, -90, A.CHARGEOFFDATE)) AS DATEOFFIRSTDELINQUENCY -- #12 Dates of first delinquency
+    ,IFF(COALESCE(C.MOST_RECENT_DELINQUENCY_DATE,DATEADD(DAY, -90, A.CHARGEOFFDATE))>IFNULL(D.DATEOFFIRSTDELINQUENCY,DATEADD(DAY, -90, A.CHARGEOFFDATE))
+                        ,COALESCE(C.MOST_RECENT_DELINQUENCY_DATE,DATEADD(DAY, -90, A.CHARGEOFFDATE))
+                            ,IFNULL(D.DATEOFFIRSTDELINQUENCY,DATEADD(DAY, -90, A.CHARGEOFFDATE))) AS DATEOFMOSTRECENTDElINQUENCY -- #13 Dates of default
+    ,B.BANKRUPTCY_STATUS AS BANKRUPTCY_STATUS
+    ,B.CASE_NUMBER AS CASE_NUMBER -- #16 Case Number
+    ,B.CHAPTER AS BANKRUPTCYCHAPTER -- #18 Bankruptcy Chapter Number
+    ,COALESCE(
+
+            COALESCE(B.ATTORNEY_NAME,B.FIRM_NAME)
+
+            , IFF((B.CHAPTER IS NOT NULL OR B.FILE_DATE IS NOT NULL
+                OR B.CASE_NUMBER IS NOT NULL OR B.BANKRUPTCY_STATUS IS NOT NULL)
+                     ,(m_pii.first_name || ' ' || m_pii.last_name),NULL)) AS NAMEOFFILINGPARTY-- #19 BKY Name of Filing Party or SSN
+    ,B.FILE_DATE AS BANKRUPTCYFILEDATE -- #20 BKY Filing Date
+    ,IFF((B.CHAPTER IS NOT NULL
+          OR B.FILE_DATE IS NOT NULL
+          OR B.CASE_NUMBER IS NOT NULL
+          OR B.BANKRUPTCY_STATUS IS NOT NULL)
+
+            ,(m_pii.FIRST_NAME || ' ' || m_pii.LAST_NAME),NULL) AS BANKRUPTCYDEBTOR -- #21 BKY Name(s) of debtor on account
+
+    ,J.PRINCIPALREMAININGATFILING -- #22 BKY Amount of debt owed at the time of the bky filing
+    ,I.PAYMENTSAMOUNTAFTERPOCCOMPLETEDDATE -- #23 Bky Amount paid post petition on proof of claim
+    ,I.PAYMENTSAFTERPOCCOMPLETEDDATE -- #23 Bky Amount paid post petition on proof of claim
+    ,B.POC_REQUIRED  -- #24 Proof of Claim Filed Date
+    ,B.POC_DEADLINE_DATE -- #24 Proof of Claim Filed Date
+    ,B.POC_COMPLETED_DATE -- #25 Proof of Claim Filed for BK (Y/N)
+    ,B.DISCHARGE_DATE AS DISCHARGE_DATE -- #26 Discharge Date
+    ,A.REASONFORDELINQUENCY AS CHARGEOFFREASON -- #27 CO reason
+    ,B.SUSPEND_PHONE
+    ,B.SUSPEND_TEXT
+    ,B.SUSPEND_EMAIL
+    ,B.SUSPEND_LETTER
+    ,A.ORIGINATIONDATE
+    ,A.INDIRECT_PURCHASEDATE
+    ,A.MATURITYDATE
+    ,A.LOANAMOUNT
+    ,A.TERM
+    ,A.INTERESTRATE
+    ,A.APR
+    ,A.EMPLOYMENTSTATUS
+    ,A.HOUSINGINFORMATION
+    ,A.ANNUALINCOME
+    ,A.BUREAUFICOSCORE
+    ,A.NDI
+    ,A.DTI
+    ,A.APPMOSSINCEDEROGPUBREC
+    ,A.FIRSTSCHEDULEDPAYMENTDATE
+    ,A.PAYMENTFREQUENCY
+    ,A.PAYMENTANNIVERSARYDATE
+    ,A.REGULARPAYMENTAMOUNT
+    ,A.TOTALPRINCIPALWAIVED
+    ,A.SECONDARY_BUYER
+    ,A.SECONDARY_SELLER
+    ,A.SECONDARY_PURCHASEDATE
+    ,A.SECONDARY_SOLDDATE
+    ,A.MLAFLAG
+    ,A.REFRESHEDFICOSCORE
+    ,A.REFRESHEDFICOSCOREDATE
+    ,A.CURRENTMATURITYDATE
+    ,A.LASTCOLLECTIONSCONTACTDATE
+    ,A.REASONFORDELINQUENCY
+    ,A.MODFLAG
+    ,A.PREVIOUSMODIFICATION
+    ,A.MODREQUESTDATE
+    ,A.STATUSPRIORTOMODIFICATION
+    ,A.LOANBALANCEATMODIFICATION
+    ,A.MODREASON
+    ,A.MODTYPE
+    ,A.MODSTARTDATE
+    ,A.MODENDDATE
+    ,A.MODPROCESSINGDATE
+    ,A.MODMATURITYDATE
+    ,A.MODINTERESTRATE
+    ,A.MODPAYMENTAMOUNT
+    ,A.NUMBERPAYMENTSDEFERRED
+    ,A.PAYMENTFORBEARANCEAMOUNT
+    ,A.BALLOONPAYMENT
+    ,A.MODTERMEXTENSION
+    ,A.SCRASTARTDATE
+    ,A.SCRAENDDATE
+    ,A.CPDFLAG
+    ,A.CPDPROCESSINGDATE
+    ,A.CPDANNIVERSARYDAY
+    ,A.INSURANCEFLAG
+    ,A.INSURANCESTARTDATE
+    ,A.INSURANCEENDDATE
+    ,A.LOAN_INTENT
+    -- POTENTIAL FILTERS THAT CAN BE ADJUSTED IN THE FILTER
+    --,(K.PAYOFF_UID IS NOT NULL) AS DECEASED_INDICATOR
+    ,ifnull(b.IS_DECEASED, FALSE)  AS DECEASED_INDICATOR   --- need to keep cls logic as as LP data not complete
+    --,(L.HK_H_APPL IS NOT NULL) AS FRAUD_INDICATOR
+    ,ifnull(b.is_fraud, FALSE) AS FRAUD_INDICATOR
+    --,IFF(A.SCRAFLAG = 'N' AND M.PAYOFFUID IS NOT NULL, 'Y', A.SCRAFLAG) AS SCRAFLAG
+    ,case
+        when A.SCRAFLAG = 'Y' then 'Y' -- cls logic
+        when b.is_scra = TRUE then 'Y' --- lp logic
+        else 'N'
+    end as SCRAFLAG
+    ,B.PLACEMENT_STATUS AS LOAN_CURRENT_PLACEMENT
+    ,IFF(A.LASTPAYMENTDATE IS NULL, TRUE, FALSE) AS FIRST_PAYMENT_DEFAULT_INDICATOR
+    ,B.DEBT_SETTLEMENT_STATUS
+    ,B.DEBT_SETTLEMENT_START AS DEBT_SETTLEMENT_START_DATE
+    ,B.APPROVED_SETTLEMENT_AMOUNT
+    ,B.DEBT_SETTLEMENT_PAYMENT_TERMS
+    ,B.DEBT_SETTLEMENT_PAYMENTS_EXPECTED
+    ,B.EXPECTED_PAYMENT_AMOUNT
+    ,B.DEBT_SETTLEMENT_COMPANY
+    ,B.DEBT_SETTLEMENT_CONTACTED_BY
+    --,N.CEASE_AND_DESIST -- old
+    ,B.CEASE_AND_DESIST -- new contact rules
+FROM
+    BUSINESS_INTELLIGENCE.DATA_STORE.MVW_LOAN_TAPE_MONTHLY A
+    INNER JOIN LOAN_ACCOUNT_COLUMNS B
+        ON A.PAYOFFUID = LOWER(B.LEAD_GUID)
+    left join (
+            select *
+            from
+                business_intelligence.analytics_pii.vw_member_pii
+            qualify row_number() over (partition by member_id order by MEMBER_PII_END_DATE desc nulls first) = 1
+    ) m_pii
+        on B.member_id = m_pii.member_id
+    LEFT JOIN MOSTRECENTDELINQUENCYDATE C
+        ON A.PAYOFFUID = C.PAYOFFUID
+    LEFT JOIN DATE_OF_FIRST_DELINQUENCY D
+        ON A.PAYOFFUID = D.PAYOFFUID
+    LEFT JOIN BUSINESS_INTELLIGENCE.DATA_STORE.VW_APPLICATION G -- keep to so we can get hk_h_appl for cls data
+        ON A.PAYOFFUID = G.PAYOFF_UID
+    LEFT JOIN PAYMENT_TRANSACTIONS_HISTORY I
+        ON A.PAYOFFUID = I.PAYOFFUID
+    LEFT JOIN PRINCIPALREMAININGATFILING J
+        ON A.PAYOFFUID = J.PAYOFFUID
+WHERE 1=1
+    -- MOST RECENT VERIFIED LOAN TAPE
+    AND DATE_TRUNC('month',A.ASOFDATE) = DATE_TRUNC('month',DATEADD('month',-1,current_date))
+    -- EXCLUDING ALL OTHER LOANS OUTSIDE OF CHARGEOFFS
+    AND A.STATUS = 'Charge off'
+    -- Q2 2025 CHARGEOFF DATE FILTER: 4/1/2025 - 6/30/2025
+    AND DATE_TRUNC('month',a.chargeoffdate) >= DATE_TRUNC('month',DATE($start_chargeoffdate))
+    AND DATE_TRUNC('month',a.chargeoffdate) <= DATE_TRUNC('month',DATE($end_chargeoffdate))
+    -- EXCLUDING FULLY RECOVERED LOANS
+    AND A.RECOVERIESPAIDTODATE < A.PRINCIPALBALANCEATCHARGEOFF
+    -- EXCLUDING DEBT SETTLEMENTS
+    AND (B.DEBT_SETTLEMENT_STATUS NOT IN ('Active','Complete')
+            OR (B.DEBT_SETTLEMENT_STATUS IS NULL AND B.DEBT_SETTLEMENT_START IS NULL))
+    AND (B.PLACEMENT_STATUS NOT IN ('Resurgent', 'ARS', 'Remitter',
+                                    'First Tech Credit Union', 'Jefferson Capital','Bounce')
+        OR B.PLACEMENT_STATUS IS NULL)
+   AND ifnull(b.is_fraud, FALSE) = FALSE -- Exclude Fraud
+)
+select DISTINCT
+    cf.*
+   ,vl.loan_closed_date
+   ,lower(vl.lead_guid) as lead_guid
+   ,vl.loan_id as LP_loan_ID
+from cte_final cf
+   left join business_intelligence.analytics.vw_loan vl
+       on upper(cf.loanid) = upper(vl.legacy_loan_id)
+order by CHARGEOFFDATE desc;
+
+-- ===========================
+-- VALIDATION QUERIES
+-- ===========================
+
+-- View the results
+SELECT *
+FROM BUSINESS_INTELLIGENCE_DEV.CRON_STORE.BOUNCE_DEBT_SALE_Q2_2025_SALE;
+
+-- QC: Check for duplicate LOANID
+SELECT COUNT(*) AS ROW_COUNT,
+LOANID
+FROM BUSINESS_INTELLIGENCE_DEV.CRON_STORE.BOUNCE_DEBT_SALE_Q2_2025_SALE
+GROUP BY ALL
+HAVING ROW_COUNT > 1
+ORDER BY 1 DESC;
+
+-- QC: Check for duplicate LEAD_GUID
+SELECT COUNT(*) AS ROW_COUNT,
+lead_guid
+FROM BUSINESS_INTELLIGENCE_DEV.CRON_STORE.BOUNCE_DEBT_SALE_Q2_2025_SALE
+GROUP BY ALL
+HAVING ROW_COUNT > 1
+ORDER BY 1 DESC;
+
+-- QC: Count summary 
+SELECT COUNT(*) AS ROW_COUNT,
+COUNT(DISTINCT LOANID) AS DISTINCT_LOANID_COUNT,
+COUNT(DISTINCT lead_guid) AS DISTINCT_LEAD_GUID_COUNT
+FROM BUSINESS_INTELLIGENCE_DEV.CRON_STORE.BOUNCE_DEBT_SALE_Q2_2025_SALE;
+
+-- QC: Date range verification
+SELECT 
+    MIN(CHARGEOFFDATE) as min_chargeoff_date,
+    MAX(CHARGEOFFDATE) as max_chargeoff_date,
+    COUNT(*) as total_loans
+FROM BUSINESS_INTELLIGENCE_DEV.CRON_STORE.BOUNCE_DEBT_SALE_Q2_2025_SALE;

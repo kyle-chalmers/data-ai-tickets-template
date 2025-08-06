@@ -1,0 +1,64 @@
+-- DI-1140: LOS Applications Analysis - BMO Bank Fraud Ring
+-- SYSTEM: LoanPro LOS (Loan Origination System) - Applications
+-- RT# 071025661 = BMO Harris Bank
+
+-- Variables for easy modification
+SET ROUTING_NUMBER = '071025661';  -- BMO Harris Bank routing number
+SET ANALYSIS_DATE = '2025-08-01';  -- Friday when request was submitted
+SET DAYS_THRESHOLD = (SELECT (30 + DATEDIFF('day', $ANALYSIS_DATE, CURRENT_DATE())));  -- Dynamic: 30 days + difference between analysis date and today
+
+-- LOS APPLICATIONS QUERY
+with fraud_portfolios as (select listagg(PORTFOLIO_NAME,',') as CURRENT_fraud_portfolios, APPLICATION_ID from BUSINESS_INTELLIGENCE.ANALYTICS.VW_APP_PORTFOLIOS_AND_SUB_PORTFOLIOS
+where PORTFOLIO_CATEGORY = 'Fraud' group by all)
+SELECT 
+    -- === APPLICATION IDENTIFICATION ===
+    bi.LOAN_ID as APPLICATION_ID,
+    -- === BANKING DETAILS ===
+    bi.ROUTING_NUMBER,
+    bi.ACCOUNT_TYPE,
+    bi.ACCOUNT_NUMBER,
+    -- === DATE ANALYSIS ===
+    le.CREATED as APPLICATION_CREATED_DATE,
+    DATEDIFF('day', le.CREATED, $ANALYSIS_DATE) as DAYS_SINCE_CREATION,
+    le.CREATED >= DATEADD('day', -$DAYS_THRESHOLD, $ANALYSIS_DATE) as LAST_30_DAYS_IND,
+    -- === APPLICATION STATUS ===
+    le.ACTIVE,
+    le.DELETED,
+    le.ARCHIVED,
+    lssec.TITLE as APP_STATUS,
+    vlcc.CUSTOMER_ID,
+    CLS.APPLICATION_GUID       as LEAD_GUID,
+       CLS.FIRST_NAME             as FIRST_NAME,
+       CLS.LAST_NAME              as LAST_NAME,
+       CLS.FRAUD_STATUS,
+       CLS.FRAUD_REASON,
+       vapasp.current_fraud_portfolios,
+    -- === LMS PROGRESSION TRACKING ===
+    LMS.LOAN_ID as LMS_LOAN_ID
+FROM BUSINESS_INTELLIGENCE.BRIDGE.VW_BANK_INFO bi
+JOIN BUSINESS_INTELLIGENCE.BRIDGE.VW_LOAN_ENTITY_CURRENT le 
+    ON bi.LOAN_ID = le.ID AND le.SCHEMA_NAME = ARCA.CONFIG.LOS_SCHEMA()
+JOIN BUSINESS_INTELLIGENCE.BRIDGE.VW_LOAN_SETTINGS_ENTITY_CURRENT lsec
+    ON bi.LOAN_ID = lsec.LOAN_ID and lsec.SCHEMA_NAME = ARCA.CONFIG.LOS_SCHEMA()
+JOIN BUSINESS_INTELLIGENCE.BRIDGE.VW_LOAN_SUB_STATUS_ENTITY_CURRENT lssec
+    ON lsec.LOAN_SUB_STATUS_ID = lssec.id and lssec.SCHEMA_NAME = ARCA.CONFIG.LOS_SCHEMA()
+JOIN BUSINESS_INTELLIGENCE.BRIDGE.VW_LOAN_CUSTOMER_CURRENT vlcc
+    on bi.LOAN_ID = vlcc.LOAN_ID and vlcc.SCHEMA_NAME = ARCA.CONFIG.LOS_SCHEMA()
+join ARCA.FRESHSNOW.VW_LOS_CUSTOM_LOAN_SETTINGS_CURRENT as CLS
+    on LE.ID = CLS.LOAN_ID
+left join fraud_portfolios vapasp
+    on bi.LOAN_ID = vapasp.APPLICATION_ID
+-- Join to LMS to check if application became a loan
+LEFT JOIN ARCA.FRESHSNOW.VW_LMS_CUSTOM_LOAN_SETTINGS_CURRENT LMS
+    ON CLS.APPLICATION_GUID = LMS.LEAD_GUID
+WHERE 1=1
+    -- BMO Bank filtering
+    AND bi.ROUTING_NUMBER = $ROUTING_NUMBER
+    -- Recent applications (< 30 days)
+    --AND le.CREATED >= DATEADD('day', -$DAYS_THRESHOLD, $ANALYSIS_DATE)
+    -- LOS system only (applications)
+    AND le.SCHEMA_NAME = ARCA.CONFIG.LOS_SCHEMA()
+    -- Active applications only
+    AND le.ACTIVE = 1
+    AND le.DELETED = 0
+ORDER BY le.CREATED DESC;

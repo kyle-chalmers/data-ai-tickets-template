@@ -1,0 +1,26 @@
+## DI-934: Fraud Loans Analysis Results
+
+[~nsharma] [~msinner] [~acampos] [~egodinez]
+
+### Summary
+This analysis identified **482 loans with fraud indicators** across our portfolio. These are loans that have some form of fraud identified on them through portfolio assignments, investigation results, or loan status indicators.
+
+### Fraud Type Breakdown
+- **157 loans: First Party Fraud confirmed** through portfolio assignments
+- **11 loans: Identity Theft Fraud confirmed** 
+- **148 loans: Fraud declined** in investigation process
+- **4 loans: Fraud pending investigation**
+- **13 loans: Multiple fraud classifications** (e.g., both First Party and Declined)
+- **12 loans: Fraud identified through loan status** ("Closed - Confirmed Fraud" or "Open - Fraud Process")
+
+### Repurchase Analysis
+- **64 loans (13.3%) have been repurchased by Happy Money** (where current investor is Payoff, Happy Money, or Payoff Consumer Loan Trust)
+- **42 loans (8.7%) have multiple partner assignments**, indicating ownership transfers over time
+- Repurchased loan breakdown: 26 via Payoff FBO entities, 12 direct Payoff, 10 Happy Money, 9 Payoff Consumer Loan Trust entities, others
+
+### Data Considerations
+Our fraud data is scattered across multiple sources in LoanPro, making comprehensive identification challenging. We recommend consulting with the fraud team for further validation of these potentially fraudulent loans.
+
+**Deliverables:** 
+- final_query.sql: Complete analysis query
+- final_dataset.csv: 482 loans with LoanID, Portfolio information, Fraud Type indicators, Fraud Confirmed Date, Loan Status, and Current Investor details as requested

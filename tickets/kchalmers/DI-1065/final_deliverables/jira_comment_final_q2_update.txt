@@ -1,0 +1,34 @@
+## DI-1065: Q2 2025 Payment History Update Complete
+
+[~nsharma@happymoney.com]
+
+### Updates Implemented
+✅ **Payoff Loan ID** added to the report (LOAN_ID from VW_LP_PAYMENT_TRANSACTION)
+✅ **Date Filter** applied: Only transactions through June 30, 2025 included
+✅ **Additional Date Fields** added:
+   - APPLY_DATE: Payment application date
+   - REVERSAL_DATE: Date of reversal (if applicable)
+   - LAST_UPDATED_DATE: Last update timestamp for the transaction
+
+### Q2 2025 Results Summary
+- **118 payment transactions** (reduced from 193 when including July)
+- **Q2 Coverage:** 77 of 80 loans had payments by June 30, 2025
+- **Excluded:** 75 July transactions worth $46,583.59
+
+### Results by Attachment
+**Attachment B (75 loans):**
+- ✅ **100% Q2 coverage** (all 75 loans had Q2 transactions)
+- **113 payment transactions** through June 30
+- Excluded: 71 July transactions
+
+**Attachment C (5 loans):**
+- ✅ **40% Q2 coverage** (2 of 5 loans had Q2 transactions)  
+- **3 payment transactions** through June 30
+- Note: 3 loans originated after June 30, explaining lower coverage
+
+### Updated Deliverables
+**Final SQL Query:** `fortress_payment_history_q2_2025_updated.sql`
+**Final Dataset:** `fortress_payment_history_q2_2025_118_transactions.csv`
+**QC Analysis:** `q2_2025_cutoff_analysis_qc.sql`
+
+The updated payment history data now aligns with Q2 2025 requirements and includes all requested fields for comparison with the June loan tape.
