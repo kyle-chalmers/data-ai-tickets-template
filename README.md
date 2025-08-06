@@ -172,8 +172,18 @@ This section maintains a chronological log of all completed tickets with links t
 
 - **[DI-1143](tickets/kchalmers/DI-1143/README.md)** - Align Oscilar Plaid Data Structure With Historical Plaid DATA_STORE Structure  
   *Kyle Chalmers* | Created views to transform Oscilar Plaid data to match historical DATA_STORE structure for Prism vendor compatibility
+
 - **[DI-1146](tickets/kchalmers/DI-1146/README.md)** - Mobile vs Desktop Application Analysis  
   *Kyle Chalmers* | Device usage pattern analysis showing 68.9% mobile-only vs 26.9% desktop-only applications with 99.96% data coverage and 4.35% cross-device behavior
+
+- **[DI-1148](tickets/kchalmers/DI-1148/README.md)** - Bank Account LMS Views Deployment  
+  *Kyle Chalmers* | Created views for bank account data alignment in loan management system
+
+- **[DI-1150](tickets/kchalmers/DI-1150/README.md)** - Application Drop-off Analysis  
+  *Kyle Chalmers* | Comprehensive analysis of application funnel drop-offs with API vs non-API channel comparison and fraud correlation patterns
+
+- **[DI-1151](tickets/kchalmers/DI-1151/README.md)** - Bounce Q2 2025 Debt Sale Deliverables  
+  *Kyle Chalmers* | Generated three required debt sale deliverable files (marketing goodbye letters, credit reporting, bulk upload) for 1,483 selected loans with comprehensive workflow documentation ([INSTRUCTIONS.md](tickets/kchalmers/DI-1151/INSTRUCTIONS.md))
 
 ---
 
