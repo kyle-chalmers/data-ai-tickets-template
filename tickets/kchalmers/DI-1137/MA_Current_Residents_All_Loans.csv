@@ -1,0 +1,64 @@
+LOANID,PAYOFFUID,APPLICANTRESIDENCESTATE,LOANAMOUNT,INTERESTRATE,APR,ORIGINATIONDATE,STATUS,PORTFOLIONAME,PLACEMENT_STATUS,CURRENT_STATE
+P8E548F3C80D9,b3d99064-9fbb-d58c-afd9-8e548f3c80d9,PA,5000.0000,0.1087,12.990,2022-06-07,Charge off,HIVE Participation,Placed - HM,MA
+P8E548F3C80D9,b3d99064-9fbb-d58c-afd9-8e548f3c80d9,PA,5000.0000,0.1087,12.990,2022-06-07,Charge off,HIVE Participation,Placed - HM,MA
+P8F23F8C4FA21,3235d22e-cf1e-29b9-aa26-8f23f8c4fa21,RI,20000.0000,0.1206,13.990,2019-10-23,Charge off,Payoff FBO First Technology Credit Union,Placed - First Tech Credit Union,MA
+P8F23F8C4FA21,3235d22e-cf1e-29b9-aa26-8f23f8c4fa21,RI,20000.0000,0.1206,13.990,2019-10-23,Charge off,Payoff FBO First Technology Credit Union,Placed - First Tech Credit Union,MA
+PB8F99FE697CB,c7500c1e-771a-240f-e40d-b8f99fe697cb,NY,22000.0000,0.1285,14.990,2022-09-08,Charge off,Payoff FBO First Technology Credit Union,Placed - First Tech Credit Union,MA
+PB8F99FE697CB,c7500c1e-771a-240f-e40d-b8f99fe697cb,NY,22000.0000,0.1285,14.990,2022-09-08,Charge off,Payoff FBO First Technology Credit Union,Placed - First Tech Credit Union,MA
+P529F16BF5F34,cbce5f29-1ca8-28d5-57c3-529f16bf5f34,SC,10000.0000,0.2013,22.490,2022-08-02,Charge off,Payoff FBO Alliant Credit Union,Placed - Bounce,MA
+P529F16BF5F34,cbce5f29-1ca8-28d5-57c3-529f16bf5f34,SC,10000.0000,0.2013,22.490,2022-08-02,Charge off,Payoff FBO Alliant Credit Union,Placed - Bounce,MA
+P529F16BF5F34,cbce5f29-1ca8-28d5-57c3-529f16bf5f34,SC,10000.0000,0.2013,22.490,2022-08-02,Charge off,Payoff FBO Alliant Credit Union,Placed - Bounce,MA
+PF88907871F31,d8accdbd-4e8c-2d9d-3601-f88907871f31,RI,12000.0000,0.1976,21.990,2022-06-28,Charge off,Theorem Main Master Fund LP - Loan Sale,Placed - Resurgent,MA
+PF88907871F31,d8accdbd-4e8c-2d9d-3601-f88907871f31,RI,12000.0000,0.1976,21.990,2022-06-28,Charge off,Theorem Main Master Fund LP - Loan Sale,Placed - Resurgent,MA
+P94018783D5C0,a8251b34-bebe-0bff-d3f0-94018783d5c0,OR,16500.0000,0.1206,13.990,2020-12-21,Paid in Full,Payoff FBO First Technology Credit Union,Placed - HM,MA
+P94018783D5C0,a8251b34-bebe-0bff-d3f0-94018783d5c0,OR,16500.0000,0.1206,13.990,2020-12-21,Paid in Full,Payoff FBO First Technology Credit Union,Placed - HM,MA
+P94018783D5C0,a8251b34-bebe-0bff-d3f0-94018783d5c0,OR,16500.0000,0.1206,13.990,2020-12-21,Paid in Full,Payoff FBO First Technology Credit Union,Placed - HM,MA
+PE7FF87B36C00,8fd68073-b9f3-1e5f-c037-e7ff87b36c00,FL,20000.0000,0.0919,9.990,2020-11-12,Paid in Full,Payoff FBO Alliant Credit Union,Placed - HM,MA
+PE7FF87B36C00,8fd68073-b9f3-1e5f-c037-e7ff87b36c00,FL,20000.0000,0.0919,9.990,2020-11-12,Paid in Full,Payoff FBO Alliant Credit Union,Placed - HM,MA
+P3A873AA79BC6,ce85e91f-1afb-44c2-9d39-3a873aa79bc6,NY,13500.0000,0.1591,17.990,2019-06-17,Charge off,Payoff FBO First Technology Credit Union,Placed - HM,MA
+P3A873AA79BC6,ce85e91f-1afb-44c2-9d39-3a873aa79bc6,NY,13500.0000,0.1591,17.990,2019-06-17,Charge off,Payoff FBO First Technology Credit Union,Placed - HM,MA
+P71060884F6D6,2ec3a64a-9574-544f-9928-71060884f6d6,CO,40000.0000,0.1821,20.640,2022-06-15,Current,Theorem Main Master Fund LP - Loan Sale,Placed - HM,MA
+P71060884F6D6,2ec3a64a-9574-544f-9928-71060884f6d6,CO,40000.0000,0.1821,20.640,2022-06-15,Current,Theorem Main Master Fund LP - Loan Sale,Placed - HM,MA
+PD2F27A5F2CDA,fdbe1844-15c1-4300-80b2-d2f27a5f2cda,TX,20000.0000,0.0960,10.990,2023-06-12,Current,Payoff FBO Alliant Credit Union,Placed - HM,MA
+PD2F27A5F2CDA,fdbe1844-15c1-4300-80b2-d2f27a5f2cda,TX,20000.0000,0.0960,10.990,2023-06-12,Current,Payoff FBO Alliant Credit Union,Placed - HM,MA
+PD2F27A5F2CDA,fdbe1844-15c1-4300-80b2-d2f27a5f2cda,TX,20000.0000,0.0960,10.990,2023-06-12,Current,Payoff FBO Alliant Credit Union,Placed - HM,MA
+PD2F27A5F2CDA,fdbe1844-15c1-4300-80b2-d2f27a5f2cda,TX,20000.0000,0.0960,10.990,2023-06-12,Current,Payoff FBO Alliant Credit Union,Placed - HM,MA
+P2E4DCFA37870,9af972dd-711b-9e8d-695d-2e4dcfa37870,NH,20000.0000,0.1390,15.990,2021-08-27,Current,Payoff FBO First Technology Credit Union,Placed - HM,MA
+P2E4DCFA37870,9af972dd-711b-9e8d-695d-2e4dcfa37870,NH,20000.0000,0.1390,15.990,2021-08-27,Current,Payoff FBO First Technology Credit Union,Placed - HM,MA
+P9915D6B05B99,be8fac3a-1cc0-934a-3eeb-9915d6b05b99,PA,12000.0000,0.1591,17.990,2022-06-08,Charge off,Payoff FBO Alliant Credit Union,Placed - Bounce,MA
+P9915D6B05B99,be8fac3a-1cc0-934a-3eeb-9915d6b05b99,PA,12000.0000,0.1591,17.990,2022-06-08,Charge off,Payoff FBO Alliant Credit Union,Placed - Bounce,MA
+P9915D6B05B99,be8fac3a-1cc0-934a-3eeb-9915d6b05b99,PA,12000.0000,0.1591,17.990,2022-06-08,Charge off,Payoff FBO Alliant Credit Union,Placed - Bounce,MA
+PB6E9D1F061EF,e3f1657f-fc58-71f4-6fa6-b6e9d1f061ef,MS,18000.0000,0.1108,12.990,2022-02-22,Charge off,Payoff FBO USAlliance Federal Credit Union,Placed - HM,MA
+PB6E9D1F061EF,e3f1657f-fc58-71f4-6fa6-b6e9d1f061ef,MS,18000.0000,0.1108,12.990,2022-02-22,Charge off,Payoff FBO USAlliance Federal Credit Union,Placed - HM,MA
+P7D26AD15578B,cd4ff6db-6a91-0fd1-d1ae-7d26ad15578b,RI,12500.0000,0.2259,24.990,2022-03-09,Current,Payoff FBO Alliant Credit Union,Placed - HM,MA
+P7D26AD15578B,cd4ff6db-6a91-0fd1-d1ae-7d26ad15578b,RI,12500.0000,0.2259,24.990,2022-03-09,Current,Payoff FBO Alliant Credit Union,Placed - HM,MA
+PD6356517E3B6,21cef8f0-86af-36c0-82ea-d6356517e3b6,MT,35000.0000,0.0826,9.990,2022-05-24,Paid in Full,Theorem Main Master Fund LP - Loan Sale,Placed - HM,MA
+PB27312C0ADBE,4a9ffa89-1527-2de6-dea9-b27312c0adbe,NH,25000.0000,0.0875,10.490,2022-03-28,Paid in Full,Payoff FBO GreenState Credit Union,Placed - HM,MA
+PB27312C0ADBE,4a9ffa89-1527-2de6-dea9-b27312c0adbe,NH,25000.0000,0.0875,10.490,2022-03-28,Paid in Full,Payoff FBO GreenState Credit Union,Placed - HM,MA
+PCFEEE467B11F,16ef01e9-8551-c2e3-c287-cfeee467b11f,NY,24000.0000,0.0640,6.740,2022-06-10,Paid in Full,Payoff FBO First Technology Credit Union,Placed - HM,MA
+PCFEEE467B11F,16ef01e9-8551-c2e3-c287-cfeee467b11f,NY,24000.0000,0.0640,6.740,2022-06-10,Paid in Full,Payoff FBO First Technology Credit Union,Placed - HM,MA
+P8D30CC4E2FCF,5c43d54a-84c0-40b5-b940-8d30cc4e2fcf,CA,30000.0000,0.2150,24.500,2023-03-20,Charge off,Payoff FBO Alliant Credit Union,Placed - Bounce,MA
+P8D30CC4E2FCF,5c43d54a-84c0-40b5-b940-8d30cc4e2fcf,CA,30000.0000,0.2150,24.500,2023-03-20,Charge off,Payoff FBO Alliant Credit Union,Placed - Bounce,MA
+PB822534FB0D7,9b49eddc-3036-4364-8b32-b822534fb0d7,NY,6000.0000,0.1964,21.990,2020-10-01,Charge off,Payoff FBO Alliant Credit Union,Placed - Bounce,MA
+PB822534FB0D7,9b49eddc-3036-4364-8b32-b822534fb0d7,NY,6000.0000,0.1964,21.990,2020-10-01,Charge off,Payoff FBO Alliant Credit Union,Placed - Bounce,MA
+PB822534FB0D7,9b49eddc-3036-4364-8b32-b822534fb0d7,NY,6000.0000,0.1964,21.990,2020-10-01,Charge off,Payoff FBO Alliant Credit Union,Placed - Bounce,MA
+PD53B8F032BC4,e6d80cc8-4d47-de4b-72d7-d53b8f032bc4,NJ,15000.0000,0.1137,13.490,2020-04-27,Charge off,Payoff FBO Alliant Credit Union,Placed - Bounce,MA
+PD53B8F032BC4,e6d80cc8-4d47-de4b-72d7-d53b8f032bc4,NJ,15000.0000,0.1137,13.490,2020-04-27,Charge off,Payoff FBO Alliant Credit Union,Placed - Bounce,MA
+PD53B8F032BC4,e6d80cc8-4d47-de4b-72d7-d53b8f032bc4,NJ,15000.0000,0.1137,13.490,2020-04-27,Charge off,Payoff FBO Alliant Credit Union,Placed - Bounce,MA
+P8E255BAB51EE,10bba7d1-19ca-6675-0bad-8e255bab51ee,ME,22000.0000,0.0640,6.740,2022-07-27,Current,Payoff FBO Michigan State University Federal Credit Union,Placed - HM,MA
+P8E255BAB51EE,10bba7d1-19ca-6675-0bad-8e255bab51ee,ME,22000.0000,0.0640,6.740,2022-07-27,Current,Payoff FBO Michigan State University Federal Credit Union,Placed - HM,MA
+PDA9BAC349A32,c9a76078-f5f7-3b5a-51ee-da9bac349a32,VA,25000.0000,0.1964,21.990,2022-05-24,Charge off,Payoff FBO Alliant Credit Union,Placed - Bounce,MA
+PDA9BAC349A32,c9a76078-f5f7-3b5a-51ee-da9bac349a32,VA,25000.0000,0.1964,21.990,2022-05-24,Charge off,Payoff FBO Alliant Credit Union,Placed - Bounce,MA
+PDA9BAC349A32,c9a76078-f5f7-3b5a-51ee-da9bac349a32,VA,25000.0000,0.1964,21.990,2022-05-24,Charge off,Payoff FBO Alliant Credit Union,Placed - Bounce,MA
+P5094AFF45F7A,e8bfe150-1eb0-902c-ce3b-5094aff45f7a,NY,35000.0000,0.0919,9.990,2021-08-11,Current,Payoff FBO First Technology Credit Union,Placed - HM,MA
+P5094AFF45F7A,e8bfe150-1eb0-902c-ce3b-5094aff45f7a,NY,35000.0000,0.0919,9.990,2021-08-11,Current,Payoff FBO First Technology Credit Union,Placed - HM,MA
+PA2D924D6C8B1,367ba44d-c75c-0224-1d77-a2d924d6c8b1,VA,40000.0000,0.1206,13.990,2021-05-05,Current,Payoff FBO Alliant Credit Union,Placed - HM,MA
+PA2D924D6C8B1,367ba44d-c75c-0224-1d77-a2d924d6c8b1,VA,40000.0000,0.1206,13.990,2021-05-05,Current,Payoff FBO Alliant Credit Union,Placed - HM,MA
+P30D8E7B087A3,b83a2842-d002-4c0e-b4fc-30d8e7b087a3,MI,12500.0000,0.1560,17.150,2023-02-03,Current,Payoff FBO Michigan State University Federal Credit Union,Placed - HM,MA
+P30D8E7B087A3,b83a2842-d002-4c0e-b4fc-30d8e7b087a3,MI,12500.0000,0.1560,17.150,2023-02-03,Current,Payoff FBO Michigan State University Federal Credit Union,Placed - HM,MA
+P30D8E7B087A3,b83a2842-d002-4c0e-b4fc-30d8e7b087a3,MI,12500.0000,0.1560,17.150,2023-02-03,Current,Payoff FBO Michigan State University Federal Credit Union,Placed - HM,MA
+P3B4C0F8DD5E4,f18f136f-fd74-4cf5-baaf-3b4c0f8dd5e4,NY,9300.0000,0.0997,11.998,2018-06-01,Charge off,Payoff FBO Technology CU,Placed - HM,MA
+P3B4C0F8DD5E4,f18f136f-fd74-4cf5-baaf-3b4c0f8dd5e4,NY,9300.0000,0.0997,11.998,2018-06-01,Charge off,Payoff FBO Technology CU,Placed - HM,MA
+P4586E04744D0,ab3601ec-de0c-ebb8-1c53-4586e04744d0,CT,23000.0000,0.1572,17.990,2021-09-08,Charge off,Payoff FBO Blue Federal Credit Union,Placed - Bounce,MA
+P4586E04744D0,ab3601ec-de0c-ebb8-1c53-4586e04744d0,CT,23000.0000,0.1572,17.990,2021-09-08,Charge off,Payoff FBO Blue Federal Credit Union,Placed - Bounce,MA
+P4586E04744D0,ab3601ec-de0c-ebb8-1c53-4586e04744d0,CT,23000.0000,0.1572,17.990,2021-09-08,Charge off,Payoff FBO Blue Federal Credit Union,Placed - Bounce,MA
