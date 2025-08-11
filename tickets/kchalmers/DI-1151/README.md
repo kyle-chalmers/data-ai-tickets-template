@@ -2,13 +2,22 @@
 
 ## Summary
 
-Generated the three required data export files for the Bounce 2025 Q2 Debt Sale based on the selected loan population (status = 'Included' from the original results file).
+Generated the three required data export files for the Bounce 2025 Q2 Debt Sale based on the selected loan population (status = 'Included' from the original results file). 
+
+**UPDATE (2025-08-11)**: Updated sale dates based on portfolio differentiation:
+- **Theorem portfolios** (284 loans): Sale date = 2025-08-11
+- **All other portfolios** (1,199 loans): Sale date = 2025-08-08
 
 ## Source Data
 
 - **Population Source**: `HM_AUG_25_Q2_Sale_Results (1).xlsx - Query result.csv`
 - **Selected Loans**: 1,483 loans with status = 'Included' 
 - **Total Records**: 1,590 (including 103 Bankrupt, 4 Deceased, 1,483 Included)
+
+### Portfolio Breakdown
+- **Theorem Main Master Fund LP - Loan Sale**: 209 loans → Sale date: 2025-08-11
+- **Theorem Prime Plus Yield Fund Master LP - Loan Sale**: 75 loans → Sale date: 2025-08-11
+- **All other portfolios** (Payoff FBO, HIVE): 1,199 loans → Sale date: 2025-08-08
 
 ## Deliverables
 
@@ -17,13 +26,19 @@ Generated the three required data export files for the Bounce 2025 Q2 Debt Sale 
 - **Records**: 1,484 records (including header)
 - **Purpose**: Loan information for marketing goodbye letters to borrowers
 - **Key Fields**: loan_id, borrower name/contact info, charge-off details, current balance
+- **SALE_DATE**: 
+  - Theorem portfolios: 2025-08-11
+  - Non-Theorem portfolios: 2025-08-08
 - **Template Source**: DI-971 Notice_Of_Servicing_Transfer_updated.sql
 
 ### 2. Credit Reporting List  
 **File**: `credit_reporting_bounce_2025_q2_final.csv`
 - **Records**: 1,484 records (including header)
 - **Purpose**: Credit bureau reporting updates for transferred loans
-- **Key Fields**: loan_id, borrower name, placement start date (2025-08-06)
+- **Key Fields**: loan_id, borrower name, placement start date
+- **PLACEMENT_STATUS_STARTDATE**:
+  - Theorem portfolios: 2025-08-11
+  - Non-Theorem portfolios: 2025-08-08
 - **Template Source**: DI-972 BULK_UPLOAD_AND_CREDIT_REPORTING_SCRIPTS.sql
 
 ### 3. Bulk Upload List
@@ -31,6 +46,9 @@ Generated the three required data export files for the Bounce 2025 Q2 Debt Sale 
 - **Records**: 1,484 records (including header)
 - **Purpose**: LoanPro system updates for placement status
 - **Key Fields**: LP_LOAN_ID, loanid, SETTINGS_ID, placement status/dates
+- **Placement_Status_StartDate**:
+  - Theorem portfolios: 2025-08-11
+  - Non-Theorem portfolios: 2025-08-08
 - **Template Source**: DI-972 BULK_UPLOAD_AND_CREDIT_REPORTING_SCRIPTS.sql
 
 ## Data Processing Steps

@@ -1,7 +1,9 @@
 -- DI-1151: Marketing Goodbye Letters for Bounce 2025 Q2 Debt Sale
 -- FINAL VERSION: Uses SELECTED table as base with main table join
+-- Updated: Different sale dates for Theorem vs non-Theorem portfolios
 
-SET SALE_DATE = '2025-08-06';
+SET THEOREM_SALE_DATE = '2025-08-11';
+SET NON_THEOREM_SALE_DATE = '2025-08-08';
 
 -- Notice_of_Servicing_Transfer_Placement_File_Bounce_2025_Q2_SALE
 SELECT UPPER(ds.LOANID) as loan_id,
@@ -19,7 +21,12 @@ SELECT UPPER(ds.LOANID) as loan_id,
        ds.UNPAIDBALANCEDUE AS CURRENT_BALANCE,
        ds.PRINCIPALBALANCEATCHARGEOFF + ds.INTERESTBALANCEATCHARGEOFF - ds.RECOVERIESPAIDTODATE AS CHARGE_OFF_BALANCE,
        REPLACE(ds.PORTFOLIONAME, 'Payoff FBO ', '') AS CU_NAME,
-       $SALE_DATE AS SALE_DATE,
+       CASE 
+           WHEN ds.PORTFOLIONAME IN ('Theorem Main Master Fund LP - Loan Sale', 
+                                     'Theorem Prime Plus Yield Fund Master LP - Loan Sale') 
+           THEN $THEOREM_SALE_DATE 
+           ELSE $NON_THEOREM_SALE_DATE 
+       END AS SALE_DATE,
        ds.PRINCIPALBALANCEATCHARGEOFF,
        ds.INTERESTBALANCEATCHARGEOFF,
        ds.CHARGED_OFF_PRINCIPAL_ADJUSTMENT,
