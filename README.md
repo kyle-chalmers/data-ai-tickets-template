@@ -240,7 +240,7 @@ GROUP BY loan_id;
   *Kyle Chalmers* | Added dual SIMM placement flags (current and historical) to roll rate dashboards with **40-60% performance optimization**
 
 - **[DI-1137](tickets/kchalmers/DI-1137/README.md)** - Regulator Request: Massachusetts - Applications and Loans  
-  *Kyle Chalmers* | Massachusetts regulator request for loan and application data for pending license application, including small dollar high rate loan analysis
+  *Kyle Chalmers* | Massachusetts regulator request for loan/application data supporting license application: **61 MA resident loans** ($1.03M), **3 small dollar high-rate qualifying loans**, comprehensive SQL documentation with 4-scenario analysis
 
 - **[DI-1140](tickets/kchalmers/DI-1140/README.md)** - Identify Originated Loans Associated w/ Suspected Small Fraud Ring  
   *Kyle Chalmers* | Fraud ring investigation targeting BMO Bank accounts with recent account opening patterns and routing number analysis
