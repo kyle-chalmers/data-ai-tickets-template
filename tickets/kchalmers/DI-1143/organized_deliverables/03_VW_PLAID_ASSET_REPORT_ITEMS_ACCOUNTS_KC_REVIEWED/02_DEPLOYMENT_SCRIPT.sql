@@ -4,15 +4,10 @@ DI-1143: GIACT 5.8 Parser - Plaid Asset Report Items Accounts View
 */
 
 DECLARE
-    -- dev databases
-    v_de_db varchar default 'DEVELOPMENT';
-    v_bi_db varchar default 'BUSINESS_INTELLIGENCE_DEV';
-    v_rds_db varchar default 'DEVELOPMENT';
-    
-    -- prod databases (uncomment for production deployment)
-    -- v_de_db varchar default 'ARCA';
-    -- v_bi_db varchar default 'BUSINESS_INTELLIGENCE';
-    -- v_rds_db varchar default 'RAW_DATA_STORE';
+    -- prod databases
+    v_de_db varchar default 'ARCA';
+    v_bi_db varchar default 'BUSINESS_INTELLIGENCE';
+    v_rds_db varchar default 'RAW_DATA_STORE';
 
 BEGIN
 
@@ -109,12 +104,6 @@ BEGIN
     EXECUTE IMMEDIATE ('
         CREATE OR REPLACE VIEW ' || v_bi_db || '.BRIDGE.VW_OSCILAR_PLAID_ASSET_REPORT_ACCOUNTS COPY GRANTS AS 
             SELECT * FROM ' || v_de_db ||'.FRESHSNOW.VW_OSCILAR_PLAID_ASSET_REPORT_ACCOUNTS
-    ');
-    
--- ANALYTICS section
-    EXECUTE IMMEDIATE ('
-        CREATE OR REPLACE VIEW ' || v_bi_db || '.ANALYTICS.VW_OSCILAR_PLAID_ASSET_REPORT_ACCOUNTS COPY GRANTS AS 
-            SELECT * FROM ' || v_bi_db ||'.BRIDGE.VW_OSCILAR_PLAID_ASSET_REPORT_ACCOUNTS
     ');
    
 END;
