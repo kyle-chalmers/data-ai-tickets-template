@@ -1,4 +1,4 @@
--- VW_PLAID_ASSET_REPORT_ITEMS_ACCOUNTS_TRANSACTIONS Recreation Query using MVW
+-- VW_OSCILAR_PLAID_ASSET_REPORT_TRANSACTIONS Recreation Query using MVW
 -- This query flattens individual Plaid transactions to match the historical structure
 -- Source: ARCA.FRESHSNOW.MVW_HM_VERIFICATION_RESPONSES_PLAID_ASSETS
 
@@ -18,7 +18,6 @@ WITH oscilar_base AS (
         -- Apply filter early for performance (test applications)
         APPLICATION_ID IN ('2278944', '2159240', '2064942', '2038415', '1914384')
         -- Only records with successful Plaid Assets responses
-        AND integration.value:name::STRING = 'Plaid_Assets'
         AND integration.value:response:items IS NOT NULL
         AND ARRAY_SIZE(integration.value:response:items) > 0
 ),
@@ -47,7 +46,7 @@ transactions_flattened AS (
 )
 
 SELECT 
-    -- Fields from VW_PLAID_ASSET_REPORT_USER (for linking)
+    -- Fields from VW_OSCILAR_PLAID_ASSET_REPORT_USERS (for linking)
     oscilar_timestamp AS Record_Create_Datetime,
     plaid_assets_response:asset_report_id::varchar AS Asset_Report_Id,
     application_id,  -- Keep as-is from JSON extraction
@@ -97,11 +96,4 @@ SELECT
     transaction_data:merchant_name::varchar AS merchant_name,
     transaction_data:check_number::varchar AS check_number
 
-FROM transactions_flattened
-
--- Order by entity, account, then transaction date (most recent first)
-ORDER BY 
-    application_id,
-    account_index, 
-    transaction_data:date::date DESC,
-    transaction_index;
+FROM transactions_flattened;

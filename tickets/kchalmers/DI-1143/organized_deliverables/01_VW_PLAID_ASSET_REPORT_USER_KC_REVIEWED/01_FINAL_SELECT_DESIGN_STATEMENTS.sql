@@ -1,4 +1,4 @@
--- VW_PLAID_ASSET_REPORT_USER Recreation Query using MVW
+-- VW_OSCILAR_PLAID_ASSET_REPORT_USERS Recreation Query using MVW
 -- Extracts Plaid Asset Report metadata from MVW_HM_VERIFICATION_RESPONSES_PLAID_ASSETS
 -- Source: ARCA.FRESHSNOW.MVW_HM_VERIFICATION_RESPONSES_PLAID_ASSETS
 
@@ -13,7 +13,6 @@ WITH plaid_asset_data AS (
     WHERE 
         -- Apply filter early for performance
         APPLICATION_ID IN ('2278944', '2159240', '2064942', '2038415', '1914384')
-        AND integration.value:name::STRING = 'Plaid_Assets'
 )
 
 SELECT 

@@ -13,7 +13,6 @@ WITH plaid_asset_data AS (
     WHERE 
         -- Apply filter early for performance (test applications)
         APPLICATION_ID IN ('2278944', '2159240', '2064942', '2038415', '1914384')
-        AND integration.value:name::STRING = 'Plaid_Assets'
         AND integration.value:response:items IS NOT NULL
 ),
 
@@ -70,5 +69,4 @@ SELECT
     institution_id,
     institution_name,
     item_id
-FROM plaid_assets_items
-ORDER BY application_id, item_index;
+FROM plaid_assets_items;

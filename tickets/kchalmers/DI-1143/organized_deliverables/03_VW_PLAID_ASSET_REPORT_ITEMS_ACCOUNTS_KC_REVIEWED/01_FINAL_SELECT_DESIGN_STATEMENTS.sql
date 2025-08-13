@@ -19,7 +19,6 @@ WITH oscilar_base AS (
         -- Apply filter early for performance (test applications)
         APPLICATION_ID IN ('2278944', '2159240', '2064942', '2038415', '1914384')
         -- Only records with successful Plaid Assets responses
-        AND integration.value:name::STRING = 'Plaid_Assets'
         AND integration.value:response:items IS NOT NULL
         AND ARRAY_SIZE(integration.value:response:items) > 0
 ),
@@ -84,7 +83,4 @@ FROM accounts_flattened
 
 -- Quality filters
 WHERE account_data IS NOT NULL  -- Ensure we have account data
-  AND account_data:account_id IS NOT NULL  -- Must have Plaid account ID
-
--- Order by most recent first
-ORDER BY oscilar_timestamp DESC, account_index;
+  AND account_data:account_id IS NOT NULL;  -- Must have Plaid account ID

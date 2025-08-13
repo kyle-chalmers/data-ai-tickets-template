@@ -9,5 +9,4 @@ create or replace materialized view ARCA.FRESHSNOW.MVW_HM_VERIFICATION_RESPONSES
     DATA:data:input:payload:borrowerId::VARCHAR as borrower_id
     FROM RAW_DATA_STORE.KAFKA.EXTERNAL_HM_Verification_Responses, 
     LATERAL FLATTEN(input => DATA:data:integrations) integration
-    where integration.value:name::STRING = 'Plaid_Assets'
 );
