@@ -1,0 +1,871 @@
+{
+  "data": {
+    "diagnostics": {
+      "total_time_ms": 4740,
+      "workflow_step_performance": [
+        {
+          "child_workflow_step_performance": [],
+          "next_step_id": 0,
+          "step_id": 54,
+          "step_name": "Intent Check",
+          "time_ms": 1
+        },
+        {
+          "child_workflow_step_performance": [],
+          "next_step_id": 31,
+          "step_id": 0,
+          "step_name": "Parse Accounts List",
+          "time_ms": 0
+        },
+        {
+          "child_workflow_step_performance": [],
+          "next_step_id": 22,
+          "step_id": 31,
+          "step_name": "Plaid Assets Token Check",
+          "time_ms": 0
+        },
+        {
+          "child_workflow_step_performance": [],
+          "next_step_id": 21,
+          "step_id": 22,
+          "step_name": "TALX variables",
+          "time_ms": 0
+        },
+        {
+          "child_workflow_step_performance": [],
+          "next_step_id": 29,
+          "step_id": 21,
+          "step_name": "",
+          "time_ms": 2665
+        },
+        {
+          "child_workflow_step_performance": [],
+          "next_step_id": 87,
+          "step_id": 29,
+          "step_name": "TALX Results Parsing",
+          "time_ms": 1
+        },
+        {
+          "child_workflow_step_performance": [],
+          "next_step_id": 28,
+          "step_id": 87,
+          "step_name": "TALX validity",
+          "time_ms": 0
+        },
+        {
+          "child_workflow_step_performance": [],
+          "next_step_id": 30,
+          "step_id": 28,
+          "step_name": "",
+          "time_ms": 1090
+        },
+        {
+          "child_workflow_step_performance": [],
+          "next_step_id": 9,
+          "step_id": 30,
+          "step_name": "",
+          "time_ms": 981
+        },
+        {
+          "child_workflow_step_performance": [],
+          "next_step_id": 20,
+          "step_id": 9,
+          "step_name": "TALX Results",
+          "time_ms": 0
+        },
+        {
+          "child_workflow_step_performance": [],
+          "next_step_id": 8,
+          "step_id": 20,
+          "step_name": "Plaid Reconcilliation",
+          "time_ms": 0
+        },
+        {
+          "child_workflow_step_performance": [],
+          "next_step_id": 1,
+          "step_id": 8,
+          "step_name": "GIACT variables",
+          "time_ms": 1
+        },
+        {
+          "child_workflow_step_performance": [],
+          "next_step_id": 34,
+          "step_id": 1,
+          "step_name": "GIACT - Account 1 ",
+          "time_ms": 0
+        },
+        {
+          "child_workflow_step_performance": [],
+          "next_step_id": 34,
+          "step_id": 34,
+          "step_name": "GIACT Reconciliation",
+          "time_ms": 0
+        },
+        {
+          "child_workflow_step_performance": [],
+          "next_step_id": 34,
+          "step_id": 34,
+          "step_name": "GIACT Reconciliation",
+          "time_ms": 0
+        },
+        {
+          "child_workflow_step_performance": [],
+          "next_step_id": 27,
+          "step_id": 34,
+          "step_name": "GIACT Reconciliation",
+          "time_ms": 0
+        },
+        {
+          "child_workflow_step_performance": [],
+          "next_step_id": 85,
+          "step_id": 27,
+          "step_name": "Reconciliation",
+          "time_ms": 0
+        },
+        {
+          "child_workflow_step_performance": [],
+          "next_step_id": -1,
+          "step_id": 85,
+          "step_name": "income_verification_fail",
+          "time_ms": 1
+        }
+      ]
+    },
+    "errors": [],
+    "input": {
+      "name": "HM_verification",
+      "oscilar": {
+        "documents": [],
+        "record_id": "1c5c02cf-4559-3d31-9560-082044570897",
+        "request_id": "c1120015-1424-4c1b-bbac-43729065b812",
+        "timestamp": "2025-06-30T17:33:29.655627316Z"
+      },
+      "payload": {
+        "accounts": [],
+        "annualIncome": 90000,
+        "applicationId": "2776363",
+        "borrowerId": "1414635",
+        "bureauFirstName": "HIRAM",
+        "bureauLastName": "ESCABI",
+        "city": "Tehachapi",
+        "employment": [
+          {
+            "annualIncome": 90000,
+            "employmentName": "Golden Queen Mining",
+            "employmentType": "Full-time"
+          },
+          {
+            "annualIncome": 0,
+            "employmentName": "",
+            "employmentType": "0"
+          },
+          {
+            "annualIncome": 0,
+            "employmentName": "",
+            "employmentType": "0"
+          },
+          {
+            "annualIncome": 0,
+            "employmentName": "",
+            "employmentType": "0"
+          },
+          {
+            "annualIncome": 0,
+            "employmentName": "",
+            "employmentType": "0"
+          }
+        ],
+        "federalTax": 15781.25,
+        "ficoScore": 734,
+        "firstName": "Hiram",
+        "intent": "income_verification",
+        "lastName": "Escabi",
+        "plaidAccessTokens": [],
+        "postalCode": "93561",
+        "ssn": "072647592",
+        "state": "CA",
+        "stateTax": 12137.464,
+        "street": "18041 Swaps Ct",
+        "tier": 2
+      }
+    },
+    "integrations": [
+      {
+        "cache_used": false,
+        "name": "equifax_talx",
+        "parameters": {
+          "ofxData": {
+            "signonmsgsrqv1": {
+              "sonrq": {
+                "appid": "PAYOFF",
+                "appver": "1.0",
+                "dtclient": "20240801114817",
+                "language": "ENG",
+                "userid": "PayOffINTGusr@50005",
+                "userpass": "PxgMQeKPKN7b"
+              }
+            },
+            "tsvermsgsrqv1": {
+              "tsvtwnselecttrnrq": {
+                "trnpurpose": {
+                  "code": "PPCREDIT"
+                },
+                "trnuid": "2776363",
+                "tsvtwnselectrq": {
+                  "template_name": "AutoGold",
+                  "tsvemployeeid": "072647592"
+                }
+              }
+            }
+          }
+        },
+        "response": {
+          "signonmsgsrsv1": {
+            "sonrs": {
+              "dtserver": "20250630173332",
+              "language": "ENG",
+              "status": {
+                "code": "0",
+                "severity": "INFO"
+              }
+            }
+          },
+          "tsvermsgsrsv1": {
+            "tsvtwnselecttrnrs": {
+              "mastersrvrtid": "970526736094",
+              "status": {
+                "code": "0",
+                "severity": "INFO"
+              },
+              "trnpurpose": {
+                "code": "PPCREDIT",
+                "message": "Consumer's application for credit"
+              },
+              "trnuid": "2776363",
+              "tsvtwnselectrs": {
+                "tsvresponse_v100": [
+                  {
+                    "completeness": "INCOME",
+                    "demotrn": {
+                      "demotype": null
+                    },
+                    "dttransaction": "20250630123332",
+                    "srvrtid": "970526736095",
+                    "tsvannualcomp": [
+                      {
+                        "tsvtotal": "38665.66",
+                        "tsvyear": "2025"
+                      },
+                      {
+                        "tsvtotal": "79230.12",
+                        "tsvyear": "2024"
+                      },
+                      {
+                        "tsvtotal": "78085.94",
+                        "tsvyear": "2023"
+                      }
+                    ],
+                    "tsvbasecomp": {
+                      "tsvavghrsworked": "80",
+                      "tsvpayfrequency": {
+                        "code": "9",
+                        "message": "Hourly"
+                      },
+                      "tsvpayperiodfrequency": {
+                        "code": "6",
+                        "message": "Biweekly"
+                      },
+                      "tsvrateofpay": "32.27"
+                    },
+                    "tsvemployee_v100": {
+                      "dtendemployment": null,
+                      "dtinfo": "20250620000000",
+                      "dtmostrecenthire": "20210809000000",
+                      "employeestatus": {
+                        "code": "1",
+                        "message": "Active"
+                      },
+                      "firstname": "Hiram",
+                      "lastname": "Escabi",
+                      "middlename": null,
+                      "position-title": "Equipment Operator III",
+                      "ssn": "072647592",
+                      "totallengthofsvc": "46"
+                    },
+                    "tsvemployer_v100": {
+                      "disclaimer": "employer:If an employer began using Paylocity for payroll on or after January 1 of any calendar year, Year-to-Date wages for that year may only include Year-to-Date from that point forward as previous payroll information may or may not have been transferred. When previous payroll information is transferred, a pay amount with the entire Year-to-Date balance will be displayed and will be categorized based on how individual companies structured their previous payroll information. Paylocity is unable to verify and cannot guarantee the accuracy of any information that originated outside of or is based on data that originated outside of Paylocity's payroll systems.<br/><br/>Salaried employees with $0 for rate of pay are employees paid solely on a recurring earnings model and therefore do not have a base rate of pay.",
+                      "employercode": "21535647",
+                      "employerdisplay": {
+                        "employerdisplayinfo": {
+                          "language": "ENG",
+                          "logofilename": null,
+                          "voicefilename": null
+                        }
+                      },
+                      "itemizeddisclaimers": {
+                        "disclaimertext": "If an employer began using Paylocity for payroll on or after January 1 of any calendar year, Year-to-Date wages for that year may only include Year-to-Date from that point forward as previous payroll information may or may not have been transferred. When previous payroll information is transferred, a pay amount with the entire Year-to-Date balance will be displayed and will be categorized based on how individual companies structured their previous payroll information. Paylocity is unable to verify and cannot guarantee the accuracy of any information that originated outside of or is based on data that originated outside of Paylocity's payroll systems.<br/><br/>Salaried employees with $0 for rate of pay are employees paid solely on a recurring earnings model and therefore do not have a base rate of pay.",
+                        "disclaimertype": "ER"
+                      },
+                      "name1": "GOLDEN QUEEN MINING COMPANY LLC"
+                    },
+                    "tsvprojincome": "82531.96"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      {
+        "cache_used": false,
+        "name": "TALX_Income_v2",
+        "parameters": {
+          "tsvresponse_v100": [
+            {
+              "completeness": "INCOME",
+              "demotrn": {},
+              "dttransaction": "20250630123332",
+              "srvrtid": "970526736095",
+              "tsvannualcomp": [
+                {
+                  "tsvtotal": "38665.66",
+                  "tsvyear": "2025"
+                },
+                {
+                  "tsvtotal": "79230.12",
+                  "tsvyear": "2024"
+                },
+                {
+                  "tsvtotal": "78085.94",
+                  "tsvyear": "2023"
+                }
+              ],
+              "tsvbasecomp": {
+                "tsvavghrsworked": "80",
+                "tsvpayfrequency": {
+                  "code": "9",
+                  "message": "Hourly"
+                },
+                "tsvpayperiodfrequency": {
+                  "code": "6",
+                  "message": "Biweekly"
+                },
+                "tsvrateofpay": "32.27"
+              },
+              "tsvemployee_v100": {
+                "dtinfo": "20250620000000",
+                "dtmostrecenthire": "20210809000000",
+                "employeestatus": {
+                  "code": "1",
+                  "message": "Active"
+                },
+                "firstname": "Hiram",
+                "lastname": "Escabi",
+                "position-title": "Equipment Operator III",
+                "ssn": "072647592",
+                "totallengthofsvc": "46"
+              },
+              "tsvemployer_v100": {
+                "disclaimer": "employer:If an employer began using Paylocity for payroll on or after January 1 of any calendar year, Year-to-Date wages for that year may only include Year-to-Date from that point forward as previous payroll information may or may not have been transferred. When previous payroll information is transferred, a pay amount with the entire Year-to-Date balance will be displayed and will be categorized based on how individual companies structured their previous payroll information. Paylocity is unable to verify and cannot guarantee the accuracy of any information that originated outside of or is based on data that originated outside of Paylocity's payroll systems.<br/><br/>Salaried employees with $0 for rate of pay are employees paid solely on a recurring earnings model and therefore do not have a base rate of pay.",
+                "employercode": "21535647",
+                "employerdisplay": {
+                  "employerdisplayinfo": {
+                    "language": "ENG"
+                  }
+                },
+                "itemizeddisclaimers": {
+                  "disclaimertext": "If an employer began using Paylocity for payroll on or after January 1 of any calendar year, Year-to-Date wages for that year may only include Year-to-Date from that point forward as previous payroll information may or may not have been transferred. When previous payroll information is transferred, a pay amount with the entire Year-to-Date balance will be displayed and will be categorized based on how individual companies structured their previous payroll information. Paylocity is unable to verify and cannot guarantee the accuracy of any information that originated outside of or is based on data that originated outside of Paylocity's payroll systems.<br/><br/>Salaried employees with $0 for rate of pay are employees paid solely on a recurring earnings model and therefore do not have a base rate of pay.",
+                  "disclaimertype": "ER"
+                },
+                "name1": "GOLDEN QUEEN MINING COMPANY LLC"
+              },
+              "tsvprojincome": "82531.96"
+            }
+          ],
+          "year": "2025"
+        },
+        "response": {
+          "TALX_Income": {
+            "TALX_tsvproj_array": [
+              "82531.96"
+            ],
+            "TALX_tsvproj_sum": 82531.96
+          }
+        }
+      },
+      {
+        "cache_used": false,
+        "name": "TALX_AdditionalInfo_v2",
+        "parameters": {
+          "tsvresponse_v100": [
+            {
+              "completeness": "INCOME",
+              "demotrn": {},
+              "dttransaction": "20250630123332",
+              "srvrtid": "970526736095",
+              "tsvannualcomp": [
+                {
+                  "tsvtotal": "38665.66",
+                  "tsvyear": "2025"
+                },
+                {
+                  "tsvtotal": "79230.12",
+                  "tsvyear": "2024"
+                },
+                {
+                  "tsvtotal": "78085.94",
+                  "tsvyear": "2023"
+                }
+              ],
+              "tsvbasecomp": {
+                "tsvavghrsworked": "80",
+                "tsvpayfrequency": {
+                  "code": "9",
+                  "message": "Hourly"
+                },
+                "tsvpayperiodfrequency": {
+                  "code": "6",
+                  "message": "Biweekly"
+                },
+                "tsvrateofpay": "32.27"
+              },
+              "tsvemployee_v100": {
+                "dtinfo": "20250620000000",
+                "dtmostrecenthire": "20210809000000",
+                "employeestatus": {
+                  "code": "1",
+                  "message": "Active"
+                },
+                "firstname": "Hiram",
+                "lastname": "Escabi",
+                "position-title": "Equipment Operator III",
+                "ssn": "072647592",
+                "totallengthofsvc": "46"
+              },
+              "tsvemployer_v100": {
+                "disclaimer": "employer:If an employer began using Paylocity for payroll on or after January 1 of any calendar year, Year-to-Date wages for that year may only include Year-to-Date from that point forward as previous payroll information may or may not have been transferred. When previous payroll information is transferred, a pay amount with the entire Year-to-Date balance will be displayed and will be categorized based on how individual companies structured their previous payroll information. Paylocity is unable to verify and cannot guarantee the accuracy of any information that originated outside of or is based on data that originated outside of Paylocity's payroll systems.<br/><br/>Salaried employees with $0 for rate of pay are employees paid solely on a recurring earnings model and therefore do not have a base rate of pay.",
+                "employercode": "21535647",
+                "employerdisplay": {
+                  "employerdisplayinfo": {
+                    "language": "ENG"
+                  }
+                },
+                "itemizeddisclaimers": {
+                  "disclaimertext": "If an employer began using Paylocity for payroll on or after January 1 of any calendar year, Year-to-Date wages for that year may only include Year-to-Date from that point forward as previous payroll information may or may not have been transferred. When previous payroll information is transferred, a pay amount with the entire Year-to-Date balance will be displayed and will be categorized based on how individual companies structured their previous payroll information. Paylocity is unable to verify and cannot guarantee the accuracy of any information that originated outside of or is based on data that originated outside of Paylocity's payroll systems.<br/><br/>Salaried employees with $0 for rate of pay are employees paid solely on a recurring earnings model and therefore do not have a base rate of pay.",
+                  "disclaimertype": "ER"
+                },
+                "name1": "GOLDEN QUEEN MINING COMPANY LLC"
+              },
+              "tsvprojincome": "82531.96"
+            }
+          ]
+        },
+        "response": {
+          "TALX_AdditionalInfo": {
+            "Employer_array": [
+              "GOLDEN QUEEN MINING COMPANY LLC"
+            ],
+            "HireDate_array": [
+              "20210809000000"
+            ],
+            "LengthOfEmployment_array": [
+              "46"
+            ],
+            "Position_array": [
+              "Equipment Operator III"
+            ],
+            "Salary_array": [
+              "82531.96"
+            ],
+            "TermDate_array": [
+              null
+            ]
+          }
+        }
+      }
+    ],
+    "outputs": {
+      "decision_overrides": {},
+      "decisions": {
+        "income_verification_fail2": {
+          "application_id": 2776363,
+          "borrower_id": 1414635,
+          "document_required_list": [],
+          "giact_accountType_check": "fail",
+          "giact_check": "fail",
+          "new_account_required_list": [],
+          "oscilar_request_id": "c1120015-1424-4c1b-bbac-43729065b812",
+          "passed_accounts": [],
+          "plaid_address_check": "fail",
+          "plaid_check": "fail",
+          "talx_check": "pass"
+        }
+      },
+      "entity_status": {},
+      "variables": {
+        "GIACT_mock_response_1": null,
+        "GIACT_mock_response_2": null,
+        "GIACT_mock_response_3": null,
+        "GIACT_mock_response_4": null,
+        "GIACT_mock_response_5": null,
+        "IVM_Assets": null,
+        "IVM_LoanApplication": null,
+        "IVM_RiskControl": null,
+        "IVM_annualIncome": null,
+        "IVM_assetReports": null,
+        "IVM_employerName": null,
+        "IVM_employmentStatus": null,
+        "IVM_requests": null,
+        "Income_Verification_Model_Results": null,
+        "Parse_Plaid_Assets_Report_Results": null,
+        "Simple_Income_Verification_Model_Results": null,
+        "TALX_AdditionalInfo_Results": {
+          "TALX_AdditionalInfo": {
+            "Employer_array": [
+              "GOLDEN QUEEN MINING COMPANY LLC"
+            ],
+            "HireDate_array": [
+              "20210809000000"
+            ],
+            "LengthOfEmployment_array": [
+              "46"
+            ],
+            "Position_array": [
+              "Equipment Operator III"
+            ],
+            "Salary_array": [
+              "82531.96"
+            ],
+            "TermDate_array": [
+              null
+            ]
+          }
+        },
+        "TALX_Income_Results": {
+          "TALX_Income": {
+            "TALX_tsvproj_array": [
+              "82531.96"
+            ],
+            "TALX_tsvproj_sum": 82531.96
+          }
+        },
+        "account_number_1": null,
+        "account_number_2": null,
+        "account_number_3": null,
+        "account_number_4": null,
+        "account_number_5": null,
+        "annual_income_compare": 76500,
+        "any_income_verification_model_check": null,
+        "document_required_list": [],
+        "equifax_talx_results": {
+          "signonmsgsrsv1": {
+            "sonrs": {
+              "dtserver": "20250630173332",
+              "language": "ENG",
+              "status": {
+                "code": "0",
+                "severity": "INFO"
+              }
+            }
+          },
+          "tsvermsgsrsv1": {
+            "tsvtwnselecttrnrs": {
+              "mastersrvrtid": "970526736094",
+              "status": {
+                "code": "0",
+                "severity": "INFO"
+              },
+              "trnpurpose": {
+                "code": "PPCREDIT",
+                "message": "Consumer's application for credit"
+              },
+              "trnuid": "2776363",
+              "tsvtwnselectrs": {
+                "tsvresponse_v100": [
+                  {
+                    "completeness": "INCOME",
+                    "demotrn": {
+                      "demotype": null
+                    },
+                    "dttransaction": "20250630123332",
+                    "srvrtid": "970526736095",
+                    "tsvannualcomp": [
+                      {
+                        "tsvtotal": "38665.66",
+                        "tsvyear": "2025"
+                      },
+                      {
+                        "tsvtotal": "79230.12",
+                        "tsvyear": "2024"
+                      },
+                      {
+                        "tsvtotal": "78085.94",
+                        "tsvyear": "2023"
+                      }
+                    ],
+                    "tsvbasecomp": {
+                      "tsvavghrsworked": "80",
+                      "tsvpayfrequency": {
+                        "code": "9",
+                        "message": "Hourly"
+                      },
+                      "tsvpayperiodfrequency": {
+                        "code": "6",
+                        "message": "Biweekly"
+                      },
+                      "tsvrateofpay": "32.27"
+                    },
+                    "tsvemployee_v100": {
+                      "dtendemployment": null,
+                      "dtinfo": "20250620000000",
+                      "dtmostrecenthire": "20210809000000",
+                      "employeestatus": {
+                        "code": "1",
+                        "message": "Active"
+                      },
+                      "firstname": "Hiram",
+                      "lastname": "Escabi",
+                      "middlename": null,
+                      "position-title": "Equipment Operator III",
+                      "ssn": "072647592",
+                      "totallengthofsvc": "46"
+                    },
+                    "tsvemployer_v100": {
+                      "disclaimer": "employer:If an employer began using Paylocity for payroll on or after January 1 of any calendar year, Year-to-Date wages for that year may only include Year-to-Date from that point forward as previous payroll information may or may not have been transferred. When previous payroll information is transferred, a pay amount with the entire Year-to-Date balance will be displayed and will be categorized based on how individual companies structured their previous payroll information. Paylocity is unable to verify and cannot guarantee the accuracy of any information that originated outside of or is based on data that originated outside of Paylocity's payroll systems.<br/><br/>Salaried employees with $0 for rate of pay are employees paid solely on a recurring earnings model and therefore do not have a base rate of pay.",
+                      "employercode": "21535647",
+                      "employerdisplay": {
+                        "employerdisplayinfo": {
+                          "language": "ENG",
+                          "logofilename": null,
+                          "voicefilename": null
+                        }
+                      },
+                      "itemizeddisclaimers": {
+                        "disclaimertext": "If an employer began using Paylocity for payroll on or after January 1 of any calendar year, Year-to-Date wages for that year may only include Year-to-Date from that point forward as previous payroll information may or may not have been transferred. When previous payroll information is transferred, a pay amount with the entire Year-to-Date balance will be displayed and will be categorized based on how individual companies structured their previous payroll information. Paylocity is unable to verify and cannot guarantee the accuracy of any information that originated outside of or is based on data that originated outside of Paylocity's payroll systems.<br/><br/>Salaried employees with $0 for rate of pay are employees paid solely on a recurring earnings model and therefore do not have a base rate of pay.",
+                        "disclaimertype": "ER"
+                      },
+                      "name1": "GOLDEN QUEEN MINING COMPANY LLC"
+                    },
+                    "tsvprojincome": "82531.96"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "error_reasons": [],
+        "fail_reasons": [
+          "No Plaid Linking"
+        ],
+        "giact_Bank_Name": null,
+        "giact_GAuthenticateEnabled": true,
+        "giact_GVerifyEnabled": true,
+        "giact_LastClosed_1": null,
+        "giact_LastClosed_2": null,
+        "giact_LastClosed_3": null,
+        "giact_LastClosed_4": null,
+        "giact_LastClosed_5": null,
+        "giact_LastUpdated_1": null,
+        "giact_LastUpdated_2": null,
+        "giact_LastUpdated_3": null,
+        "giact_LastUpdated_4": null,
+        "giact_LastUpdated_5": null,
+        "giact_Run_Date": "2025-06-30T17:33:29.655627316Z",
+        "giact_accountAddedDate_1": null,
+        "giact_accountAddedDate_2": null,
+        "giact_accountAddedDate_3": null,
+        "giact_accountAddedDate_4": null,
+        "giact_accountAddedDate_5": null,
+        "giact_accountAge_result_1": "",
+        "giact_accountAge_result_2": "",
+        "giact_accountAge_result_3": "",
+        "giact_accountAge_result_4": "",
+        "giact_accountAge_result_5": "",
+        "giact_accountResponseCode_1": null,
+        "giact_accountResponseCode_2": null,
+        "giact_accountResponseCode_3": null,
+        "giact_accountResponseCode_4": null,
+        "giact_accountResponseCode_5": null,
+        "giact_accountType_1": null,
+        "giact_accountType_2": null,
+        "giact_accountType_3": null,
+        "giact_accountType_4": null,
+        "giact_accountType_5": null,
+        "giact_accountType_result_1": "",
+        "giact_accountType_result_2": "",
+        "giact_accountType_result_3": "",
+        "giact_accountType_result_4": "",
+        "giact_accountType_result_5": "",
+        "giact_account_code_risk_1": "",
+        "giact_account_code_risk_2": "",
+        "giact_account_code_risk_3": "",
+        "giact_account_code_risk_4": "",
+        "giact_account_code_risk_5": "",
+        "giact_account_result_1": "",
+        "giact_account_result_2": "",
+        "giact_account_result_3": "",
+        "giact_account_result_4": "",
+        "giact_account_result_5": "",
+        "giact_bankaccountentity_1": {
+          "AccountNumber": null,
+          "RoutingNumber": null
+        },
+        "giact_bankaccountentity_2": {
+          "AccountNumber": null,
+          "RoutingNumber": null
+        },
+        "giact_bankaccountentity_3": {
+          "AccountNumber": null,
+          "RoutingNumber": null
+        },
+        "giact_bankaccountentity_4": {
+          "AccountNumber": null,
+          "RoutingNumber": null
+        },
+        "giact_bankaccountentity_5": {
+          "AccountNumber": null,
+          "RoutingNumber": null
+        },
+        "giact_check": "fail",
+        "giact_check_1": "",
+        "giact_check_2": "",
+        "giact_check_3": "",
+        "giact_check_4": "",
+        "giact_check_5": "",
+        "giact_customerResponseCode_1": null,
+        "giact_customerResponseCode_2": null,
+        "giact_customerResponseCode_3": null,
+        "giact_customerResponseCode_4": null,
+        "giact_customerResponseCode_5": null,
+        "giact_mock_key": null,
+        "giact_ownership_authenticate_1": "",
+        "giact_ownership_authenticate_2": "",
+        "giact_ownership_authenticate_3": "",
+        "giact_ownership_authenticate_4": "",
+        "giact_ownership_authenticate_5": "",
+        "giact_ownership_check": "fail",
+        "giact_ownership_result_1": "",
+        "giact_ownership_result_2": "",
+        "giact_ownership_result_3": "",
+        "giact_ownership_result_4": "",
+        "giact_ownership_result_5": "",
+        "giact_personentity": {
+          "FirstName": "Hiram",
+          "LastName": "Escabi",
+          "TaxID": "072647592"
+        },
+        "giact_verify_account_results_1": null,
+        "giact_verify_account_results_2": null,
+        "giact_verify_account_results_3": null,
+        "giact_verify_account_results_4": null,
+        "giact_verify_account_results_5": null,
+        "giact_verify_authenticate_bank_account_1": null,
+        "giact_verify_authenticate_bank_account_2": null,
+        "giact_verify_authenticate_bank_account_3": null,
+        "giact_verify_authenticate_bank_account_4": null,
+        "giact_verify_authenticate_bank_account_5": null,
+        "income_verification_model_check": null,
+        "mock_giact_verify_account_results_1": false,
+        "mock_giact_verify_account_results_2": null,
+        "mock_giact_verify_account_results_3": null,
+        "mock_giact_verify_account_results_4": null,
+        "mock_giact_verify_account_results_5": null,
+        "new_account_required_list": [],
+        "plaid_AccountHolderAddress_1": null,
+        "plaid_AccountHolderAddress_2": null,
+        "plaid_AccountHolderAddress_3": null,
+        "plaid_AccountHolderAddress_4": null,
+        "plaid_AccountHolderAddress_5": null,
+        "plaid_AccountHolderNames_1": null,
+        "plaid_AccountHolderNames_2": null,
+        "plaid_AccountHolderNames_3": null,
+        "plaid_AccountHolderNames_4": null,
+        "plaid_AccountHolderNames_5": null,
+        "plaid_accountName_1": null,
+        "plaid_accountName_2": null,
+        "plaid_accountName_3": null,
+        "plaid_accountName_4": null,
+        "plaid_accountName_5": null,
+        "plaid_accountSubtype_1": null,
+        "plaid_accountSubtype_2": null,
+        "plaid_accountSubtype_3": null,
+        "plaid_accountSubtype_4": null,
+        "plaid_accountSubtype_5": null,
+        "plaid_accountType_1": null,
+        "plaid_accountType_2": null,
+        "plaid_accountType_3": null,
+        "plaid_accountType_4": null,
+        "plaid_accountType_5": null,
+        "plaid_address_check": "fail",
+        "plaid_address_result_1": "",
+        "plaid_address_result_2": "",
+        "plaid_address_result_3": "",
+        "plaid_address_result_4": "",
+        "plaid_address_result_5": "",
+        "plaid_application_income": 90000,
+        "plaid_available_1": null,
+        "plaid_available_2": null,
+        "plaid_available_3": null,
+        "plaid_available_4": null,
+        "plaid_available_5": null,
+        "plaid_bankaccountentity_1": {
+          "AccountNumber": null,
+          "RoutingNumber": null
+        },
+        "plaid_bankaccountentity_2": {
+          "AccountNumber": null,
+          "RoutingNumber": null
+        },
+        "plaid_bankaccountentity_3": {
+          "AccountNumber": null,
+          "RoutingNumber": null
+        },
+        "plaid_bankaccountentity_4": {
+          "AccountNumber": null,
+          "RoutingNumber": null
+        },
+        "plaid_bankaccountentity_5": {
+          "AccountNumber": null,
+          "RoutingNumber": null
+        },
+        "plaid_check": "fail",
+        "plaid_check_1": "",
+        "plaid_check_2": "",
+        "plaid_check_3": "",
+        "plaid_check_4": "",
+        "plaid_check_5": "",
+        "plaid_giact_passed_accounts": [],
+        "plaid_name_match_1": null,
+        "plaid_name_match_2": null,
+        "plaid_name_match_3": null,
+        "plaid_name_match_4": null,
+        "plaid_name_match_5": null,
+        "plaid_passed_accounts": [],
+        "plaid_payroll_income": null,
+        "plaid_playload_accounts": [],
+        "plaid_routing_number_1": null,
+        "plaid_routing_number_2": null,
+        "plaid_routing_number_3": null,
+        "plaid_routing_number_4": null,
+        "plaid_routing_number_5": null,
+        "plaid_total_income": null,
+        "plaid_total_income_results": "",
+        "routing_number_1": null,
+        "routing_number_2": null,
+        "routing_number_3": null,
+        "routing_number_4": null,
+        "routing_number_5": null,
+        "simple_income_verification_model_check": null,
+        "talx_check": "pass",
+        "talx_gross_pay_array": [
+          "82531.96"
+        ],
+        "talx_gross_pay_result": "pass",
+        "talx_gross_pay_sum": 82531.96,
+        "talx_income": 82531.96,
+        "talx_projected_income": 82531.96,
+        "talx_result": "pass"
+      }
+    }
+  }
+}

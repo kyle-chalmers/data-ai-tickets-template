@@ -1,0 +1,796 @@
+{
+    "data": {
+      "diagnostics": {
+        "total_time_ms": 563,
+        "workflow_step_performance": [
+          {
+            "child_workflow_step_performance": [],
+            "next_step_id": 0,
+            "step_id": 54,
+            "step_name": "Intent Check",
+            "time_ms": 1
+          },
+          {
+            "child_workflow_step_performance": [],
+            "next_step_id": 31,
+            "step_id": 0,
+            "step_name": "Parse Accounts List",
+            "time_ms": 1
+          },
+          {
+            "child_workflow_step_performance": [],
+            "next_step_id": 32,
+            "step_id": 31,
+            "step_name": "Plaid Assets Token Check",
+            "time_ms": 0
+          },
+          {
+            "child_workflow_step_performance": [],
+            "next_step_id": 22,
+            "step_id": 32,
+            "step_name": "Plaid Assets Report Content Check",
+            "time_ms": 52
+          },
+          {
+            "child_workflow_step_performance": [],
+            "next_step_id": 21,
+            "step_id": 22,
+            "step_name": "TALX variables",
+            "time_ms": 1
+          },
+          {
+            "child_workflow_step_performance": [],
+            "next_step_id": 20,
+            "step_id": 21,
+            "step_name": "",
+            "time_ms": 13
+          },
+          {
+            "child_workflow_step_performance": [],
+            "next_step_id": 8,
+            "step_id": 20,
+            "step_name": "Plaid Reconcilliation",
+            "time_ms": 1
+          },
+          {
+            "child_workflow_step_performance": [],
+            "next_step_id": 1,
+            "step_id": 8,
+            "step_name": "GIACT variables",
+            "time_ms": 1
+          },
+          {
+            "child_workflow_step_performance": [],
+            "next_step_id": 2,
+            "step_id": 1,
+            "step_name": "GIACT - Account 1 ",
+            "time_ms": 1
+          },
+          {
+            "child_workflow_step_performance": [],
+            "next_step_id": 39,
+            "step_id": 2,
+            "step_name": "",
+            "time_ms": 444
+          },
+          {
+            "child_workflow_step_performance": [],
+            "next_step_id": 7,
+            "step_id": 39,
+            "step_name": "GIACT Account 1 Results",
+            "time_ms": 1
+          },
+          {
+            "child_workflow_step_performance": [],
+            "next_step_id": 7,
+            "step_id": 7,
+            "step_name": "GIACT Account 1 Evaluation",
+            "time_ms": 31
+          },
+          {
+            "child_workflow_step_performance": [],
+            "next_step_id": 7,
+            "step_id": 7,
+            "step_name": "GIACT Account 1 Evaluation",
+            "time_ms": 0
+          },
+          {
+            "child_workflow_step_performance": [],
+            "next_step_id": 7,
+            "step_id": 7,
+            "step_name": "GIACT Account 1 Evaluation",
+            "time_ms": 0
+          },
+          {
+            "child_workflow_step_performance": [],
+            "next_step_id": 7,
+            "step_id": 7,
+            "step_name": "GIACT Account 1 Evaluation",
+            "time_ms": 0
+          },
+          {
+            "child_workflow_step_performance": [],
+            "next_step_id": 7,
+            "step_id": 7,
+            "step_name": "GIACT Account 1 Evaluation",
+            "time_ms": 0
+          },
+          {
+            "child_workflow_step_performance": [],
+            "next_step_id": 7,
+            "step_id": 7,
+            "step_name": "GIACT Account 1 Evaluation",
+            "time_ms": 0
+          },
+          {
+            "child_workflow_step_performance": [],
+            "next_step_id": 66,
+            "step_id": 7,
+            "step_name": "GIACT Account 1 Evaluation",
+            "time_ms": 0
+          },
+          {
+            "child_workflow_step_performance": [],
+            "next_step_id": 68,
+            "step_id": 66,
+            "step_name": "Reconciliation Intent Check 1  ",
+            "time_ms": 1
+          },
+          {
+            "child_workflow_step_performance": [],
+            "next_step_id": 68,
+            "step_id": 68,
+            "step_name": "GIACT/Plaid 1 Overall Check",
+            "time_ms": 4
+          },
+          {
+            "child_workflow_step_performance": [],
+            "next_step_id": 68,
+            "step_id": 68,
+            "step_name": "GIACT/Plaid 1 Overall Check",
+            "time_ms": 0
+          },
+          {
+            "child_workflow_step_performance": [],
+            "next_step_id": 67,
+            "step_id": 68,
+            "step_name": "GIACT/Plaid 1 Overall Check",
+            "time_ms": 0
+          },
+          {
+            "child_workflow_step_performance": [],
+            "next_step_id": 34,
+            "step_id": 67,
+            "step_name": "GIACT Account 2 Check",
+            "time_ms": 2
+          },
+          {
+            "child_workflow_step_performance": [],
+            "next_step_id": 34,
+            "step_id": 34,
+            "step_name": "GIACT Reconciliation",
+            "time_ms": 2
+          },
+          {
+            "child_workflow_step_performance": [],
+            "next_step_id": 34,
+            "step_id": 34,
+            "step_name": "GIACT Reconciliation",
+            "time_ms": 0
+          },
+          {
+            "child_workflow_step_performance": [],
+            "next_step_id": 27,
+            "step_id": 34,
+            "step_name": "GIACT Reconciliation",
+            "time_ms": 0
+          },
+          {
+            "child_workflow_step_performance": [],
+            "next_step_id": 85,
+            "step_id": 27,
+            "step_name": "Reconciliation",
+            "time_ms": 1
+          },
+          {
+            "child_workflow_step_performance": [],
+            "next_step_id": -1,
+            "step_id": 85,
+            "step_name": "income_verification_fail",
+            "time_ms": 3
+          }
+        ]
+      },
+      "errors": [
+        {
+          "code": 90004,
+          "context": "{customer_message=Received ERROR code from Plaid for asset report: aa6e2ec8-5928-477c-82ce-f48a909351c0}",
+          "message": "Third party internal error",
+          "type": "enrichment"
+        },
+        {
+          "code": 90004,
+          "context": "{customer_message=Received ERROR code from Plaid for asset report: aa6e2ec8-5928-477c-82ce-f48a909351c0}",
+          "message": "Third party internal error",
+          "type": "enrichment"
+        },
+        {
+          "code": 90004,
+          "context": "{customer_message=Received ERROR code from Plaid for asset report: aa6e2ec8-5928-477c-82ce-f48a909351c0}",
+          "message": "Third party internal error",
+          "type": "enrichment"
+        },
+        {
+          "code": 90004,
+          "context": "{customer_message=Received ERROR code from Plaid for asset report: aa6e2ec8-5928-477c-82ce-f48a909351c0}",
+          "message": "Third party internal error",
+          "type": "enrichment"
+        },
+        {
+          "code": 90002,
+          "context": "{cause={\"customer_message\":\"Received ERROR code from Plaid for asset report: aa6e2ec8-5928-477c-82ce-f48a909351c0\",\"display_error\":\"Third party internal error\",\"error_code\":\"90004\",\"type\":\"enrichment\"}, missing_attribute=$integrationFeatures.HM_Plaid_Assets, step_label=Plaid Assets Report Content Check, workflow_name=HM_verification, workflow_version=10}",
+          "message": "Attribute missing during execution",
+          "type": "enrichment"
+        },
+        {
+          "code": 90004,
+          "context": "{customer_message=Received ERROR code from Plaid for asset report: aa6e2ec8-5928-477c-82ce-f48a909351c0, step_label=null, workflow_name=HM_verification, workflow_version=10}",
+          "message": "Third party internal error",
+          "type": "enrichment"
+        }
+      ],
+      "input": {
+        "name": "HM_verification",
+        "oscilar": {
+          "documents": [],
+          "record_id": "1f2a1dd3-c945-3624-b3fd-6e376397c50c",
+          "request_id": "8f6e4279-4691-480c-b63e-d89cdf84295c",
+          "timestamp": "2025-07-21T12:04:12.630427035Z"
+        },
+        "payload": {
+          "accounts": [
+            {
+              "accountNumber": "4853145303",
+              "id": "PJOVExnkDyfAbL5kB3mYUnnw6YmBeaC1zAVMM",
+              "plaidAccessToken": "access-production-39710342-c055-4df4-b6de-53b6e0c7636c",
+              "routingNumber": "071025661"
+            }
+          ],
+          "annualIncome": 86400,
+          "applicationId": "2901849",
+          "borrowerId": "1427491",
+          "bureauFirstName": "KEVIN",
+          "bureauLastName": "WOODS",
+          "city": "Matthews",
+          "employment": [
+            {
+              "annualIncome": 86400,
+              "employmentName": "Woods Real Estate concept",
+              "employmentType": "Full-time"
+            },
+            {
+              "annualIncome": 0,
+              "employmentName": "",
+              "employmentType": "0"
+            },
+            {
+              "annualIncome": 0,
+              "employmentName": "",
+              "employmentType": "0"
+            },
+            {
+              "annualIncome": 0,
+              "employmentName": "",
+              "employmentType": "0"
+            },
+            {
+              "annualIncome": 0,
+              "employmentName": "",
+              "employmentType": "0"
+            }
+          ],
+          "federalTax": 14220.381364576222,
+          "ficoScore": 828,
+          "firstName": "Kevin",
+          "intent": "income_verification",
+          "lastName": "Woods",
+          "plaidAccessTokens": [
+            "access-production-39710342-c055-4df4-b6de-53b6e0c7636c"
+          ],
+          "postalCode": "28105",
+          "ssn": "185543797",
+          "state": "NC",
+          "stateTax": 10612.05,
+          "street": "936 Brenham Ln",
+          "tier": 1
+        }
+      },
+      "integrations": [
+        {
+          "cache_used": false,
+          "name": "giact_5_8",
+          "parameters": {
+            "Check": {
+              "AccountNumber": "4853145303",
+              "RoutingNumber": "071025661"
+            },
+            "Customer": {
+              "FirstName": "Kevin",
+              "LastName": "Woods",
+              "TaxID": "185543797"
+            },
+            "GAuthenticateEnabled": true,
+            "GVerifyEnabled": true,
+            "UniqueId": "1427491"
+          },
+          "response": {
+            "AccountAdded": "Less Than 7 Days",
+            "AccountAddedDate": "2025-07-17T00:00:00",
+            "AccountClosed": null,
+            "AccountClosedDate": null,
+            "AccountLastUpdated": "Less Than 7 Days",
+            "AccountLastUpdatedDate": "2025-07-17T00:00:00",
+            "AccountResponseCode": 12,
+            "BankAccountType": "Consumer Checking",
+            "BankName": "BMO BANK NA",
+            "ConsumerAlertMessages": null,
+            "CreatedDate": "2025-07-21T07:05:21.9376767-05:00",
+            "CustomerResponseCode": 2,
+            "DomainRegistry": null,
+            "EmailAddressInformationResult": null,
+            "ErrorMessage": null,
+            "FundsConfirmationResult": null,
+            "GIdentifyKbaResult": null,
+            "IpAddressInformationResult": null,
+            "ItemReferenceId": 11270708862,
+            "MatchedBusinessData": null,
+            "MatchedPersonData": null,
+            "MobileIdentifyResult": null,
+            "MobileLocationResult": null,
+            "MobileVerifyResult": null,
+            "OfacListPotentialMatches": null,
+            "PhoneIntelligenceResult": null,
+            "VerificationResponse": 6,
+            "VoidedCheckImage": null
+          }
+        },
+        {
+          "cache_used": false,
+          "name": "Plaid_Assets",
+          "parameters": {
+            "access_tokens": [
+              "access-production-39710342-c055-4df4-b6de-53b6e0c7636c"
+            ],
+            "client_user_id": "2901849",
+            "days_requested": 120
+          },
+          "response": null
+        }
+      ],
+      "outputs": {
+        "decision_overrides": {},
+        "decisions": {
+          "income_verification_fail2": {
+            "application_id": 2901849,
+            "borrower_id": 1427491,
+            "document_required_list": [],
+            "giact_accountType_check": "pass",
+            "giact_check": "fail",
+            "new_account_required_list": [
+              1
+            ],
+            "oscilar_request_id": "8f6e4279-4691-480c-b63e-d89cdf84295c",
+            "passed_accounts": [],
+            "plaid_address_check": "fail",
+            "plaid_check": "fail"
+          }
+        },
+        "entity_status": {},
+        "variables": {
+          "GIACT_mock_response_1": null,
+          "GIACT_mock_response_2": null,
+          "GIACT_mock_response_3": null,
+          "GIACT_mock_response_4": null,
+          "GIACT_mock_response_5": null,
+          "IVM_Assets": null,
+          "IVM_LoanApplication": null,
+          "IVM_RiskControl": null,
+          "IVM_annualIncome": null,
+          "IVM_assetReports": null,
+          "IVM_employerName": null,
+          "IVM_employmentStatus": null,
+          "IVM_requests": null,
+          "Income_Verification_Model_Results": null,
+          "Parse_Plaid_Assets_Report_Results": null,
+          "Simple_Income_Verification_Model_Results": null,
+          "TALX_AdditionalInfo_Results": null,
+          "TALX_Income_Results": null,
+          "account_number_1": "4853145303",
+          "account_number_2": null,
+          "account_number_3": null,
+          "account_number_4": null,
+          "account_number_5": null,
+          "annual_income_compare": null,
+          "any_income_verification_model_check": null,
+          "document_required_list": [],
+          "equifax_talx_results": null,
+          "error_reasons": [
+            "Failed to Get Plaid Response",
+            "Failed to Get Talx Response"
+          ],
+          "fail_reasons": [
+            "Failed to Get Plaid Response",
+            "Failed to Get Talx Response",
+            "Account 1 Failed GIACT AccountAddedDate Check"
+          ],
+          "giact_Bank_Name": "BMO BANK NA",
+          "giact_GAuthenticateEnabled": true,
+          "giact_GVerifyEnabled": true,
+          "giact_LastClosed_1": null,
+          "giact_LastClosed_2": null,
+          "giact_LastClosed_3": null,
+          "giact_LastClosed_4": null,
+          "giact_LastClosed_5": null,
+          "giact_LastUpdated_1": "2025-07-17T00:00:00Z",
+          "giact_LastUpdated_2": null,
+          "giact_LastUpdated_3": null,
+          "giact_LastUpdated_4": null,
+          "giact_LastUpdated_5": null,
+          "giact_Run_Date": "2025-07-21T12:04:12.630427035Z",
+          "giact_accountAddedDate_1": "2025-07-17T00:00:00Z",
+          "giact_accountAddedDate_2": null,
+          "giact_accountAddedDate_3": null,
+          "giact_accountAddedDate_4": null,
+          "giact_accountAddedDate_5": null,
+          "giact_accountAge_result_1": "fail",
+          "giact_accountAge_result_2": "",
+          "giact_accountAge_result_3": "",
+          "giact_accountAge_result_4": "",
+          "giact_accountAge_result_5": "",
+          "giact_accountResponseCode_1": {
+            "AccountResponseCode": "_1111"
+          },
+          "giact_accountResponseCode_2": null,
+          "giact_accountResponseCode_3": null,
+          "giact_accountResponseCode_4": null,
+          "giact_accountResponseCode_5": null,
+          "giact_accountType_1": "Consumer Checking",
+          "giact_accountType_2": null,
+          "giact_accountType_3": null,
+          "giact_accountType_4": null,
+          "giact_accountType_5": null,
+          "giact_accountType_result_1": "pass",
+          "giact_accountType_result_2": "",
+          "giact_accountType_result_3": "",
+          "giact_accountType_result_4": "",
+          "giact_accountType_result_5": "",
+          "giact_account_code_risk_1": "pass",
+          "giact_account_code_risk_2": "",
+          "giact_account_code_risk_3": "",
+          "giact_account_code_risk_4": "",
+          "giact_account_code_risk_5": "",
+          "giact_account_result_1": "pass",
+          "giact_account_result_2": "",
+          "giact_account_result_3": "",
+          "giact_account_result_4": "",
+          "giact_account_result_5": "",
+          "giact_bankaccountentity_1": {
+            "AccountNumber": "4853145303",
+            "RoutingNumber": "071025661"
+          },
+          "giact_bankaccountentity_2": {
+            "AccountNumber": null,
+            "RoutingNumber": null
+          },
+          "giact_bankaccountentity_3": {
+            "AccountNumber": null,
+            "RoutingNumber": null
+          },
+          "giact_bankaccountentity_4": {
+            "AccountNumber": null,
+            "RoutingNumber": null
+          },
+          "giact_bankaccountentity_5": {
+            "AccountNumber": null,
+            "RoutingNumber": null
+          },
+          "giact_check": "fail",
+          "giact_check_1": "fail",
+          "giact_check_2": "",
+          "giact_check_3": "",
+          "giact_check_4": "",
+          "giact_check_5": "",
+          "giact_customerResponseCode_1": {
+            "CustomerResponseCode": "CA11"
+          },
+          "giact_customerResponseCode_2": null,
+          "giact_customerResponseCode_3": null,
+          "giact_customerResponseCode_4": null,
+          "giact_customerResponseCode_5": null,
+          "giact_mock_key": null,
+          "giact_ownership_authenticate_1": "pass",
+          "giact_ownership_authenticate_2": "",
+          "giact_ownership_authenticate_3": "",
+          "giact_ownership_authenticate_4": "",
+          "giact_ownership_authenticate_5": "",
+          "giact_ownership_check": "pass",
+          "giact_ownership_result_1": "pass",
+          "giact_ownership_result_2": "",
+          "giact_ownership_result_3": "",
+          "giact_ownership_result_4": "",
+          "giact_ownership_result_5": "",
+          "giact_personentity": {
+            "FirstName": "Kevin",
+            "LastName": "Woods",
+            "TaxID": "185543797"
+          },
+          "giact_verify_account_results_1": {
+            "AccountAdded": "Less Than 7 Days",
+            "AccountAddedDate": "2025-07-17T00:00:00Z",
+            "AccountClosed": null,
+            "AccountClosedDate": null,
+            "AccountLastUpdated": "Less Than 7 Days",
+            "AccountLastUpdatedDate": "2025-07-17T00:00:00Z",
+            "AccountResponseCode": 12,
+            "BankAccountType": "Consumer Checking",
+            "BankName": "BMO BANK NA",
+            "ConsumerAlertMessages": null,
+            "CreatedDate": "2025-07-21T07:05:21.9376767-05:00",
+            "CustomerResponseCode": 2,
+            "DomainRegistry": null,
+            "EmailAddressInformationResult": null,
+            "ErrorMessage": null,
+            "FundsConfirmationResult": null,
+            "GIdentifyKbaResult": null,
+            "IpAddressInformationResult": null,
+            "ItemReferenceId": 11270708862,
+            "MatchedBusinessData": null,
+            "MatchedPersonData": null,
+            "MobileIdentifyResult": null,
+            "MobileLocationResult": null,
+            "MobileVerifyResult": null,
+            "OfacListPotentialMatches": null,
+            "PhoneIntelligenceResult": null,
+            "VerificationResponse": 6,
+            "VoidedCheckImage": null
+          },
+          "giact_verify_account_results_2": null,
+          "giact_verify_account_results_3": null,
+          "giact_verify_account_results_4": null,
+          "giact_verify_account_results_5": null,
+          "giact_verify_authenticate_bank_account_1": {
+            "AccountAdded": "Less Than 7 Days",
+            "AccountAddedDate": "2025-07-17T00:00:00Z",
+            "AccountClosed": null,
+            "AccountClosedDate": null,
+            "AccountLastUpdated": "Less Than 7 Days",
+            "AccountLastUpdatedDate": "2025-07-17T00:00:00Z",
+            "AccountResponseCode": 12,
+            "BankAccountType": "Consumer Checking",
+            "BankName": "BMO BANK NA",
+            "ConsumerAlertMessages": null,
+            "CreatedDate": "2025-07-21T07:05:21.9376767-05:00",
+            "CustomerResponseCode": 2,
+            "DomainRegistry": null,
+            "EmailAddressInformationResult": null,
+            "ErrorMessage": null,
+            "FundsConfirmationResult": null,
+            "GIdentifyKbaResult": null,
+            "IpAddressInformationResult": null,
+            "ItemReferenceId": 11270708862,
+            "MatchedBusinessData": null,
+            "MatchedPersonData": null,
+            "MobileIdentifyResult": null,
+            "MobileLocationResult": null,
+            "MobileVerifyResult": null,
+            "OfacListPotentialMatches": null,
+            "PhoneIntelligenceResult": null,
+            "VerificationResponse": 6,
+            "VoidedCheckImage": null
+          },
+          "giact_verify_authenticate_bank_account_2": null,
+          "giact_verify_authenticate_bank_account_3": null,
+          "giact_verify_authenticate_bank_account_4": null,
+          "giact_verify_authenticate_bank_account_5": null,
+          "income_verification_model_check": null,
+          "mock_giact_verify_account_results_1": false,
+          "mock_giact_verify_account_results_2": false,
+          "mock_giact_verify_account_results_3": null,
+          "mock_giact_verify_account_results_4": null,
+          "mock_giact_verify_account_results_5": null,
+          "new_account_required_list": [
+            1
+          ],
+          "plaid_AccountHolderAddress_1": null,
+          "plaid_AccountHolderAddress_2": null,
+          "plaid_AccountHolderAddress_3": null,
+          "plaid_AccountHolderAddress_4": null,
+          "plaid_AccountHolderAddress_5": null,
+          "plaid_AccountHolderEmails_1": null,
+          "plaid_AccountHolderEmails_2": null,
+          "plaid_AccountHolderEmails_3": null,
+          "plaid_AccountHolderEmails_4": null,
+          "plaid_AccountHolderEmails_5": null,
+          "plaid_AddressMatch_1": "",
+          "plaid_AddressMatch_2": "",
+          "plaid_AddressMatch_3": "",
+          "plaid_AddressMatch_4": "",
+          "plaid_AddressMatch_5": "",
+          "plaid_BalanceCheck_1": "",
+          "plaid_BalanceCheck_2": "",
+          "plaid_BalanceCheck_3": "",
+          "plaid_BalanceCheck_4": "",
+          "plaid_BalanceCheck_5": "",
+          "plaid_BankName": null,
+          "plaid_NameCheck_1": "",
+          "plaid_NameCheck_2": "",
+          "plaid_NameCheck_3": "",
+          "plaid_NameCheck_4": "",
+          "plaid_NameCheck_5": "",
+          "plaid_TransactionHistory_1": "",
+          "plaid_TransactionHistory_2": "",
+          "plaid_TransactionHistory_3": "",
+          "plaid_TransactionHistory_4": "",
+          "plaid_TransactionHistory_5": "",
+          "plaid_TypeCheck_1": "",
+          "plaid_TypeCheck_2": "",
+          "plaid_TypeCheck_3": "",
+          "plaid_TypeCheck_4": "",
+          "plaid_TypeCheck_5": "",
+          "plaid_account_id_1": "PJOVExnkDyfAbL5kB3mYUnnw6YmBeaC1zAVMM",
+          "plaid_account_id_2": null,
+          "plaid_account_id_3": null,
+          "plaid_account_id_4": null,
+          "plaid_account_id_5": null,
+          "plaid_account_id_array": null,
+          "plaid_address_match_result_1": null,
+          "plaid_address_match_result_2": null,
+          "plaid_address_match_result_3": null,
+          "plaid_address_match_result_4": null,
+          "plaid_address_match_result_5": null,
+          "plaid_asset_report_date_last_updated": null,
+          "plaid_asset_report_id": null,
+          "plaid_asset_report_token": null,
+          "plaid_check": "fail",
+          "plaid_check_1": "",
+          "plaid_check_2": "",
+          "plaid_check_3": "",
+          "plaid_check_4": "",
+          "plaid_check_5": "",
+          "plaid_giact_passed_accounts": [],
+          "plaid_name_match_1": null,
+          "plaid_name_match_2": null,
+          "plaid_name_match_3": null,
+          "plaid_name_match_4": null,
+          "plaid_name_match_5": null,
+          "plaid_results_Last4OfTheAccount_1": null,
+          "plaid_results_Last4OfTheAccount_2": null,
+          "plaid_results_Last4OfTheAccount_3": null,
+          "plaid_results_Last4OfTheAccount_4": null,
+          "plaid_results_Last4OfTheAccount_5": null,
+          "plaid_results_accountHolderName_1": null,
+          "plaid_results_accountHolderName_2": null,
+          "plaid_results_accountHolderName_3": null,
+          "plaid_results_accountHolderName_4": null,
+          "plaid_results_accountHolderName_5": null,
+          "plaid_results_account_1": null,
+          "plaid_results_account_2": null,
+          "plaid_results_account_3": null,
+          "plaid_results_account_4": null,
+          "plaid_results_account_5": null,
+          "plaid_results_latest_transactions_1": null,
+          "plaid_results_latest_transactions_2": null,
+          "plaid_results_latest_transactions_3": null,
+          "plaid_results_latest_transactions_4": null,
+          "plaid_results_latest_transactions_5": null,
+          "plaid_results_transaction_account_subtype_1": null,
+          "plaid_results_transaction_account_subtype_2": null,
+          "plaid_results_transaction_account_subtype_3": null,
+          "plaid_results_transaction_account_subtype_4": null,
+          "plaid_results_transaction_account_subtype_5": null,
+          "plaid_results_transaction_account_type_1": null,
+          "plaid_results_transaction_account_type_2": null,
+          "plaid_results_transaction_account_type_3": null,
+          "plaid_results_transaction_account_type_4": null,
+          "plaid_results_transaction_account_type_5": null,
+          "plaid_results_transaction_date_span_1": null,
+          "plaid_results_transaction_date_span_2": null,
+          "plaid_results_transaction_date_span_3": null,
+          "plaid_results_transaction_date_span_4": null,
+          "plaid_results_transaction_date_span_5": null,
+          "plaid_token_1": "access-production-39710342-c055-4df4-b6de-53b6e0c7636c",
+          "plaid_token_2": null,
+          "plaid_token_3": null,
+          "plaid_token_4": null,
+          "plaid_token_5": null,
+          "qualify_for_simple_income": null,
+          "routing_number_1": "071025661",
+          "routing_number_2": null,
+          "routing_number_3": null,
+          "routing_number_4": null,
+          "routing_number_5": null,
+          "simple_income_verification_model_check": null,
+          "single_income_source": null,
+          "talx_DTCLIENT": "20240801114817",
+          "talx_USERID": "PayOffINTGusr@50005",
+          "talx_USERPASS": "PxgMQeKPKN7b",
+          "talx_employer": null,
+          "talx_hireDate": null,
+          "talx_income_check": null,
+          "talx_lengthOfEmployment": null,
+          "talx_ofxData": {
+            "signonmsgsrqv1": {
+              "sonrq": {
+                "appid": "PAYOFF",
+                "appver": "1.0",
+                "dtclient": "20240801114817",
+                "language": "ENG",
+                "userid": "PayOffINTGusr@50005",
+                "userpass": "PxgMQeKPKN7b"
+              }
+            },
+            "tsvermsgsrqv1": {
+              "tsvtwnselecttrnrq": {
+                "trnpurpose": {
+                  "code": "PPCREDIT"
+                },
+                "trnuid": "2901849",
+                "tsvtwnselectrq": {
+                  "template_name": "AutoGold",
+                  "tsvemployeeid": "185543797"
+                }
+              }
+            }
+          },
+          "talx_position": null,
+          "talx_rundate": "2025-07-21T12:04:12.630427035Z",
+          "talx_salary": null,
+          "talx_signonmsgsrqv1": {
+            "sonrq": {
+              "appid": "PAYOFF",
+              "appver": "1.0",
+              "dtclient": "20240801114817",
+              "language": "ENG",
+              "userid": "PayOffINTGusr@50005",
+              "userpass": "PxgMQeKPKN7b"
+            }
+          },
+          "talx_termDate": null,
+          "talx_term_date": null,
+          "talx_total_income_current_year": null,
+          "talx_tsvermsgsrqv1": {
+            "tsvtwnselecttrnrq": {
+              "trnpurpose": {
+                "code": "PPCREDIT"
+              },
+              "trnuid": "2901849",
+              "tsvtwnselectrq": {
+                "template_name": "AutoGold",
+                "tsvemployeeid": "185543797"
+              }
+            }
+          },
+          "talx_tsvresponse_v100": null,
+          "talx_year": null,
+          "todays_date": "2025-07-21"
+        },
+        "version": 10
+      },
+      "shadow_outputs": [],
+      "status": "processed"
+    },
+    "errors": null,
+    "eventId": "5370726c-da3e-40f1-826a-d0d077264e78",
+    "eventMethod": null,
+    "meta": null,
+    "specificData": {
+      "classLoader": {},
+      "conversions": [],
+      "fastReaderBuilder": {
+        "classPropEnabled": true,
+        "keyClassEnabled": true
+      },
+      "fastReaderEnabled": false
+    },
+    "timestamp": 0
+  }

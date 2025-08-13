@@ -1,20 +1,18 @@
--- Extract Plaid Asset Report Items data from Oscilar JSON payloads
+-- Extract Plaid Asset Report Items data from MVW
 -- Recreating structure similar to BUSINESS_INTELLIGENCE.DATA_STORE.VW_PLAID_ASSET_REPORT_ITEMS
--- Author: Claude Code Assistant
--- Date: 2025-08-08
+-- Source: ARCA.FRESHSNOW.MVW_HM_VERIFICATION_RESPONSES_PLAID_ASSETS
 
 WITH plaid_asset_data AS (
     SELECT 
-        DATA:data:input:payload:applicationId::VARCHAR as application_id,
-        DATA:data:input:payload:borrowerId::VARCHAR as borrower_id,
+        APPLICATION_ID as application_id,
+        BORROWER_ID as borrower_id,
         DATA:data:input:oscilar:timestamp::TIMESTAMP AS record_create_timestamp,
-        --DATA:data:input:oscilar:request_id::VARCHAR as lead_guid,  -- leadGuid from request_id
         integration.value as plaid_integration
-    FROM DATA_SCIENCE.MODEL_VAULT.VW_OSCILAR_VERIFICATIONS,
+    FROM ARCA.FRESHSNOW.MVW_HM_VERIFICATION_RESPONSES_PLAID_ASSETS,
     LATERAL FLATTEN(input => DATA:data:integrations) integration
     WHERE 
         -- Apply filter early for performance (test applications)
-        DATA:data:input:payload:applicationId::VARCHAR IN ('2278944', '2159240', '2064942', '2038415', '1914384')
+        APPLICATION_ID IN ('2278944', '2159240', '2064942', '2038415', '1914384')
         AND integration.value:name::STRING = 'Plaid_Assets'
         AND integration.value:response:items IS NOT NULL
 ),
@@ -26,7 +24,6 @@ plaid_assets_base AS (
         borrower_id,
         -- Map Plaid Assets response data from integrations array
         plaid_integration:response:asset_report_id::STRING AS asset_report_id,
-        plaid_integration:parameters:access_tokens[0]::STRING AS plaid_token_id,
         plaid_integration:response:client_report_id::STRING AS client_report_id,
         plaid_integration:response:date_generated::STRING AS date_generated,
         plaid_integration:response:days_requested::STRING AS days_requested,
@@ -40,13 +37,9 @@ plaid_assets_items AS (
     SELECT 
         pb.record_create_timestamp,
         pb.asset_report_id,
-        pb.application_id AS application_id, -- Using application_id as lead identifier
-        --pb.application_id AS lead_id,   -- Using application_id as lead identifier  
-        pb.borrower_id AS customer_id, -- Using application_id as member identifier
-        pb.plaid_token_id,
-        NULL AS schema_version, -- Not present in Oscilar structure
+        pb.application_id,  -- Keep as-is from JSON extraction
+        pb.borrower_id,     -- Keep as-is from JSON extraction
         pb.date_generated AS asset_report_timestamp,
-        NULL AS prev_asset_report_id, -- Not present in Oscilar structure
         -- Report level fields
         pb.client_report_id,
         pb.date_generated,
@@ -63,14 +56,11 @@ plaid_assets_items AS (
 )
 
 SELECT 
-    record_create_timestamp,
-    asset_report_id,
-    application_id,
-    customer_id,
-    plaid_token_id,
-    schema_version,
+    record_create_timestamp AS Record_Create_Datetime,
+    asset_report_id AS Asset_Report_Id,
+    application_id,  -- Keep as-is from JSON extraction
+    borrower_id,     -- Keep as-is from JSON extraction
     asset_report_timestamp,
-    prev_asset_report_id,
     client_report_id,
     date_generated,
     days_requested,
@@ -81,4 +71,4 @@ SELECT
     institution_name,
     item_id
 FROM plaid_assets_items
-ORDER BY lead_guid, item_index;
+ORDER BY application_id, item_index;

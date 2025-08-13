@@ -1,28 +1,22 @@
--- VW_PLAID_ASSET_REPORT_ITEMS_ACCOUNTS_TRANSACTIONS Recreation Query
+-- VW_PLAID_ASSET_REPORT_ITEMS_ACCOUNTS_TRANSACTIONS Recreation Query using MVW
 -- This query flattens individual Plaid transactions to match the historical structure
--- 
--- Target: Emulates VW_PLAID_ASSET_REPORT_ITEMS_ACCOUNTS_TRANSACTIONS DDL
--- Individual transactions: DATA:data:integrations[3]:response:items[0]:accounts[0]:transactions[N]
--- One row per transaction for detailed transaction analysis
+-- Source: ARCA.FRESHSNOW.MVW_HM_VERIFICATION_RESPONSES_PLAID_ASSETS
+
 WITH oscilar_base AS (
     SELECT 
-        -- Core Oscilar metadata
-        DATA:data:input:oscilar:record_id::varchar AS oscilar_record_id,
-        DATA:data:input:oscilar:request_id::varchar AS oscilar_request_id,
+        -- Core MVW metadata
+        APPLICATION_ID as application_id,
+        BORROWER_ID as borrower_id,
         DATA:data:input:oscilar:timestamp::timestamp AS oscilar_timestamp,
-        
-        -- Entity identifiers  
-        DATA:data:input:payload:applicationId::varchar AS application_id,
-        DATA:data:input:payload:borrowerId::varchar AS borrower_id,
         
         -- Extract Plaid Assets response using dynamic parsing
         integration.value:response AS plaid_assets_response
         
-    FROM DATA_SCIENCE.MODEL_VAULT.VW_OSCILAR_VERIFICATIONS,
+    FROM ARCA.FRESHSNOW.MVW_HM_VERIFICATION_RESPONSES_PLAID_ASSETS,
     LATERAL FLATTEN(input => DATA:data:integrations) integration
     WHERE 
         -- Apply filter early for performance (test applications)
-        DATA:data:input:payload:applicationId::VARCHAR IN ('2278944', '2159240', '2064942', '2038415', '1914384')
+        APPLICATION_ID IN ('2278944', '2159240', '2064942', '2038415', '1914384')
         -- Only records with successful Plaid Assets responses
         AND integration.value:name::STRING = 'Plaid_Assets'
         AND integration.value:response:items IS NOT NULL
@@ -56,14 +50,12 @@ SELECT
     -- Fields from VW_PLAID_ASSET_REPORT_USER (for linking)
     oscilar_timestamp AS Record_Create_Datetime,
     plaid_assets_response:asset_report_id::varchar AS Asset_Report_Id,
-    --NULL AS Lead_Guid,  -- Commented out due to inconsistent request_id
-    application_id AS application_id,
-    borrower_id AS customer_id,
-    NULL AS Plaid_Token_Id,  -- Would need to get from Plaid_Assets parameters
+    application_id,  -- Keep as-is from JSON extraction
+    borrower_id,     -- Keep as-is from JSON extraction
     
     -- Transaction detail fields matching target DDL structure
     account_data:account_id::varchar AS account_id,
-    NULL AS account_owner,  -- Not available in Oscilar data
+    transaction_data:account_owner::varchar AS account_owner,
     transaction_data:amount::varchar AS transaction_amount,
     CASE 
         WHEN transaction_data:category IS NOT NULL AND transaction_data:category != '[]'
@@ -71,21 +63,30 @@ SELECT
         ELSE NULL
     END AS transaction_category,
     transaction_data:category_id::varchar AS transaction_category_id,
+    transaction_data:credit_category::varchar AS credit_category,
     transaction_data:date::varchar AS transaction_date,
     transaction_data:date_transacted::varchar AS date_transacted,
     transaction_data:iso_currency_code::varchar AS transaction_iso_currency_code,
     transaction_data:location AS transaction_location,
+    transaction_data:location:address::varchar AS location_address,
+    transaction_data:location:city::varchar AS location_city,
+    transaction_data:location:country::varchar AS location_country,
+    transaction_data:location:lat::varchar AS location_lat,
+    transaction_data:location:lon::varchar AS location_lon,
+    transaction_data:location:postal_code::varchar AS location_postal_code,
+    transaction_data:location:region::varchar AS location_region,
+    transaction_data:location:store_number::varchar AS location_store_number,
     transaction_data:name::varchar AS transaction_name,
     transaction_data:original_description::varchar AS transaction_original_description,
     transaction_data:payment_meta AS transaction_payment_metadata,
-    transaction_data:payment_meta:byOrderOf::varchar AS transaction_by_order_of,
+    transaction_data:payment_meta:by_order_of::varchar AS transaction_by_order_of,
     transaction_data:payment_meta:payee::varchar AS transaction_payee,
     transaction_data:payment_meta:payer::varchar AS transaction_payer,
-    transaction_data:payment_meta:paymentMethod::varchar AS transaction_payment_method,
-    transaction_data:payment_meta:paymentProcessor::varchar AS transaction_payment_processor,
-    transaction_data:payment_meta:ppdId::varchar AS transaction_ppdId,
+    transaction_data:payment_meta:payment_method::varchar AS transaction_payment_method,
+    transaction_data:payment_meta:payment_processor::varchar AS transaction_payment_processor,
+    transaction_data:payment_meta:ppd_id::varchar AS transaction_ppd_id,
     transaction_data:payment_meta:reason::varchar AS transaction_reason,
-    transaction_data:payment_meta:referenceNumber::varchar AS transaction_reference_Number,
+    transaction_data:payment_meta:reference_number::varchar AS transaction_reference_number,
     transaction_data:pending::varchar AS transaction_pending,
     transaction_data:pending_transaction_id::varchar AS pending_transaction_id,
     transaction_data:transaction_id::varchar AS transaction_id,
