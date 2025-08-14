@@ -1,89 +1,124 @@
-# GIACT 5.8 Data Parsing Solution
+# GIACT Data Parsing Solution
 
 ## Overview
-This solution provides comprehensive tools for extracting and analyzing GIACT banking verification data from `DATA_SCIENCE.MODEL_VAULT.VW_OSCILAR_VERIFICATIONS`. GIACT data is embedded within the JSON `integrations` array as `giact_5_8` objects.
+This solution provides comprehensive tools for extracting GIACT banking verification data from `ARCA.FRESHSNOW.MVW_HM_Verification_Responses`. GIACT data is embedded within the JSON `integrations` array.
+
+## Key Features
+- **Future-proof:** Supports all GIACT versions (`giact_%` pattern)
+- **Optimized:** Uses materialized view for faster performance
+- **Complete:** Extracts all available GIACT fields
+- **Clean:** No ORDER BY statements for optimal performance
+- **Focused:** Pure data extraction without business logic
 
 ## Quick Start
-For immediate results, run the simple extractor:
+For immediate results, run the comprehensive parser:
 ```sql
-snow sql -f "queries/simple_giact_extractor.sql" --format csv
+snow sql -f "queries/comprehensive_giact_parser.sql" --format csv
 ```
 
 ## File Structure
 ```
 giact_parsing_solution/
 ├── README.md                          # This documentation
+├── 01_query_giact_data.sql            # Step 1: Query GIACT data from production
+├── 02_deploy_giact_view.sql           # Step 2: Deploy view to DEVELOPMENT.FRESHSNOW
+├── 03_qc_oscilar_giact_view.sql       # Step 3: QC the deployed view
+├── 04_production_deployment.sql       # Step 4: Deploy to production environments
 ├── queries/
-│   ├── comprehensive_giact_parser.sql # Full-featured extraction with analysis
-│   └── simple_giact_extractor.sql     # Quick extraction with parameters
-├── sample_data/
-│   ├── 2786264.json                   # Sample JSON without giact_5_8
-│   ├── 2847525.json                   # Sample JSON without giact_5_8  
-│   ├── 2901849.json                   # Sample JSON WITH giact_5_8 ⭐
-│   └── 2776363.json                   # Sample JSON without giact_5_8
-└── results/
-    └── giact_fraud_ring_results.csv   # Sample output from fraud investigation
+│   └── comprehensive_giact_parser.sql # Complete GIACT field extraction
+└── sample_data/
+    ├── 2786264.json                   # Sample JSON data
+    ├── 2847525.json                   # Sample JSON data
+    ├── 2901849.json                   # Sample JSON WITH giact_5_8 ⭐
+    └── 2776363.json                   # Sample JSON data
 ```
 
 ## SQL Scripts
 
-### 1. `comprehensive_giact_parser.sql` - Full-Featured Solution
-**Purpose:** Complete GIACT data extraction with fraud analysis, summary statistics, and risk scoring.
+### 1. `comprehensive_giact_parser.sql` - Complete GIACT Data Extraction
+**Purpose:** Extract all available GIACT fields from the JSON structure.
 
 **Features:**
-- Extracts all GIACT 5.8 parameters and response fields
-- Provides fraud risk scoring (HIGH/MEDIUM/LOW RISK)
-- Generates summary statistics
-- Includes verification code interpretations
-- Creates detailed reports
+- All GIACT parameters and response fields (41 total extractions)
+- Account age calculation in days
+- Complete field mapping from JSON structure
+- No business logic or risk assessment
+- Future-proof with `giact_%` pattern
+- Optimized with materialized view and no ORDER BY
 
 **Usage:**
 ```sql
--- Run comprehensive analysis
 snow sql -f "queries/comprehensive_giact_parser.sql" --format csv
-
--- Export complete dataset
-snow sql -q "SELECT * FROM giact_enhanced ORDER BY fraud_risk_level, account_added_date DESC" --format csv > complete_giact_data.csv
 ```
 
-**Customization:**
-Edit these parameters at the top of the script:
-```sql
-SET routing_number_filter = '071025661';
-SET bank_name_pattern = '%BMO%';
-SET recent_account_threshold = 30;
-```
-
-### 2. `simple_giact_extractor.sql` - Quick & Easy Extraction  
-**Purpose:** Fast, customizable GIACT data extraction for specific investigations.
+### 2. `01_query_giact_data.sql` - Step 1: Production Data Query
+**Purpose:** Query GIACT data directly from production source.
 
 **Features:**
-- Simple parameter configuration
-- Essential GIACT fields only
-- Risk assessment included
-- Fast execution
+- Raw SELECT statement from `ARCA.FRESHSNOW.MVW_HM_Verification_Responses`
+- All 41 GIACT fields extracted from JSON
+- Account age calculation in days
+- No ORDER BY for optimal performance
+- Future-proof with `giact_%` pattern
 
 **Usage:**
 ```sql
-snow sql -f "queries/simple_giact_extractor.sql" --format csv
+snow sql -f "01_query_giact_data.sql" --format csv
 ```
 
-**Customization:**
-Edit the DECLARE section:
+### 3. `02_deploy_giact_view.sql` - Step 2: Development Environment Deployment
+**Purpose:** Deploy GIACT parsing as a view in DEVELOPMENT.FRESHSNOW.
+
+**Features:**
+- Creates `DEVELOPMENT.FRESHSNOW.VW_OSCILAR_GIACT_DATA` view
+- Uses production data from `ARCA.FRESHSNOW.MVW_HM_Verification_Responses`
+- All 41 GIACT fields with proper column definitions
+- Includes verification queries
+- COPY GRANTS for permission preservation
+
+**Usage:**
 ```sql
-DECLARE routing_number_filter VARCHAR DEFAULT '071025661';
-DECLARE bank_name_pattern VARCHAR DEFAULT '%BMO%';
-DECLARE recent_days_threshold INTEGER DEFAULT 30;
-DECLARE start_date DATE DEFAULT '2024-01-01';
-DECLARE specific_applications VARCHAR DEFAULT '2901849,2847525';
+snow sql -f "02_deploy_giact_view.sql"
+```
+
+### 4. `03_qc_oscilar_giact_view.sql` - Step 3: Quality Control Validation
+**Purpose:** Comprehensive QC of the deployed GIACT view.
+
+**Features:**
+- Data completeness analysis
+- Duplicate detection
+- Null value evaluation
+- GIACT integration version validation
+- Date range and temporal analysis
+- Error message analysis
+- Sample data preview
+
+**Usage:**
+```sql
+snow sql -f "03_qc_oscilar_giact_view.sql" --format csv
+```
+
+### 5. `04_production_deployment.sql` - Step 4: Production Environment Deployment
+**Purpose:** Deploy GIACT view to production environments using standardized template.
+
+**Features:**
+- Deploys to ARCA.FRESHSNOW → BUSINESS_INTELLIGENCE.BRIDGE → BUSINESS_INTELLIGENCE.ANALYTICS
+- Environment variable switching (dev/prod)
+- COPY GRANTS for permission preservation
+- Verification queries included
+- Follows standardized deployment pattern
+
+**Usage:**
+```sql
+snow sql -f "04_production_deployment.sql"
 ```
 
 ## GIACT Data Structure
 
 ### JSON Location
-GIACT 5.8 data is located at:
+GIACT data is located at:
 ```
-DATA:data:integrations[n]:name = 'giact_5_8'
+DATA:data:integrations[n]:name LIKE 'giact_%'
 DATA:data:integrations[n]:parameters    # Request sent to GIACT
 DATA:data:integrations[n]:response      # Response from GIACT
 ```
@@ -105,6 +140,8 @@ DATA:data:integrations[n]:response      # Response from GIACT
 - `CustomerResponseCode` - Customer verification result code
 - `AccountResponseCode` - Account-specific response code
 - `ErrorMessage` - Any error messages from GIACT
+- `CreatedDate` - GIACT processing timestamp
+- `ItemReferenceId` - GIACT internal reference
 
 ### Response Code Interpretations
 
@@ -123,121 +160,121 @@ DATA:data:integrations[n]:response      # Response from GIACT
 - `4` = Customer Deceased
 - `18` = Insufficient Information
 
-## Fraud Investigation Use Cases
+## Account Age Calculation
 
-### 1. Routing Number Analysis
-Find all accounts using specific routing number:
+All scripts include account age calculation:
 ```sql
-DECLARE routing_number_filter VARCHAR DEFAULT '071025661';
-DECLARE bank_name_pattern VARCHAR DEFAULT NULL; -- All banks
+CASE 
+    WHEN giact.value:response:AccountAddedDate::TIMESTAMP IS NOT NULL
+    THEN DATEDIFF(DAY, giact.value:response:AccountAddedDate::TIMESTAMP, CURRENT_DATE())
+    ELSE NULL
+END as account_age_days
 ```
 
-### 2. Bank-Specific Investigation  
-Find all accounts at specific bank:
+## Performance Optimizations
+
+### Materialized View Usage
+- **Data Source:** `ARCA.FRESHSNOW.MVW_HM_Verification_Responses`
+- **Benefit:** Pre-computed materialized view for faster access
+- **Structure:** APPLICATION_ID, BORROWER_ID, DATA (JSON)
+
+### Query Optimizations
+- **No ORDER BY:** All queries exclude ORDER BY for maximum performance
+- **Flexible Filtering:** Uses `LIKE 'giact_%'` to support future versions
+- **Efficient JSON Parsing:** Uses `LATERAL FLATTEN` for optimal performance
+
+### Version Flexibility
 ```sql
-DECLARE routing_number_filter VARCHAR DEFAULT NULL; -- All routing numbers
-DECLARE bank_name_pattern VARCHAR DEFAULT '%BMO%';
+-- Future-proof GIACT version matching
+WHERE giact.value:name::VARCHAR LIKE 'giact_%'
 ```
 
-### 3. Recent Account Analysis
-Find recently opened accounts (suspicious activity):
-```sql
-DECLARE recent_days_threshold INTEGER DEFAULT 7; -- Last 7 days
-DECLARE start_date DATE DEFAULT DATEADD(day, -30, CURRENT_DATE());
-```
-
-### 4. Specific Application Investigation
-Analyze specific applications:
-```sql
-DECLARE specific_applications VARCHAR DEFAULT '2901849,2847525,2831679';
-```
-
-## Risk Assessment Logic
-
-The scripts provide automatic risk scoring:
-
-- **HIGH RISK:** Target bank + Target routing number + Recently opened account (≤30 days)
-- **MEDIUM RISK:** Target bank + Target routing number + Older account (>30 days)  
-- **LOW-MEDIUM RISK:** Target routing number only
-- **LOW RISK:** All other accounts
-
-## Sample Data Analysis
-
-### Example: Application 2901849 (HIGH RISK)
-- **Customer:** Kevin Woods (SSN: 185543797)
-- **Account:** 4853145303 @ BMO BANK NA
-- **Routing:** 071025661
-- **Opened:** July 17, 2025 (25 days ago)
-- **Type:** Consumer Checking
-- **Verification:** Code 6 (Unable to Verify)
-- **Risk Factors:** All three criteria met (BMO + 071025661 + Recent)
-
-## Performance Notes
-
-- **Data Source:** `DATA_SCIENCE.MODEL_VAULT.VW_OSCILAR_VERIFICATIONS`
-- **Recommended Warehouse:** `BUSINESS_INTELLIGENCE_LARGE`
-- **JSON Parsing:** Uses `LATERAL FLATTEN` for optimal performance
-- **Filtering Strategy:** Apply filters early to reduce processing time
-- **Memory Usage:** Large result sets may require result pagination
-
-## Technical Implementation Details
+## Technical Implementation
 
 ### JSON Parsing Method
 ```sql
-FROM DATA_SCIENCE.MODEL_VAULT.VW_OSCILAR_VERIFICATIONS,
-LATERAL FLATTEN(input => DATA:data:integrations) giact_integration
-WHERE giact_integration.value:name::VARCHAR = 'giact_5_8'
+FROM ARCA.FRESHSNOW.MVW_HM_Verification_Responses vr,
+LATERAL FLATTEN(input => vr.DATA:data:integrations) giact
+WHERE giact.value:name::VARCHAR LIKE 'giact_%'
 ```
 
 ### Field Extraction Pattern
 ```sql
 -- Extract nested JSON fields
-giact_integration.value:parameters:Check:AccountNumber::VARCHAR as account_number,
-giact_integration.value:response:BankName::VARCHAR as bank_name,
+giact.value:parameters:Check:AccountNumber::VARCHAR as account_number,
+giact.value:response:BankName::VARCHAR as bank_name,
 ```
 
-### Date Calculations
+## Data Availability
+- **Total GIACT Records:** 8,556 integrations available
+- **Current Version:** giact_5_8
+- **Coverage:** All applications with GIACT verification data
+
+## Usage Examples
+
+### Basic Data Extraction:
+```bash
+snow sql -f "queries/comprehensive_giact_parser.sql" --format csv > all_giact_data.csv
+```
+
+### Specific Bank Filter:
 ```sql
--- Calculate account age
-DATEDIFF(DAY, account_added_date, CURRENT_DATE()) as days_since_opened
+-- Add WHERE clause to any query for filtering
+AND UPPER(giact.value:response:BankName::VARCHAR) LIKE '%BMO%'
+```
+
+### Routing Number Filter:
+```sql
+-- Filter by specific routing number
+AND giact.value:parameters:Check:RoutingNumber::VARCHAR = '071025661'
+```
+
+### Recent Accounts Only:
+```sql
+-- Filter for recently opened accounts
+AND DATEDIFF(DAY, giact.value:response:AccountAddedDate::TIMESTAMP, CURRENT_DATE()) <= 30
 ```
 
 ## Troubleshooting
 
 ### Common Issues:
-1. **No Results:** Check if applications have `giact_5_8` integrations
-2. **JSON Parse Errors:** Verify JSON structure in sample data
-3. **Performance Issues:** Add more specific filters to reduce data volume
-4. **Missing Fields:** Some GIACT responses may have null values
+1. **No Results:** Verify GIACT integrations exist for applications
+2. **JSON Parse Errors:** Check JSON structure in sample data
+3. **Performance Issues:** Use specific filters to reduce data volume
+4. **Null Values:** Some GIACT responses may have missing fields
 
-### Debugging Tips:
+### Debugging Commands:
 ```sql
--- Check available integrations for an application
-SELECT DISTINCT integration.value:name 
-FROM DATA_SCIENCE.MODEL_VAULT.VW_OSCILAR_VERIFICATIONS,
-LATERAL FLATTEN(input => DATA:data:integrations) integration 
-WHERE DATA:data:input:payload:applicationId = '2901849';
+-- Check available GIACT versions
+SELECT DISTINCT giact.value:name::VARCHAR 
+FROM ARCA.FRESHSNOW.MVW_HM_Verification_Responses vr,
+LATERAL FLATTEN(input => vr.DATA:data:integrations) giact
+WHERE giact.value:name::VARCHAR LIKE 'giact_%';
+
+-- Count total GIACT records
+SELECT COUNT(*) as total_giact_records
+FROM ARCA.FRESHSNOW.MVW_HM_Verification_Responses vr,
+LATERAL FLATTEN(input => vr.DATA:data:integrations) giact
+WHERE giact.value:name::VARCHAR LIKE 'giact_%';
 ```
 
 ## Export Options
 
 ### CSV Export:
 ```bash
-snow sql -f "queries/simple_giact_extractor.sql" --format csv > giact_results.csv
+snow sql -f "queries/comprehensive_giact_parser.sql" --format csv > complete_giact_data.csv
 ```
 
-### JSON Export:
-```bash
-snow sql -f "queries/comprehensive_giact_parser.sql" --format json > giact_results.json
-```
-
-### Database Table:
+### Database Table Creation:
 ```sql
-CREATE TABLE my_database.my_schema.giact_results AS
-SELECT * FROM giact_enhanced;
+CREATE TABLE my_schema.giact_data AS
+SELECT * FROM (
+    -- Insert any GIACT parser query here
+);
 ```
 
 ---
-**Solution Version:** 1.0  
-**Last Updated:** August 11, 2025  
-**Compatible With:** Snowflake, DATA_SCIENCE.MODEL_VAULT.VW_OSCILAR_VERIFICATIONS
+**Solution Version:** 2.0  
+**Last Updated:** August 14, 2025  
+**Data Source:** ARCA.FRESHSNOW.MVW_HM_Verification_Responses  
+**GIACT Versions Supported:** All (giact_%)
