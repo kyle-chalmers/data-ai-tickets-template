@@ -19,8 +19,12 @@ SELECT UPPER(ds.LOANID) as loan_id,
        lc.CUSTOMER_ID as SFMC_SUBSCRIBER_ID,
        ds.CHARGEOFFDATE AS CHARGE_OFF_DATE,
        ds.UNPAIDBALANCEDUE AS CURRENT_BALANCE,
-       ds.PRINCIPALBALANCEATCHARGEOFF + ds.INTERESTBALANCEATCHARGEOFF - ds.RECOVERIESPAIDTODATE AS CHARGE_OFF_BALANCE,
-       REPLACE(ds.PORTFOLIONAME, 'Payoff FBO ', '') AS CU_NAME,
+       ds.PRINCIPALBALANCEATCHARGEOFF + ds.INTERESTBALANCEATCHARGEOFF AS CHARGE_OFF_BALANCE,
+       CASE 
+           WHEN REPLACE(ds.PORTFOLIONAME, 'Payoff FBO ', '') = 'HIVE Participation' 
+           THEN 'GreenState Credit Union'
+           ELSE REPLACE(ds.PORTFOLIONAME, 'Payoff FBO ', '')
+       END AS CU_NAME,
        CASE 
            WHEN ds.PORTFOLIONAME IN ('Theorem Main Master Fund LP - Loan Sale', 
                                      'Theorem Prime Plus Yield Fund Master LP - Loan Sale') 
