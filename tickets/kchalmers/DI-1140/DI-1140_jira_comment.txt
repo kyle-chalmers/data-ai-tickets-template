@@ -1,0 +1,21 @@
+**DI-1140 BMO Fraud Investigation Complete - ENHANCED WITH GIACT DATA**
+
+Comprehensive analysis of BMO Bank fraud ring (RT# 071025661) delivered with 6 enhanced result files, now including GIACT bank account verification data.
+
+**Primary Investigation (071025661):**
+- 34 applications: 28 originated, 3 expired, 1 declined, 2 duplicate
+- 292 loans: 114 active repaying, 107 charged off, 71 paid in full
+
+**Broader BMO Portfolio:**
+- 10 additional routing numbers analyzed
+- 315 total loans across all BMO entities (from LMS system)
+- 12 individual applications from secondary routing numbers (all processed in LoanPro LOS)
+- Risk Assessment: No fraud indicators detected in secondary routing numbers
+
+**Files Delivered:**
+1. Primary LOS Applications (071025661) - 34 records with fraud screening and GIACT data
+2. Primary LMS Loans (071025661) - 292 records with loan status and GIACT verification
+3. All BMO LOS Summary - Aggregated statistics for 3 secondary routing numbers
+4. All BMO LMS Summary - Aggregated statistics for 10 secondary routing numbers  
+5. Detailed LOS Applications - 12 individual records for secondary BMO routing numbers
+6. Detailed LMS Loans - 315 individual records for all BMO routing numbers

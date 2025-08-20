@@ -1,6 +1,6 @@
--- DI-1140 BMO Fraud Investigation - Query 5 DETAILED
+-- DI-1140 BMO Fraud Investigation - Query 5 ENHANCED
 -- Individual Applications Analysis - All BMO Routing Numbers
--- This query returns individual application records with EXACT SAME SCHEMA as Query 1
+-- ENHANCED: Includes GIACT account creation dates, loan amounts, applicant state, and capital partner
 -- Analysis Date: August 1st, 2025 | Dynamic Threshold: 30 + days since analysis
 
 -- Variables
@@ -8,39 +8,71 @@ SET ANALYSIS_DATE = '2025-08-01';  -- Friday when request was submitted
 SET DAYS_THRESHOLD = (SELECT (30 + DATEDIFF('day', '2025-08-01', CURRENT_DATE())));
 
 -- ===========================================
--- DETAILED BMO LOS APPLICATIONS INVESTIGATION
--- Returns individual application records across all BMO routing numbers
--- EXACT SAME OUTPUT SCHEMA AS QUERY 1
+-- ENHANCED BMO LOS APPLICATIONS INVESTIGATION
+-- Returns individual application records with ADDITIONAL COLUMNS:
+-- - GIACT account creation dates and verification data
+-- - Loan amounts (requested and final)
+-- - Capital partner information
+-- - Applicant state and acquisition data
 -- ===========================================
 
-with fraud_portfolios as (select listagg(PORTFOLIO_NAME,',') as CURRENT_fraud_portfolios, APPLICATION_ID from BUSINESS_INTELLIGENCE.ANALYTICS.VW_APP_PORTFOLIOS_AND_SUB_PORTFOLIOS
-where PORTFOLIO_CATEGORY = 'Fraud' group by all)
+with fraud_portfolios as (
+    select 
+        listagg(PORTFOLIO_NAME,',') as CURRENT_fraud_portfolios, 
+        APPLICATION_ID 
+    from BUSINESS_INTELLIGENCE.ANALYTICS.VW_APP_PORTFOLIOS_AND_SUB_PORTFOLIOS
+    where PORTFOLIO_CATEGORY = 'Fraud' 
+    group by all
+)
 
 SELECT 
-    -- === APPLICATION IDENTIFICATION === (EXACT MATCH TO QUERY 1)
+    -- === APPLICATION IDENTIFICATION ===
     bi.LOAN_ID as APPLICATION_ID,
-    -- === BANKING DETAILS === (EXACT MATCH TO QUERY 1)
+    -- === LMS PROGRESSION TRACKING ===
+    LMS.LOAN_ID as LMS_LOAN_ID,
+    vlcc.CUSTOMER_ID,
+    -- === BANKING DETAILS ===
     bi.ROUTING_NUMBER,
     bi.ACCOUNT_TYPE,
     bi.ACCOUNT_NUMBER,
-    -- === DATE ANALYSIS === (EXACT MATCH TO QUERY 1)
+    -- === DATE ANALYSIS ===
     le.CREATED as APPLICATION_CREATED_DATE,
-    DATEDIFF('day', le.CREATED, $ANALYSIS_DATE) as DAYS_SINCE_CREATION,
-    le.CREATED >= DATEADD('day', -$DAYS_THRESHOLD, $ANALYSIS_DATE) as LAST_30_DAYS_IND,
-    -- === APPLICATION STATUS === (EXACT MATCH TO QUERY 1)
-    le.ACTIVE,
+    DATEDIFF('day', le.CREATED, CURRENT_DATE()) as DAYS_SINCE_CREATION,
+    $DAYS_THRESHOLD AS CREATION_DAYS_THRESHOLD_BOUNDARY,
+    le.CREATED >= DATEADD('day', -$DAYS_THRESHOLD, CURRENT_DATE()) as APP_CREATED_INSIDE_OF_BOUNDARY_IND,
+    giact.ACCOUNT_ADDED_DATE >= DATEADD('day', -$DAYS_THRESHOLD, CURRENT_DATE()) as GIACT_ACCOUNT_CREATED_INSIDE_OF_BOUNDARY_IND,
+    -- === GIACT BANK ACCOUNT INFORMATION ===
+    giact.ACCOUNT_ADDED_DATE as GIACT_ACCOUNT_CREATION_DATE,
+    giact.ACCOUNT_AGE_DAYS as GIACT_ACCOUNT_AGE_DAYS,
+    CASE 
+        WHEN giact.ACCOUNT_AGE_DAYS <= 30 THEN 'HIGH_RISK'
+        WHEN giact.ACCOUNT_AGE_DAYS <= 90 THEN 'MEDIUM_RISK'
+        WHEN giact.ACCOUNT_AGE_DAYS IS NOT NULL THEN 'LOW_RISK' ELSE 'UNKNOWN'
+    END as ACCOUNT_AGE_RISK_CATEGORY,
+    giact.BANK_NAME as GIACT_BANK_NAME,
+    giact.VERIFICATION_RESPONSE as GIACT_VERIFICATION_STATUS,
+    -- === APPLICATION STATUS ===
+    /* le.ACTIVE,
     le.DELETED,
-    le.ARCHIVED,
+    le.ARCHIVED, */
     lssec.TITLE as APP_STATUS,
-    vlcc.CUSTOMER_ID,
-    CLS.APPLICATION_GUID       as LEAD_GUID,
-       CLS.FIRST_NAME             as FIRST_NAME,
-       CLS.LAST_NAME              as LAST_NAME,
-       CLS.FRAUD_STATUS,
-       CLS.FRAUD_REASON,
-       vapasp.current_fraud_portfolios,
-    -- === LMS PROGRESSION TRACKING === (EXACT MATCH TO QUERY 1)
-    LMS.LOAN_ID as LMS_LOAN_ID
+    
+    CLS.APPLICATION_GUID as LEAD_GUID,
+    CLS.FIRST_NAME as FIRST_NAME,
+    CLS.LAST_NAME as LAST_NAME,
+    CLS.FRAUD_STATUS,
+    CLS.FRAUD_REASON,
+    vapasp.current_fraud_portfolios,
+    -- === ENHANCED LOAN AND APPLICATION DATA ===
+    CLS.REQUESTED_LOAN_AMOUNT as REQUESTED_LOAN_AMOUNT,
+    CLS.LOAN_AMOUNT as FINAL_LOAN_AMOUNT,
+    CLS.CAPITAL_PARTNER,
+    CLS.HOME_ADDRESS_STATE as APPLICANT_STATE,
+    CLS.BUREAU_STATE,
+    CLS.UTM_SOURCE,
+    CLS.UTM_MEDIUM,
+    CLS.LOAN_PURPOSE,
+    CLS.BORROWER_STATED_ANNUAL_INCOME as STATED_ANNUAL_INCOME
 
 FROM BUSINESS_INTELLIGENCE_DEV.CRON_STORE.BMO_ROUTING_NUMBERS brn
 JOIN BUSINESS_INTELLIGENCE.BRIDGE.VW_BANK_INFO bi
@@ -53,10 +85,20 @@ JOIN BUSINESS_INTELLIGENCE.BRIDGE.VW_LOAN_SUB_STATUS_ENTITY_CURRENT lssec
     ON lsec.LOAN_SUB_STATUS_ID = lssec.id and lssec.SCHEMA_NAME = ARCA.CONFIG.LOS_SCHEMA()
 JOIN BUSINESS_INTELLIGENCE.BRIDGE.VW_LOAN_CUSTOMER_CURRENT vlcc
     on bi.LOAN_ID = vlcc.LOAN_ID and vlcc.SCHEMA_NAME = ARCA.CONFIG.LOS_SCHEMA()
-join ARCA.FRESHSNOW.VW_LOS_CUSTOM_LOAN_SETTINGS_CURRENT as CLS
+JOIN ARCA.FRESHSNOW.VW_LOS_CUSTOM_LOAN_SETTINGS_CURRENT as CLS
     on LE.ID = CLS.LOAN_ID
-left join fraud_portfolios vapasp
+
+-- === ENHANCED JOINS FOR ADDITIONAL DATA ===
+-- Join to GIACT data for account creation dates and verification info
+LEFT JOIN BUSINESS_INTELLIGENCE.BRIDGE.VW_OSCILAR_GIACT_DATA giact
+    ON CAST(bi.LOAN_ID AS VARCHAR) = CAST(giact.APPLICATION_ID AS VARCHAR)
+    AND CAST(bi.ROUTING_NUMBER AS VARCHAR) = CAST(giact.GIACT_ROUTING_NUMBER AS VARCHAR)
+    AND CAST(bi.ACCOUNT_NUMBER AS VARCHAR) = CAST(giact.GIACT_ACCOUNT_NUMBER AS VARCHAR)
+    
+
+LEFT JOIN fraud_portfolios vapasp
     on bi.LOAN_ID = vapasp.APPLICATION_ID
+
 -- Join to LMS to check if application became a loan
 LEFT JOIN ARCA.FRESHSNOW.VW_LMS_CUSTOM_LOAN_SETTINGS_CURRENT LMS
     ON CLS.APPLICATION_GUID = LMS.LEAD_GUID

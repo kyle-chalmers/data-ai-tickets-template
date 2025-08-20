@@ -1,8 +1,7 @@
 -- DI-1140: LMS Originated Loans Analysis - BMO Bank Fraud Ring  
 -- SYSTEM: LoanPro LMS (Loan Management System) - Originated/Funded Loans
 -- RT# 071025661 = BMO Harris Bank
---
--- NOTE: VW_BANK_INFO is hardcoded to LOS_SCHEMA, so we create LMS version via CTE
+-- ENHANCED: Includes loan amounts, applicant state, and capital partner (GIACT excluded due to data quality issues)
 
 -- Variables for easy modification
 SET ROUTING_NUMBER = '071025661';  -- BMO Harris Bank routing number
@@ -24,7 +23,6 @@ WITH lms_bank_info AS (
     LEFT JOIN ARCA.FRESHSNOW.payment_account_entity_current pae ON ce.id = pae.entity_id AND pae.is_primary = 1 AND pae.active = 1
     LEFT JOIN ARCA.FRESHSNOW.checking_account_entity_current cae ON pae.checking_account_id = cae.id
     WHERE 1=1
-      -- SWITCH TO LMS SCHEMA FOR ORIGINATED LOANS
       AND le.SCHEMA_NAME = ARCA.config.lms_schema()
       AND lc.SCHEMA_NAME = ARCA.config.lms_schema()
       AND ce.SCHEMA_NAME = ARCA.config.lms_schema()
@@ -32,81 +30,84 @@ WITH lms_bank_info AS (
       AND pae.SCHEMA_NAME = ARCA.config.lms_schema()
       AND cae.SCHEMA_NAME = ARCA.config.lms_schema()
       AND lse.SCHEMA_NAME = ARCA.config.lms_schema()
-),
--- Fraud portfolios for LMS (if any exist)
-fraud_portfolios AS (
-    SELECT 
-        LOAN_ID,
-        LISTAGG(PORTFOLIO_NAME, ',') as CURRENT_loan_fraud_portfolios
-    FROM BUSINESS_INTELLIGENCE.ANALYTICS.VW_LOAN_PORTFOLIOS_AND_SUB_PORTFOLIOS  -- Note: LOAN not APP
-    WHERE PORTFOLIO_CATEGORY = 'Fraud' 
-    GROUP BY LOAN_ID
 )
 
--- LMS ORIGINATED LOANS QUERY
 SELECT 
     -- === LOAN IDENTIFICATION ===
     bi.LOAN_ID,
+    vlcc.CUSTOMER_ID,
     -- === BANKING DETAILS ===
     bi.ROUTING_NUMBER,
     bi.ACCOUNT_TYPE,
     bi.ACCOUNT_NUMBER,
     -- === DATE ANALYSIS ===
     le.CREATED as LOAN_ORIGINATED_DATE,
-    DATEDIFF('day', le.CREATED, $ANALYSIS_DATE) as DAYS_SINCE_ORIGINATION,
-    le.CREATED >= DATEADD('day', -$DAYS_THRESHOLD, $ANALYSIS_DATE) as LAST_30_DAYS_IND,
+    DATEDIFF('day', le.CREATED, CURRENT_DATE()) as DAYS_SINCE_ORIGINATION,
+    $DAYS_THRESHOLD AS ORIGINATION_DAYS_THRESHOLD_BOUNDARY,
+    le.CREATED >= DATEADD('day', -$DAYS_THRESHOLD, CURRENT_DATE) as LOAN_ORIGINATED_INSIDE_OF_BOUNDARY_IND,
+    giact.ACCOUNT_ADDED_DATE >= DATEADD('day', -$DAYS_THRESHOLD, CURRENT_DATE) as GIACT_ACCOUNT_CREATED_INSIDE_OF_BOUNDARY_IND,
+    -- === GIACT BANK ACCOUNT INFORMATION ===
+    giact.ACCOUNT_ADDED_DATE as GIACT_ACCOUNT_CREATION_DATE,
+    giact.ACCOUNT_CLOSED_DATE as GIACT_ACCOUNT_CLOSED_DATE,
+    giact.ACCOUNT_LAST_UPDATED_DATE as GIACT_ACCOUNT_LAST_UPDATED,
+    giact.ACCOUNT_AGE_DAYS as GIACT_ACCOUNT_AGE_DAYS,
+    giact.BANK_ACCOUNT_TYPE as GIACT_ACCOUNT_TYPE,
+    giact.BANK_NAME as GIACT_BANK_NAME,
     -- === LOAN STATUS ===
-    le.ACTIVE,
+    /* le.ACTIVE,
     le.DELETED,
-    le.ARCHIVED,
+    le.ARCHIVED, */
     lssec.TITLE as LOAN_STATUS,
-    vlcc.CUSTOMER_ID,
+    -- === LMS LOAN DATA ===
     CLS.LEAD_GUID,
     CLS.FRAUD_CONFIRMED_DATE,
     CLS.FRAUD_INVESTIGATION_RESULTS,
     CLS.FRAUD_NOTIFICATION_RECEIVED,
-    LOS.LOAN_ID AS APPLICATION_ID,
-    LOS.ORIGINATION_DATE,
-    fp.current_loan_fraud_portfolios
+    -- === ENHANCED LOAN AND APPLICATION DATA ===
+    LOS.REQUESTED_LOAN_AMOUNT as REQUESTED_LOAN_AMOUNT,
+    LOS.LOAN_AMOUNT as FINAL_LOAN_AMOUNT,
+    LOS.CAPITAL_PARTNER,
+    LOS.HOME_ADDRESS_STATE as APPLICANT_STATE,
+    LOS.BUREAU_STATE,
+    LOS.UTM_SOURCE,
+    LOS.UTM_MEDIUM,
+    LOS.LOAN_PURPOSE,
+    LOS.BORROWER_STATED_ANNUAL_INCOME
+    /*giact.ACCOUNT_RESPONSE_CODE as GIACT_ACCOUNT_RESPONSE_CODE,
+    giact.CUSTOMER_RESPONSE_CODE as GIACT_CUSTOMER_RESPONSE_CODE,
+    giact.VERIFICATION_RESPONSE as GIACT_VERIFICATION_RESPONSE,
+    giact.FUNDS_CONFIRMATION_RESULT as GIACT_FUNDS_CONFIRMATION,
+    giact.CONSUMER_ALERT_MESSAGES as GIACT_CONSUMER_ALERTS,
+    giact.GIACT_AUTHENTICATE_ENABLED,
+    giact.GIACT_VERIFY_ENABLED,
+    giact.ERROR_MESSAGE as GIACT_ERROR_MESSAGE*/
 
 FROM lms_bank_info bi
-
--- Join to loan entity (ALWAYS filter by LMS schema)
 JOIN BUSINESS_INTELLIGENCE.BRIDGE.VW_LOAN_ENTITY_CURRENT le 
     ON bi.LOAN_ID = le.ID 
     AND le.SCHEMA_NAME = ARCA.CONFIG.LMS_SCHEMA()
-
--- Join to settings (NOTE: Uses LOAN_ID field, not ID)
 JOIN BUSINESS_INTELLIGENCE.BRIDGE.VW_LOAN_SETTINGS_ENTITY_CURRENT lsec
     ON bi.LOAN_ID = lsec.LOAN_ID
     AND lsec.SCHEMA_NAME = ARCA.CONFIG.LMS_SCHEMA()
-
--- Join to sub-status for readable status
 JOIN BUSINESS_INTELLIGENCE.BRIDGE.VW_LOAN_SUB_STATUS_ENTITY_CURRENT lssec
     ON lsec.LOAN_SUB_STATUS_ID = lssec.ID 
     AND lssec.SCHEMA_NAME = ARCA.CONFIG.LMS_SCHEMA()
-
--- Join to customer
 JOIN BUSINESS_INTELLIGENCE.BRIDGE.VW_LOAN_CUSTOMER_CURRENT vlcc
     ON bi.LOAN_ID = vlcc.LOAN_ID 
     AND vlcc.SCHEMA_NAME = ARCA.CONFIG.LMS_SCHEMA()
-
--- Join to custom settings (check if LMS equivalent exists)
 LEFT JOIN ARCA.FRESHSNOW.VW_LMS_CUSTOM_LOAN_SETTINGS_CURRENT CLS
     ON le.ID = CLS.LOAN_ID
--- Join to custom settings (check if LMS equivalent exists)
 LEFT JOIN ARCA.FRESHSNOW.VW_LOS_CUSTOM_LOAN_SETTINGS_CURRENT LOS
     ON CLS.LEAD_GUID = LOS.APPLICATION_GUID
--- Fraud portfolios (if applicable to originated loans)
-LEFT JOIN fraud_portfolios fp
-    ON bi.LOAN_ID = fp.LOAN_ID
+
+-- Join to GIACT data for bank account information and creation dates
+LEFT JOIN BUSINESS_INTELLIGENCE.BRIDGE.VW_OSCILAR_GIACT_DATA giact
+    ON CAST(LOS.LOAN_ID AS VARCHAR) = CAST(giact.APPLICATION_ID AS VARCHAR)
+    AND CAST(bi.ROUTING_NUMBER AS VARCHAR) = CAST(giact.GIACT_ROUTING_NUMBER AS VARCHAR)
+    AND CAST(bi.ACCOUNT_NUMBER AS VARCHAR) = CAST(giact.GIACT_ACCOUNT_NUMBER AS VARCHAR)
 
 WHERE 1=1
-    -- BMO Bank filtering
     AND bi.ROUTING_NUMBER = $ROUTING_NUMBER
-    -- Recent originations (< 30 days)
-    --AND le.CREATED >= DATEADD('day', -$DAYS_THRESHOLD, $ANALYSIS_DATE)
-    -- Active loans only
     AND le.ACTIVE = 1
     AND le.DELETED = 0
     
