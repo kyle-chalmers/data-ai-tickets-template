@@ -63,6 +63,27 @@ partner_aggregation AS (
     FROM BUSINESS_INTELLIGENCE.ANALYTICS.VW_LOAN l
     LEFT JOIN BUSINESS_INTELLIGENCE.ANALYTICS.VW_PARTNER p ON l.PARTNER_ID = p.PARTNER_ID
     GROUP BY l.LOAN_ID
+),
+
+loan_tape_portfolio AS (
+    -- Get current loan tape portfolio information for better ownership identification
+    SELECT 
+        lt.PAYOFFUID as LEAD_GUID,
+        lt.LOANID as LOAN_TAPE_LOAN_ID,
+        lt.PORTFOLIONAME as LOAN_TAPE_PORTFOLIO_NAME,
+        lt.SECONDARY_BUYER,
+        lt.SECONDARY_SELLER,
+        -- Create clear Happy Money ownership indicator
+        CASE 
+            WHEN lt.PORTFOLIONAME IN (
+                'Payoff',
+                'Payoff Consumer Credit Income Fund I LP',
+                'Payoff Consumer Loan Trust'
+            )
+            THEN 1 
+            ELSE 0 
+        END as HAPPY_MONEY_OWNED_INDICATOR
+    FROM BUSINESS_INTELLIGENCE.DATA_STORE.MVW_LOAN_TAPE lt
 )
 
 -- Final result - one row per loan with columns ordered per ticket requirements
@@ -74,6 +95,12 @@ SELECT
     -- Portfolio information (Portfolio ID | Portfolio Name from ticket)
     fpi.ALL_PORTFOLIO_IDS as PORTFOLIO_ID,
     fpi.ALL_PORTFOLIO_NAMES as PORTFOLIO_NAME,
+    -- Loan Tape Portfolio Information (for reliable ownership identification)
+    ltp.LOAN_TAPE_LOAN_ID,
+    ltp.LOAN_TAPE_PORTFOLIO_NAME,
+    ltp.SECONDARY_BUYER as LOAN_TAPE_SECONDARY_BUYER,
+    ltp.SECONDARY_SELLER as LOAN_TAPE_SECONDARY_SELLER,
+    ltp.HAPPY_MONEY_OWNED_INDICATOR,
     -- Fraud type indicators (binary flags for detailed analysis)
     fpi.FIRST_PARTY_FRAUD_CONFIRMED,
     fpi.IDENTITY_THEFT_FRAUD_CONFIRMED,
@@ -92,7 +119,7 @@ SELECT
     fl.FRAUD_CONTACT_EMAIL,
     -- Partner/investor information (flattened to avoid duplicates)
     pa.ALL_PARTNER_IDS,
-    pa.ALL_PARTNER_NAMES as CURRENT_INVESTOR,
+    pa.ALL_PARTNER_NAMES as CURRENT_INVESTOR_PARTNERS,
     pa.MULTIPLE_PARTNERS_INDICATOR,
     pa.PARTNER_COUNT
 FROM BUSINESS_INTELLIGENCE.ANALYTICS.VW_LOAN l
@@ -101,6 +128,7 @@ LEFT JOIN fraud_portfolio_indicators fpi ON l.LOAN_ID = fpi.LOAN_ID
 LEFT JOIN most_recent_status mrs ON mrs.loan_id = l.LOAN_ID
 LEFT JOIN most_recent_status mrs2 ON mrs2.loan_id = l.LOAN_ID AND MRS2.LOAN_STATUS ILIKE '%FRAUD%'
 LEFT JOIN partner_aggregation pa ON pa.LOAN_ID = l.LOAN_ID
+LEFT JOIN loan_tape_portfolio ltp ON ltp.LEAD_GUID = l.LEAD_GUID
 -- Loans must fit one of the following criteria
 WHERE fpi.LOAN_ID IS NOT NULL OR fl.LEAD_GUID IS NOT NULL OR mrs2.LOAN_ID IS NOT NULL
 ORDER BY fl.FRAUD_CONFIRMED_DATE DESC NULLS LAST, l.LOAN_ID;

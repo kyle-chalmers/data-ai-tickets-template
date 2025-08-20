@@ -1,0 +1,3 @@
+Updated dataset now includes loan tape portfolio names and Happy Money ownership indicator for reliable identification of repurchased loans.
+
+Google Drive link: https://drive.google.com/open?id=1sjfQ7xLHz4xPd__qrJB00GiKG7Po2RyH&usp=drive_fs
