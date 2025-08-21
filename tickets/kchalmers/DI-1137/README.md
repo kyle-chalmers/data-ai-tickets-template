@@ -34,37 +34,41 @@ The Massachusetts Regulator requested information on:
 3. Pull all native MA resident loans with required fields
 4. Pull all current MA resident loans with required fields
 
-## Results Summary
+## ⚠️ DATA CORRECTION UPDATE (August 21, 2025)
+
+**IMPORTANT**: Original results were corrected due to improper PII table filtering. Previous CSV files contained duplicates and incorrect data.
+
+**Root Cause**: Used `MEMBER_PII_END_DATE IS NOT NULL` instead of `IS NULL` for active address records.
+
+## Results Summary (CORRECTED)
 
 ### Question 1: Loans ≤$6,000 with rates >12% for MA residents
-**Answer: YES** - Happy Money has processed **3 loans** meeting these criteria:
-- **Loan ID P592BB4580282**: $5,000 @ 15.81% interest rate, 17.99% APR (Paid in Full, Jan 11, 2021)
-- **Loan ID PB822534FB0D7**: $6,000 @ 19.64% interest rate, 21.99% APR (Charge off, Oct 1, 2020) 
-- **Loan ID P60561A226BA9**: $5,000 @ 16.80% interest rate, 18.995% APR (Paid in Full, Apr 2, 2019)
-- **Total Amount**: $16,000
-- **Average Interest Rate**: 17.42%
-- **Average APR**: 19.66%
+**Answer: YES** - Happy Money has processed **6 loans** meeting these criteria:
+
+**Current MA Residents** (6 loans):
+- **P3400B2DBDEBB**: $5,000 @ 17.51% interest, 20.47% APR (OH→MA, Current)
+- **P592BB4580282**: $5,000 @ 15.81% interest, 17.99% APR (MN→MA, Paid in Full)
+- **P996481FA8DD0**: $5,500 @ 12.94% interest, 14.99% APR (NC→MA, Paid in Full)
+- **PB822534FB0D7**: $6,000 @ 19.64% interest, 21.99% APR (NY→MA, Charge off)
+- **P0FFEAD576B44**: $5,000 @ 16.80% interest, 18.99% APR (TN→MA, Paid in Full)
+- **PFBE79580713F**: $5,000 @ 12.94% interest, 14.99% APR (NY→MA, Paid in Full)
+
+**Native MA Residents**: **0 loans** (none exist)
 
 ### Question 2: All MA resident loans serviced  
-**Answer: YES** - Happy Money has serviced **61 loans** for Massachusetts residents since inception:
-- **Total Loan Amount**: $1,030,900
-- **Date Range**: October 11, 2017 to June 15, 2022
-- **Average Loan Amount**: $16,900
-- **Average Interest Rate**: 11.77%
-- **Average APR**: 13.34%
+**Answer: YES** - Happy Money has serviced **106 loans** for Massachusetts residents since inception:
 
-### Loan Distribution
-- Loans ≤$6,000: 4 (6.6%)
-- Loans $6,001-$10,000: 13 (21.3%)
-- Loans >$10,000: 44 (72.1%)
+**Current MA Residents**: **104 loans** (customers who moved to MA after origination)
+**Native MA Residents**: **2 loans** (originated directly to MA residents)
 
 ## Files Delivered
 
-### Final Deliverables
-1. **`DI-1137.sql`** - Consolidated SQL queries for all analysis scenarios
-2. **`MA_Current_Residents_Loans_6000_and_Above_12_IR.csv`** - Small dollar high rate loans (3 loans)
-3. **`MA_Current_Residents_All_Loans.csv`** - Complete list of all current MA resident loans with required fields (61 loans)
-4. **`Natively_Originated_MA_Loans.csv`** - All loans originated to MA residents
+### Final Deliverables (CORRECTED)
+1. **`DI-1137.sql`** - Consolidated SQL queries (corrected PII filter to IS NULL)
+2. **`MA_Current_Residents_Loans_6000_and_Above_12_IR.csv`** - Small dollar high rate loans (6 loans)
+3. **`MA_Current_Residents_All_Loans.csv`** - Complete list of all current MA resident loans (104 loans)
+4. **`Natively_Originated_MA_Loans.csv`** - All loans originated to MA residents (2 loans)
+5. **`Natively_Originated_MA_Loans_6000_and_Above_12_IR.csv`** - Native MA small high rate loans (0 loans)
 
 ### SQL Query Documentation
 The `DI-1137.sql` file contains four main query sections:
@@ -73,28 +77,35 @@ The `DI-1137.sql` file contains four main query sections:
 3. **Natively_Originated_MA_Loans**: All loans for native MA residents
 4. **MA_Current_Residents_All_Loans**: All loans for current MA residents
 
-### Regulatory Questions Answered
+### Regulatory Questions Answered (CORRECTED)
 
 1. **Has Happy Money processed loans ≤$6,000 with rates >12% for MA residents?**
-   - **Answer: YES** - **3 loans** totaling $16,000:
-     - P592BB4580282: $5,000 @ 15.81% interest, 17.99% APR
-     - PB822534FB0D7: $6,000 @ 19.64% interest, 21.99% APR  
-     - P60561A226BA9: $5,000 @ 16.80% interest, 18.995% APR
+   - **Answer: YES** - **6 loans** for current MA residents, **0 loans** for native MA residents
+   - All 6 loans are for customers who moved to MA after loan origination
 
 2. **Has Happy Money serviced loans for MA residents?**
-   - **Answer: YES** - **61 loans** totaling $1,030,900 (October 2017 - June 2022)
+   - **Answer: YES** - **106 total loans** (104 current + 2 native MA residents)
 
 All CSV files contain the complete required regulatory fields:
 - APPLICATION DATE, APPLICATION FIRST/LAST NAME (when available), APPLICANTRESIDENCESTATE
 - LOANID, LOANAMOUNT, CURRENT STATUS, APR, INTEREST RATE, ORIGINATION DATE
 
 ## Technical Notes
-- **Primary data source**: `BUSINESS_INTELLIGENCE.DATA_STORE.MVW_LOAN_TAPE` provides authoritative loan data
+- **Primary data source**: `BUSINESS_INTELLIGENCE.DATA_STORE.MVW_LOAN_TAPE` provides authoritative loan data (unique by LOANID)
 - **Current state resolution**: LEFT JOIN to VW_LOAN → VW_MEMBER_PII for current state verification
-- **Data deduplication**: Uses `ROW_NUMBER() OVER (PARTITION BY LOANID ORDER BY ASOFDATE DESC)` for most recent loan status
+- **CORRECTED PII Filter**: `MEMBER_PII_END_DATE IS NULL` for active address records (previously incorrectly used IS NOT NULL)
+- **No deduplication needed**: MVW_LOAN_TAPE confirmed to be unique by LOANID (346,398 total = 346,398 unique)
 - **Interest rate format**: Loan tape stores as decimal (0.12 = 12%) with parameter conversion
 - **Comprehensive coverage**: Captures both native origination and current residence scenarios
 
+## Correction History
+- **August 21, 2025**: Data corrected due to improper PII filtering
+  - Fixed `MEMBER_PII_END_DATE IS NULL` filter for active records
+  - Removed unnecessary deduplication logic  
+  - Regenerated all CSV files with correct data
+  - Updated Google Drive backup with corrected files
+
 ## Status
 - Started: 2025-08-01  
-- Status: **Complete - Final Deliverables Ready**
+- Corrected: 2025-08-21
+- Status: **Complete - Corrected Final Deliverables Ready**

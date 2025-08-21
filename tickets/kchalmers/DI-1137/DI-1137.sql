@@ -40,9 +40,7 @@ SELECT
     ORIGINATIONDATE,                 -- Date loan was originated
     STATUS,                         -- Current loan status (Paid in Full, Charge off, etc.)
     PORTFOLIONAME,                  -- Portfolio classification
-    PLACEMENT_STATUS,               -- Collection placement status
-    -- Use most recent record for each loan to avoid duplicates
-    ROW_NUMBER() OVER (PARTITION BY LOANID ORDER BY ASOFDATE DESC) as rn
+    PLACEMENT_STATUS                -- Collection placement status
 FROM BUSINESS_INTELLIGENCE.DATA_STORE.MVW_LOAN_TAPE
 WHERE UPPER(APPLICANTRESIDENCESTATE) = $STATE_FILTER      -- Native MA residents only
   AND INTERESTRATE > ($MIN_INTEREST_RATE/100.0)           -- Interest rate > 12% (convert to decimal)
@@ -62,27 +60,27 @@ WHERE UPPER(APPLICANTRESIDENCESTATE) = $STATE_FILTER      -- Native MA residents
 -- =============================================================================
 
 SELECT
-    LOANID,                          -- Unique loan identifier
-    PAYOFFUID,                       -- PayOff system identifier  
-    APPLICANTRESIDENCESTATE,         -- Original application state (NOT MA)
-    LOANAMOUNT,                      -- Principal loan amount
-    INTERESTRATE,                    -- Interest rate (decimal format)
+    A.LOANID,                        -- Unique loan identifier
+    A.PAYOFFUID,                     -- PayOff system identifier  
+    A.APPLICANTRESIDENCESTATE,       -- Original application state (NOT MA)
+    A.LOANAMOUNT,                    -- Principal loan amount
+    A.INTERESTRATE,                  -- Interest rate (decimal format)
     A.APR,                          -- Annual Percentage Rate
-    ORIGINATIONDATE,                 -- Date loan was originated
-    STATUS,                         -- Current loan status
-    PORTFOLIONAME,                  -- Portfolio classification
-    PLACEMENT_STATUS,               -- Collection placement status
-    b.STATE as CURRENT_STATE        -- Customer's current state of residence
+    A.ORIGINATIONDATE,               -- Date loan was originated
+    A.STATUS,                       -- Current loan status
+    A.PORTFOLIONAME,                -- Portfolio classification
+    A.PLACEMENT_STATUS,             -- Collection placement status
+    B.STATE as CURRENT_STATE        -- Customer's current state of residence
 FROM BUSINESS_INTELLIGENCE.DATA_STORE.MVW_LOAN_TAPE A
 LEFT JOIN BUSINESS_INTELLIGENCE.ANALYTICS.VW_LOAN C
     ON A.PAYOFFUID = C.LEAD_GUID                           -- Link loan tape to analytical view
 LEFT JOIN BUSINESS_INTELLIGENCE.ANALYTICS_PII.VW_MEMBER_PII B  
-    ON B.MEMBER_ID = c.MEMBER_ID                           -- Link to current customer address
-    AND b.MEMBER_PII_END_DATE IS NOT NULL                  -- Use active address record
+    ON B.MEMBER_ID = C.MEMBER_ID                           -- Link to current customer address
+    AND B.MEMBER_PII_END_DATE IS NULL                      -- Use active address record
 WHERE UPPER(APPLICANTRESIDENCESTATE) <> $STATE_FILTER     -- NOT native MA residents
   AND INTERESTRATE > ($MIN_INTEREST_RATE/100.0)           -- Interest rate > 12%
   AND LOANAMOUNT <= $MAX_LOAN_AMOUNT                       -- Loan amount ≤ $6,000
-  AND UPPER(b.STATE) = $STATE_FILTER;                     -- Currently live in MA
+  AND UPPER(B.STATE) = $STATE_FILTER;                     -- Currently live in MA
 
 -- =============================================================================
 -- QUERY 3: All Natively Originated MA Loans
@@ -103,9 +101,7 @@ SELECT
     ORIGINATIONDATE,                 -- Date loan was originated
     STATUS,                         -- Current loan status
     PORTFOLIONAME,                  -- Portfolio classification
-    PLACEMENT_STATUS,               -- Collection placement status
-    -- Use most recent record for each loan to avoid duplicates
-    ROW_NUMBER() OVER (PARTITION BY LOANID ORDER BY ASOFDATE DESC) as rn
+    PLACEMENT_STATUS                -- Collection placement status
 FROM BUSINESS_INTELLIGENCE.DATA_STORE.MVW_LOAN_TAPE
 WHERE UPPER(APPLICANTRESIDENCESTATE) = $STATE_FILTER;     -- All native MA residents
 -- Rate and amount filters commented out for comprehensive analysis
@@ -122,25 +118,25 @@ WHERE UPPER(APPLICANTRESIDENCESTATE) = $STATE_FILTER;     -- All native MA resid
 -- =============================================================================
 
 SELECT
-    LOANID,                          -- Unique loan identifier
-    PAYOFFUID,                       -- PayOff system identifier
-    APPLICANTRESIDENCESTATE,         -- Original application state (any state)
-    LOANAMOUNT,                      -- Principal loan amount (all amounts)
-    INTERESTRATE,                    -- Interest rate (all rates)
+    A.LOANID,                        -- Unique loan identifier
+    A.PAYOFFUID,                     -- PayOff system identifier
+    A.APPLICANTRESIDENCESTATE,       -- Original application state (any state)
+    A.LOANAMOUNT,                    -- Principal loan amount (all amounts)
+    A.INTERESTRATE,                  -- Interest rate (all rates)
     A.APR,                          -- Annual Percentage Rate
-    ORIGINATIONDATE,                 -- Date loan was originated
-    STATUS,                         -- Current loan status
-    PORTFOLIONAME,                  -- Portfolio classification
-    PLACEMENT_STATUS,               -- Collection placement status
-    b.STATE as CURRENT_STATE        -- Customer's current state (MA)
+    A.ORIGINATIONDATE,               -- Date loan was originated
+    A.STATUS,                       -- Current loan status
+    A.PORTFOLIONAME,                -- Portfolio classification
+    A.PLACEMENT_STATUS,             -- Collection placement status
+    B.STATE as CURRENT_STATE        -- Customer's current state (MA)
 FROM BUSINESS_INTELLIGENCE.DATA_STORE.MVW_LOAN_TAPE A
 LEFT JOIN BUSINESS_INTELLIGENCE.ANALYTICS.VW_LOAN C
     ON A.PAYOFFUID = C.LEAD_GUID                           -- Link loan tape to analytical view
 LEFT JOIN BUSINESS_INTELLIGENCE.ANALYTICS_PII.VW_MEMBER_PII B
-    ON B.MEMBER_ID = c.MEMBER_ID                           -- Link to current customer address
-    AND b.MEMBER_PII_END_DATE IS NOT NULL                  -- Use active address record
+    ON B.MEMBER_ID = C.MEMBER_ID                           -- Link to current customer address
+    AND B.MEMBER_PII_END_DATE IS NULL                      -- Use active address record
 WHERE UPPER(APPLICANTRESIDENCESTATE) <> $STATE_FILTER     -- NOT native MA (to avoid duplicates with Query 3)
-  AND UPPER(b.STATE) = $STATE_FILTER;                     -- Currently live in MA
+  AND UPPER(B.STATE) = $STATE_FILTER;                     -- Currently live in MA
 -- Rate and amount filters commented out for comprehensive analysis
 -- AND INTERESTRATE > ($MIN_INTEREST_RATE/100.0)
 -- AND LOANAMOUNT <= $MAX_LOAN_AMOUNT
@@ -149,8 +145,9 @@ WHERE UPPER(APPLICANTRESIDENCESTATE) <> $STATE_FILTER     -- NOT native MA (to a
 -- EXECUTION NOTES:
 -- =============================================================================
 -- 1. Run each query separately and export results as CSV
--- 2. Use ROW_NUMBER() filtering (WHERE rn = 1) for queries 1 and 3 if needed
--- 3. Interest rates in loan tape are stored as decimals (0.12 = 12%)
--- 4. MVW_LOAN_TAPE provides comprehensive historical coverage (2017-2022)
--- 5. PII joins may not return names for all loans (loan tape limitation)
+-- 2. CORRECTED: Use IS NULL for active PII records (not IS NOT NULL)
+-- 3. MVW_LOAN_TAPE is already unique by LOANID (no deduplication needed)
+-- 4. Interest rates in loan tape are stored as decimals (0.12 = 12%)
+-- 5. MVW_LOAN_TAPE provides comprehensive historical coverage (2017-2022)
+-- 6. PII joins may not return names for all loans (loan tape limitation)
 -- =============================================================================
