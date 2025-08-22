@@ -1,3 +1,12 @@
+-- Original DDL for VW_DSH_MONTHLY_ROLL_RATE_MONITORING View (Original Version WITHOUT SIMM fields)
+-- Retrieved: 2025-08-22
+-- NOTE: This is the ORIGINAL state before DI-974 modifications
+
+CREATE OR REPLACE VIEW BUSINESS_INTELLIGENCE.CRON_STORE.VW_DSH_MONTHLY_ROLL_RATE_MONITORING(
+	PAYOFFUID,
+	DPD,
+	DPDCURRENT,
+	DATECURRENT,
 	DATEPREVIOUS,
 	STATUSCURRENT,
 	STATUSPREVIOUS,
@@ -55,7 +64,7 @@
 	NDI,
 	DTI,
 	LAST_TOUCH_UTM_CHANNEL_GROUPING
-) as
+) AS
 SELECT
 	A.PAYOFFUID,
 	A.DPD,
@@ -81,7 +90,7 @@ SELECT
 	B.INTERESTPAYMENTAMOUNT,
 	B.PRINCIPALPAYMENTAMOUNT,
 	B.TOTALPAYMENTCOLLECTED,
-	-- Remaining principal is the amount ""cured"
+	-- Remaining principal is the amount "cured"
 	B.REMAININGPRINCIPAL,
 	B.SERVICINGFEEAMOUNT,
 	B.REMITTANCEAMOUNT,
@@ -162,7 +171,6 @@ WHERE
 	-- date within this table should only be a month, and nothing more to keep the roll
 	-- time period consistent for all loans
     -- USED ROUND BECAUSE AT TIMES THERE ARE MONTHS DIFFERENCE THAT IS +/- 0.1
-	ROUND(MONTHS_BETWEEN(LAST_DAY(DATE(A.DATECURRENT)), LAST_DAY(DATE(A.DATEPREVIOUS))),0) = 1
+	ROUND(MONTHS_BETWEEN(LAST_DAY(DATE(A.DATECURRENT)), LAST_DAY(DATE(A.DATEPREVIOUS))),0) = 1;
 	-- putting in this particular criteria since before 2021-12-31 there are months between that are greater than 1
 	--AND DATE(B.ASOFDATE) >= DATE('2021-12-31')
-;
