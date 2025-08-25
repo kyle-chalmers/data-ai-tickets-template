@@ -14,7 +14,7 @@ SELECT
     MAX(created_ts) as latest_record,
     COUNT(CASE WHEN note_title_detail IS NOT NULL THEN 1 END) as categorized_records,
     ROUND(AVG(LENGTH(note_data)), 2) as avg_note_data_length
-FROM BUSINESS_INTELLIGENCE.CRON_STORE.SYSTEM_NOTE_ENTITY;
+FROM BUSINESS_INTELLIGENCE.BRIDGE.APP_SYSTEM_NOTE_ENTITY;
 
 -- =============================================================================
 -- 2. PERFORMANCE TESTING SETUP

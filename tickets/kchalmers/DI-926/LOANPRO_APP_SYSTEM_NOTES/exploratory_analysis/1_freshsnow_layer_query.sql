@@ -1,14 +1,13 @@
--- FRESHSNOW Layer View: Raw LoanPro Application System Notes
--- Replaces BUSINESS_INTELLIGENCE.CRON_STORE.LOANPRO_APP_SYSTEM_NOTES procedure
--- Purpose: Extract and parse system note data from LoanPro with JSON processing
+-- FRESHSNOW Layer: Raw system note data with JSON parsing
+-- Extracts and processes system note data from LoanPro
 
-CREATE OR REPLACE VIEW ARCA.FRESHSNOW.VW_LOANPRO_APP_SYSTEM_NOTES AS
 SELECT 
+    id as record_id,  -- Preserve audit log ID
     entity_id as app_id,
     convert_timezone('UTC','America/Los_Angeles',created) as created_ts,
     convert_timezone('UTC','America/Los_Angeles',lastupdated) as lastupdated_ts,
     
-    -- Loan Status ID extraction for status change tracking
+    -- Loan Status ID extraction
     case when note_title = 'Loan settings were created' then parse_json(note_data):"loanStatusId"::STRING 
          else parse_json(note_data):"loanStatusId":"newValue"::STRING 
          end as loan_status_new_id,
@@ -16,7 +15,7 @@ SELECT
          else parse_json(note_data):"loanStatusId":"oldValue"::STRING 
          end as loan_status_old_id,
          
-    -- New Value extraction from nested JSON structures
+    -- New Value extraction (complex nested JSON parsing)
     case when note_title = 'Loan settings were created' then parse_json(note_data):"loanSubStatusId"::STRING 
          when parse_json(note_data):"loanSubStatusId"::STRING is not null then parse_json(note_data):"loanSubStatusId":"newValue"::STRING
          when parse_json(note_data):"agent"::STRING is not null then parse_json(note_data):"agent":"newValue"::string
@@ -25,9 +24,9 @@ SELECT
          when parse_json(note_data):"PortfoliosRemoved"::STRING is not null then trim(replace(object_keys(parse_json(note_data):"PortfoliosRemoved":"newValue")[0],'"',''))::string
          when note_data like '%applyDefaultFieldMap%' then parse_json(note_data):"applyDefaultFieldMap":"newValue"::STRING 
          else parse_json(note_data):"customFieldValue":"newValue"::STRING 
-         end as note_new_value_raw,
+         end as note_new_value,
          
-    -- Old Value extraction from nested JSON structures
+    -- Old Value extraction (complex nested JSON parsing)
     case when note_title = 'Loan settings were created' then parse_json(note_data):"loanSubStatusId"::STRING 
          when parse_json(note_data):"loanSubStatusId"::STRING is not null then parse_json(note_data):"loanSubStatusId":"oldValue"::STRING
          when parse_json(note_data):"agent"::STRING is not null then parse_json(note_data):"agent":"oldValue"::string
@@ -36,9 +35,9 @@ SELECT
          when parse_json(note_data):"PortfoliosRemoved"::STRING is not null then trim(replace(object_keys(parse_json(note_data):"PortfoliosRemoved":"oldValue")[0],'"',''))::string
          when note_data like '%applyDefaultFieldMap%' then parse_json(note_data):"applyDefaultFieldMap":"oldValue"::STRING 
          else parse_json(note_data):"customFieldValue":"oldValue"::STRING     
-         end as note_old_value_raw,
+         end as note_old_value,
          
-    -- Categorize note types based on JSON structure
+    -- Note title categorization
     case when REGEXP_SUBSTR(note_title, '\\((.*?)\\)', 1, 1, 'e', 1) is null then 
               case when TRY_PARSE_JSON(note_data) is null then null								
                   else 
@@ -56,7 +55,7 @@ SELECT
                       end
               end
         else REGEXP_SUBSTR(NOTE_TITLE, '\\((.*?)\\)', 1, 1, 'e', 1)  
-        end as note_category,
+        end as note_title_detail,
         
     note_title,
     note_data,
@@ -67,4 +66,4 @@ FROM raw_data_store.loanpro.system_note_entity
 WHERE schema_name = ARCA.CONFIG.LOS_SCHEMA()  -- LoanPro application schema filter                                                           
     AND reference_type IN ('Entity.LoanSettings') 
     AND deleted = 0  -- Only active records
-    AND is_hard_deleted = FALSE;
+    AND is_hard_deleted = FALSE

@@ -3,6 +3,7 @@
 
 WITH freshsnow_data AS (
     SELECT 
+        id as record_id,  -- Preserve audit log ID
         entity_id as app_id,
         convert_timezone('UTC','America/Los_Angeles',created) as created_ts,
         convert_timezone('UTC','America/Los_Angeles',lastupdated) as lastupdated_ts,
@@ -70,6 +71,7 @@ WITH freshsnow_data AS (
 )
 
 SELECT
+    a.record_id,  -- Preserve audit log ID
     a.app_id,
     a.created_ts,
     a.lastupdated_ts,

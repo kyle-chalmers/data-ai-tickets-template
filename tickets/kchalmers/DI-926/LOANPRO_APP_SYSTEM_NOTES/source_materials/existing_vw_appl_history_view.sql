@@ -100,4 +100,126 @@ WITH initial_pull AS (
       AND A.NOTE_TITLE NOT IN ('Loan settings were created')
       -- and entity_id = 229521 
 )
--- [Complex CTE logic continues...]
+,sub_status_entity AS (
+    SELECT DISTINCT ID, TITLE
+    FROM RAW_DATA_STORE.LOANPRO.LOAN_SUB_STATUS_ENTITY
+    WHERE SCHEMA_NAME = CONFIG.LOS_SCHEMA() AND DELETED = 0
+)
+,status_entity AS (
+    SELECT DISTINCT ID, TITLE
+    FROM RAW_DATA_STORE.LOANPRO.LOAN_STATUS_ENTITY
+    WHERE SCHEMA_NAME = CONFIG.LOS_SCHEMA() AND DELETED = 0
+)
+,source_company AS (
+    SELECT DISTINCT ID, COMPANY_NAME
+    FROM RAW_DATA_STORE.LOANPRO.SOURCE_COMPANY_ENTITY
+    WHERE SCHEMA_NAME = CONFIG.LOS_SCHEMA() AND DELETED = 0
+)
+-- Handle both the loan status and loan sub status values
+,loan_stat_and_sub_stat_data as (
+select 
+      dat.*
+     ,case when dat.NOTE_TITLE_DETAIL = 'Loan Status - Loan Sub Status' and new_sub_stat.title is not null
+           then new_stat.title||' - '||new_sub_stat.title
+           when dat.NOTE_TITLE_DETAIL = 'Loan Status - Loan Sub Status'
+           then new_stat.title
+           else new_sub_stat.title end as newvalue
+     ,case when dat.NOTE_TITLE_DETAIL = 'Loan Status - Loan Sub Status' and old_sub_stat.title is not null
+           then old_stat.title||' - '||old_sub_stat.title
+           when dat.NOTE_TITLE_DETAIL = 'Loan Status - Loan Sub Status'
+           then old_stat.title
+           else old_sub_stat.title  end as oldvalue
+from initial_pull dat
+left join status_entity new_stat
+    on dat.new_loan_status = new_stat.ID --AND new_loan_status IS NOT NULL 
+        -- and loan_status_string is not null
+left join status_entity old_stat 
+    on dat.old_loan_status  = old_stat.ID --AND old_loan_status IS NOT NULL 
+        -- and loan_status_string is not null
+left join sub_status_entity new_sub_stat 
+    on new_loan_sub_status  = new_sub_stat.ID --AND new_loan_sub_status IS NOT NULL 
+        -- and loan_sub_status_string is not null
+left join sub_status_entity old_sub_stat 
+    on old_loan_sub_status  = old_sub_stat.ID --AND old_loan_sub_status IS NOT NULL 
+        -- and loan_sub_status_string is not null
+where 1 = 1
+-- and oldvalue <> '[]'
+and dat.NOTE_TITLE_DETAIL in ('Loan Status - Loan Sub Status', 'Loan Sub Status' )
+)
+,sc_data as (
+select dat.*
+      ,new_sc.company_name as newvalue
+      ,old_sc.company_name as oldvalue
+from initial_pull dat
+left join source_company new_sc 
+    on new_source_company  = new_sc.id --::STRING AND new_source_company IS NOT NULL 
+        -- and source_company_string is not null
+left join source_company old_sc 
+    on old_source_company  = old_sc.id --::STRING AND old_source_company IS NOT NULL 
+        -- and source_company_string is not null
+where 1 = 1
+    and dat.NOTE_TITLE_DETAIL = 'Source Company'
+)
+
+,others as (
+select  dat.*
+       ,NULLIF(COALESCE(
+                      new_custom_field_value
+                    , new_custom_field_values
+                    , new_apply_default_field_map
+                    , new_agent
+                    , new_follow_up_date
+                    , new_e_billing
+                    , new_credit_bureau
+                    , new_autopay_enabled
+                    , new_title
+                    ), '[]'
+                    )::STRING AS newValue
+        ,NULLIF(COALESCE(
+                      old_custom_field_value
+                    , old_custom_field_values
+                    , old_apply_default_field_map
+                    , old_agent
+                    , old_follow_up_date
+                    , old_e_billing
+                    , old_credit_bureau
+                    , old_autopay_enabled
+                    , old_title
+                        ), '[]'
+                    )::STRING AS oldValue
+from initial_pull dat 
+where 1 = 1
+and coalesce(dat.NOTE_TITLE_DETAIL,'c') not in ('Loan Status - Loan Sub Status', 'Loan Sub Status','Source Company')
+)
+,final as (
+select '1' A, *
+from loan_stat_and_sub_stat_data
+-- where oldvalue <> '[]'
+union all
+select '2', *
+from sc_data
+-- where oldvalue <> '[]'
+union all
+select '3', *
+from others
+-- where oldvalue <> '[]'
+)
+select 
+    LOANID AS ENTITY_ID,
+    NOTE_TITLE,
+    JSON_VALUES AS NOTE_DATA,
+    REFERENCE_TYPE,
+    OPERATION_TYPE,
+    OPERATION_SUB_TYPE,
+    ROW_EVENT_TYPE,
+    CREATE_USER,
+    CREATE_USER_NAME,
+    CREATED,
+    LASTUPDATED,
+    DELETED,
+    IS_HARD_DELETED,
+    BEFORE_VALUES,
+    NEWVALUE,
+    OLDVALUE,  
+    NOTE_TITLE_DETAIL 
+from final;
