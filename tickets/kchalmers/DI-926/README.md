@@ -6,10 +6,9 @@ This ticket addresses the modernization of multiple LoanPro application ETL proc
 
 ## Stored Procedures to Migrate
 
-1. ✅ **LOANPRO_APP_SYSTEM_NOTES** - COMPLETED
-2. ⏳ **APP_LOAN_PRODUCTION** - Pending
-3. ⏳ **APP_FUNNEL_REPORTING** - Pending  
-4. ⏳ **APP_DAILY_EXEC_REPORTING** - Pending
+1. ✅ **APP_SYSTEM_NOTE_ENTITY** (`BUSINESS_INTELLIGENCE.BRIDGE.APP_SYSTEM_NOTE_ENTITY()`) - COMPLETED
+2. ⏳ **APP_LOAN_PRODUCTION** (`BUSINESS_INTELLIGENCE.BRIDGE.APP_LOAN_PRODUCTION()`) - Pending
+3. ⏳ **APP_MASTER** (`BUSINESS_INTELLIGENCE.BRIDGE.APP_MASTER()`) - Pending
 
 ## Problem Statement
 
