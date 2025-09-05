@@ -1,8 +1,9 @@
--- DI-926: Production-Ready LoanPro App System Notes View
--- Follows APPL_HISTORY efficiency patterns with excluded unused columns
--- Architecture: FRESHSNOW (complete transformation) → BRIDGE (pass-through) → ANALYTICS (business logic)
+-- DI-926: Development Working Views - Updated to Match Production Architecture EXACTLY
+-- FRESHSNOW View (transformations) → FRESHSNOW Table (dbt) → BRIDGE View (SELECT *) → ANALYTICS View (enhancements)
+-- Updated to reflect production-ready architecture with comprehensive business logic
 
-CREATE OR REPLACE VIEW ARCA.FRESHSNOW.VW_LOANPRO_APP_SYSTEM_NOTES(
+-- Step 1: FRESHSNOW transformation view (all business logic here) - EXACT PRODUCTION MATCH
+CREATE OR REPLACE VIEW DEVELOPMENT.FRESHSNOW.VW_LOANPRO_APP_SYSTEM_NOTES(
     RECORD_ID,
     APP_ID, 
     CREATED_TS,
@@ -46,14 +47,13 @@ WITH initial_pull AS (
              
         -- Note categorization using pre-parsed JSON
         case when REGEXP_SUBSTR(a.note_title, '\\((.*?)\\)', 1, 1, 'e', 1) is null then 
-                  case when json_values is null then null								
+                  case when json_values is null then null				
                       else 
                           case when json_values:"loanStatusId"::STRING is not null then 'Loan Status - Loan Sub Status'
                                when json_values:"loanSubStatusId"::STRING is not null then 'Loan Sub Status'
                                when json_values:"sourceCompany"::STRING is not null then 'Source Company'
                                when json_values:"agent"::STRING is not null then 'Agent'
                                when json_values:"PortfoliosAdded"::STRING is not null then 'Portfolios Added'
-                               -- EXCLUDED: PortfoliosRemoved (unused downstream)
                                when json_values:"applyDefaultFieldMap"::STRING is not null then 'Apply Default Field Map'
                                when json_values:"followUpDate"::STRING is not null then 'FollowUp Date'
                                when json_values:"eBilling"::STRING is not null then 'eBilling'
@@ -71,9 +71,8 @@ WITH initial_pull AS (
              when json_values:"sourceCompany"::STRING is not null then json_values:"sourceCompany":"newValue"::string
              when json_values:"PortfoliosAdded"::STRING is not null then 
                   trim(replace(object_keys(json_values:"PortfoliosAdded":"newValue")[0],'"',''))::string
-             -- EXCLUDED: PortfoliosRemoved (unused downstream)
-             when a.note_data like '%applyDefaultFieldMap%' then json_values:"applyDefaultFieldMap":"newValue"::STRING 
-             else json_values:"customFieldValue":"newValue"::STRING 
+             when a.note_data like '%applyDefaultFieldMap%' then NULLIF(json_values:"applyDefaultFieldMap":"newValue"::STRING, '[]')
+             else NULLIF(json_values:"customFieldValue":"newValue"::STRING, 'null')
              end as note_new_value_raw,
              
         case when a.note_title = 'Loan settings were created' then json_values:"loanSubStatusId"::STRING 
@@ -82,9 +81,8 @@ WITH initial_pull AS (
              when json_values:"sourceCompany"::STRING is not null then json_values:"sourceCompany":"oldValue"::string
              when json_values:"PortfoliosAdded"::STRING is not null then 
                   trim(replace(object_keys(json_values:"PortfoliosAdded":"oldValue")[0],'"',''))::string
-             -- EXCLUDED: PortfoliosRemoved (unused downstream)
-             when a.note_data like '%applyDefaultFieldMap%' then json_values:"applyDefaultFieldMap":"oldValue"::STRING 
-             else json_values:"customFieldValue":"oldValue"::STRING     
+             when a.note_data like '%applyDefaultFieldMap%' then NULLIF(json_values:"applyDefaultFieldMap":"oldValue"::STRING, '[]') 
+             else NULLIF(json_values:"customFieldValue":"oldValue"::STRING, 'null')
              end as note_old_value_raw,
              
         -- Portfolio tracking
@@ -181,12 +179,106 @@ SELECT
     portfolios_added_category,
     portfolios_added_label
     
-    -- EXCLUDED 6 COLUMNS (zero downstream references):
-    -- DELETED_LOAN_STATUS_NEW, DELETED_LOAN_STATUS_OLD  
-    -- DELETED_SUB_STATUS_NEW, DELETED_SUB_STATUS_OLD
-    -- Original NOTE_NEW_VALUE_LABEL (6.5% populated), PORTFOLIOS_REMOVED (0.16% populated)
-    
 FROM final_data
 LEFT JOIN custom_field_labels cf1 ON note_title_detail = cf1.custom_field_name AND note_new_value_extracted = cf1.custom_field_value_id
 LEFT JOIN custom_field_labels cf2 ON note_title_detail = cf2.custom_field_name AND note_old_value_extracted = cf2.custom_field_value_id
 ORDER BY record_id DESC;
+
+-- Step 2: BRIDGE view - Simple SELECT * from FRESHSNOW table (dbt materialized)
+CREATE OR REPLACE VIEW BUSINESS_INTELLIGENCE_DEV.BRIDGE.VW_LOANPRO_APP_SYSTEM_NOTES(
+    RECORD_ID,
+    APP_ID,
+    CREATED_TS,
+    LASTUPDATED_TS,
+    LOAN_STATUS_NEW,
+    LOAN_STATUS_OLD,
+    NOTE_NEW_VALUE,
+    NOTE_NEW_VALUE_LABEL,
+    NOTE_OLD_VALUE,
+    NOTE_OLD_VALUE_LABEL,
+    NOTE_TITLE_DETAIL,
+    NOTE_TITLE,
+    NOTE_DATA,
+    DELETED,
+    IS_HARD_DELETED,
+    PORTFOLIOS_ADDED,
+    PORTFOLIOS_ADDED_CATEGORY,
+    PORTFOLIOS_ADDED_LABEL
+) COPY GRANTS AS 
+SELECT * FROM DEVELOPMENT.FRESHSNOW.LOANPRO_APP_SYSTEM_NOTES;
+
+-- Step 3: ANALYTICS view with business enhancements
+CREATE OR REPLACE VIEW BUSINESS_INTELLIGENCE_DEV.ANALYTICS.VW_LOANPRO_APP_SYSTEM_NOTES(
+    RECORD_ID,
+    APP_ID,
+    CREATED_TS,
+    CREATED_DATE,
+    LASTUPDATED_TS,
+    LOAN_STATUS_NEW,
+    LOAN_STATUS_OLD,
+    LOAN_STATUS_CHANGED_FLAG,
+    NOTE_NEW_VALUE,
+    NOTE_NEW_VALUE_LABEL,
+    NOTE_OLD_VALUE,
+    NOTE_OLD_VALUE_LABEL,
+    VALUE_CHANGED_FLAG,
+    NOTE_TITLE_DETAIL,
+    CHANGE_TYPE_CATEGORY,
+    CREATED_HOUR,
+    CREATED_DAY_OF_WEEK,
+    CREATED_WEEK,
+    CREATED_MONTH,
+    IS_STATUS_CHANGE,
+    IS_PORTFOLIO_CHANGE,
+    IS_AGENT_CHANGE,
+    NOTE_TITLE,
+    DELETED,
+    IS_HARD_DELETED,
+    PORTFOLIOS_ADDED,
+    PORTFOLIOS_ADDED_CATEGORY,
+    PORTFOLIOS_ADDED_LABEL
+) COPY GRANTS AS 
+SELECT
+    RECORD_ID, 
+    APP_ID, 
+    CREATED_TS, 
+    CREATED_TS::date as CREATED_DATE, 
+    LASTUPDATED_TS,
+    LOAN_STATUS_NEW, 
+    LOAN_STATUS_OLD,
+    case when LOAN_STATUS_NEW != LOAN_STATUS_OLD then 1 else 0 end as LOAN_STATUS_CHANGED_FLAG,
+    NOTE_NEW_VALUE,
+    NOTE_NEW_VALUE_LABEL, 
+    NOTE_OLD_VALUE,
+    NOTE_OLD_VALUE_LABEL,
+    case when NOTE_NEW_VALUE is not null and NOTE_OLD_VALUE is not null 
+         and NOTE_NEW_VALUE != NOTE_OLD_VALUE then 1 else 0 end as VALUE_CHANGED_FLAG,
+    NOTE_TITLE_DETAIL,
+    case when NOTE_TITLE_DETAIL like '%Status%' then 'Status Change'
+         when NOTE_TITLE_DETAIL like '%Portfolio%' then 'Portfolio Management'
+         when NOTE_TITLE_DETAIL = 'Agent' then 'Agent Assignment'
+         when NOTE_TITLE_DETAIL = 'Source Company' then 'Source Management'
+         else 'Other' end as CHANGE_TYPE_CATEGORY,
+    EXTRACT(HOUR FROM CREATED_TS) as CREATED_HOUR,
+    EXTRACT(DAYOFWEEK FROM CREATED_TS) as CREATED_DAY_OF_WEEK,
+    DATE_TRUNC('week', CREATED_TS::date) as CREATED_WEEK,
+    DATE_TRUNC('month', CREATED_TS::date) as CREATED_MONTH,
+    case when NOTE_TITLE_DETAIL like '%Loan Status%' then 1 else 0 end as IS_STATUS_CHANGE,
+    case when NOTE_TITLE_DETAIL like '%Portfolio%' then 1 else 0 end as IS_PORTFOLIO_CHANGE,
+    case when NOTE_TITLE_DETAIL = 'Agent' then 1 else 0 end as IS_AGENT_CHANGE,
+    NOTE_TITLE, 
+    DELETED, 
+    IS_HARD_DELETED,
+    PORTFOLIOS_ADDED,
+    PORTFOLIOS_ADDED_CATEGORY,
+    PORTFOLIOS_ADDED_LABEL
+FROM BUSINESS_INTELLIGENCE_DEV.BRIDGE.VW_LOANPRO_APP_SYSTEM_NOTES;
+
+-- Architecture Notes:
+-- 1. FRESHSNOW View: Contains EXACT production transformations (JSON parsing, lookups, categorization)
+-- 2. FRESHSNOW Table: Materialized by dbt job from FRESHSNOW view (external to this deployment)
+-- 3. BRIDGE View: Simple pass-through SELECT * from FRESHSNOW table (corrected architecture pattern)
+-- 4. ANALYTICS View: Business enhancements only (time dimensions, flags, analytical calculations)
+-- 5. Data Source: RAW_DATA_STORE.LOANPRO.SYSTEM_NOTE_ENTITY (production data)
+-- 6. Performance: Single JSON parse optimization, timezone conversion, comprehensive reference lookups
+-- 7. Business Logic: EXACT match to production including tier handling, custom field labels, portfolio lookups
