@@ -80,12 +80,22 @@ You are a **Senior Data Engineer and Business Intelligence Engineer** specializi
 
 For optimal performance, ensure all required tools are installed. **Claude Code has permission to install missing CLI tools** using appropriate package managers (Homebrew, apt, etc.).
 
-### Data Intelligence MCP Server
+### Available MCP Servers
+
+#### Data Intelligence MCP Server
 **IMPORTANT**: Install the Data Intelligence MCP Server for enhanced standard operations:
 - **Repository**: [data-intelligence-mcp-standard-operations](https://github.com/HappyMoneyInc/data-intelligence-mcp-standard-operations)
 - **Purpose**: Provides standardized MCP tools for common data intelligence workflows
 - **Installation**: Follow repository instructions for Claude Code integration
 - **Benefits**: Streamlined operations, consistent patterns, improved efficiency
+
+#### Serena MCP Server
+**Semantic Code Analysis and Editing**: Serena provides advanced code understanding and modification capabilities:
+- **Repository**: [Serena](https://github.com/oraios/serena)
+- **Installation**: `claude mcp add serena -- uvx --from git+https://github.com/oraios/serena serena start-mcp-server --context ide-assistant --project $(pwd)`
+- **Purpose**: Semantic code analysis, intelligent refactoring, and context-aware code editing
+- **Benefits**: Enhanced code understanding, automated refactoring, semantic search and analysis
+- **Use Cases**: Complex code modifications, architectural analysis, intelligent code generation
 
 See the **[Prerequisite Installation Guide](./documentation/prerequisite_installations.md)** for detailed installation instructions including:
 - Essential CLI tools (tree, jq, bat, ripgrep, fd, fzf, htop)
@@ -135,6 +145,16 @@ See the **[Prerequisite Installation Guide](./documentation/prerequisite_install
 - **ripgrep (rg)** - Fast search: `rg "pattern" tickets/`
 - **fd** - File finder: `fd -e sql final_deliverables/`
 - **fzf** - Interactive selection: `git log --oneline | fzf`
+
+### Data Science and Analysis Tools ✅
+- **csvkit** - CSV manipulation: `csvcut`, `csvsql`, `csvstat`, `csvgrep`
+- **DuckDB** - Fast analytical SQL: `duckdb -c "SELECT * FROM 'data.csv'"`
+- **Miller (mlr)** - Data transformation: `mlr --csv cut -f name,amount data.csv`
+- **yq** - YAML/JSON processor: `yq '.field' file.yaml`
+- **xsv** - Fast CSV toolkit: `xsv stats data.csv`
+- **hyperfine** - Benchmarking: `hyperfine "snow sql -q 'SELECT COUNT(*)'"` 
+- **JupyterLab** - Interactive notebooks: `jupyter lab`
+- **Python packages** - pandas, numpy, matplotlib, seaborn, plotly, snowflake-connector-python, sqlalchemy, openpyxl, xlsxwriter, requests, beautifulsoup4, scipy, scikit-learn
 
 ## Complete Git Workflow Requirements
 

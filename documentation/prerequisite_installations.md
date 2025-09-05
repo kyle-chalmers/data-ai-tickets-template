@@ -26,6 +26,14 @@ brew install htop          # Better process viewer (requires sudo)
 brew install postgresql    # psql command for database connections
 brew install mysql-client  # mysql command line client
 
+# Data science and analysis tools ✅
+brew install csvkit        # CSV manipulation tools
+brew install duckdb        # Fast analytical SQL database
+brew install miller        # Data transformation tool
+brew install yq            # YAML/JSON processor
+brew install xsv           # Fast CSV toolkit  
+brew install hyperfine     # Benchmarking tool
+
 # Development tools
 brew install git           # Version control (usually pre-installed)
 brew install gh            # GitHub CLI
@@ -107,6 +115,44 @@ scoop install gh
   ```bash
   bat file.sql               # View SQL file with highlighting
   bat --style=plain file.txt # Plain output without line numbers
+  ```
+
+### Data Science and Analysis Tools ✅
+- **csvkit**: Swiss army knife for CSV files
+  ```bash
+  csvstat data.csv           # Quick statistics
+  csvsql --query "SELECT * FROM data WHERE amount > 100" data.csv
+  csvcut -c name,amount data.csv  # Select columns
+  ```
+
+- **DuckDB**: Fast analytical SQL database
+  ```bash
+  duckdb -c "SELECT * FROM 'data.csv' WHERE amount > 1000"
+  duckdb mydb.db             # Connect to persistent database
+  ```
+
+- **Miller (mlr)**: Data transformation tool
+  ```bash
+  mlr --csv cut -f name,amount data.csv        # Select fields
+  mlr --csv stats1 -a mean,count -f amount data.csv  # Statistics
+  ```
+
+- **yq**: YAML/JSON processor
+  ```bash
+  yq '.field' config.yaml    # Extract YAML field
+  yq -o json config.yaml     # Convert YAML to JSON
+  ```
+
+- **xsv**: Fast CSV toolkit
+  ```bash
+  xsv stats data.csv         # CSV statistics
+  xsv search "pattern" data.csv  # Search CSV content
+  ```
+
+- **hyperfine**: Benchmarking tool
+  ```bash
+  hyperfine "snow sql -q 'SELECT COUNT(*) FROM table'"  # Benchmark queries
+  hyperfine --warmup 3 "command"  # Multiple runs with warmup
   ```
 
 ### Interactive Tools
@@ -235,10 +281,10 @@ The following tools are already installed and have been essential for data intel
   - Used for: Branch management, commit tracking, collaboration
   - Essential for ticket workflow and code management
 
-- **Python 3**: Programming language with data science libraries
+- **Python 3**: Programming language with data science libraries ✅
   - Used for: Data processing, analysis, automation scripts, data comparisons
-  - **Required Libraries**: `pip install pandas numpy matplotlib seaborn requests openpyxl`
-  - **Optional but Recommended**: `pip install jupyter plotly scikit-learn sqlparse`
+  - **Installed Libraries**: pandas, numpy, matplotlib, seaborn, plotly, requests, openpyxl, xlsxwriter, beautifulsoup4, scipy, scikit-learn, snowflake-connector-python, sqlalchemy
+  - **JupyterLab**: Interactive notebook environment for data analysis
   - Essential for data analysis tasks (preferred over bash commands for complex analysis)
 
 ### Custom Integrations

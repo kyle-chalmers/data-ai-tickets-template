@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="BI_PII" uuid="f89c1ce6-54d7-4f76-a6a8-ab6e3d1ede8c">
+      <driver-ref>snowflake</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>net.snowflake.client.jdbc.SnowflakeDriver</jdbc-driver>
+      <jdbc-url>jdbc:snowflake://happymoney.us-east-1.snowflakecomputing.com:443?warehouse=BUSINESS_INTELLIGENCE&amp;db=BUSINESS_INTELLIGENCE&amp;role=BUSINESS_INTELLIGENCE_PII</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+  </component>
+</project>
