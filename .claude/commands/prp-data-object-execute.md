@@ -1,0 +1,200 @@
+# Execute Snowflake Data Object PRP
+
+## PRP File: $ARGUMENTS
+
+Execute a comprehensive Snowflake data object creation or modification following the provided PRP. This command handles both single and multiple related objects with full development-to-production workflow.
+
+**Expected PRP Format:** Generated using `/generate-data-object-prp` command with complete database research and validation requirements.
+
+## Execution Process
+
+### Phase 1: PRP Analysis and Setup
+1. **Read and validate PRP completeness**
+   - Verify all critical context sections are present
+   - Confirm operation type (CREATE_NEW/ALTER_EXISTING) and scope (SINGLE/MULTIPLE_RELATED_OBJECTS)
+   - Validate database research findings and architectural compliance
+
+2. **Environment Setup**
+   - Create ticket folder structure following standards: `tickets/[user]/DI-XXX/`
+   - Initialize development environment connections (DEVELOPMENT/BUSINESS_INTELLIGENCE_DEV)
+   - Use TodoWrite tool to create comprehensive task tracking list
+   - Prepare simplified QC validation structure
+
+3. **Dependency Analysis**
+   - If MULTIPLE_RELATED_OBJECTS: Map creation order and dependencies
+   - If ALTER_EXISTING: Document current state and migration requirements
+   - Validate downstream impact analysis
+
+### Phase 2: Development Implementation
+1. **Database Object Creation (Development Environment)**
+   - Create objects in DEVELOPMENT and BUSINESS_INTELLIGENCE_DEV databases
+   - Follow 5-layer architecture compliance (FRESHSNOW → BRIDGE → ANALYTICS → REPORTING)
+   - Use production data for realistic testing
+   - Implement proper schema filtering (LMS_SCHEMA(), LOS_SCHEMA())
+
+2. **Quality Control Implementation - CRITICAL**
+   - **MANDATORY DUPLICATE TESTING**: Check for duplicate records with detailed analysis
+   - **MANDATORY COMPLETENESS VALIDATION**: Verify all expected records are present
+   - **MANDATORY DATA INTEGRITY CHECKS**: Validate referential integrity and business rules
+   - **MANDATORY PERFORMANCE TESTING**: Ensure queries run efficiently with acceptable response times
+   - Execute all validation gates from PRP with comprehensive documentation
+   - Create single comprehensive QC file: `qc_validation.sql` with all tests
+   - If ALTER_EXISTING: **CRITICAL** - Compare new vs existing object data with diff analysis
+   - If MULTIPLE_RELATED_OBJECTS: Test cross-object relationships and dependencies
+   - Validate join integrity and business logic with explicit validation queries
+
+3. **Performance Optimization**
+   - Execute EXPLAIN plans for all objects
+   - Optimize query performance while maintaining correctness
+   - Test optimized queries against original results using `diff`
+
+### Phase 3: Validation and Documentation
+1. **Comprehensive Testing - CRITICAL AND MANDATORY**
+   - **DUPLICATE ANALYSIS**: Explicit duplicate detection with counts and examples
+   - **DATA COMPLETENESS**: Record count validation and missing data analysis  
+   - **DATA INTEGRITY**: Referential integrity checks and constraint validation
+   - **PERFORMANCE VALIDATION**: Query execution time analysis and optimization verification
+   - **COMPARISON TESTING**: If replacing existing object, side-by-side data comparison
+   - Source-to-target data validation with detailed reconciliation
+   - Downstream dependency testing with impact analysis
+   - Migration impact assessment (if applicable)
+   - Business logic validation with test cases
+   - Performance benchmarking against requirements
+
+2. **Documentation Generation - Human-Focused**
+   - **Simple README.md**: Clear, concise summary for human reviewers (no technical jargon)
+   - **CLAUDE.md**: Complete context file for future AI assistance with this data object
+   - Document all QC results with pass/fail status and specific findings
+   - **File Consolidation**: Update/overwrite outdated files, eliminate redundancy
+   - Number final deliverables only: `1_[description].sql`, `2_[description].csv`
+   - Create production deployment template using `documentation/db_deploy_template.sql` pattern
+
+### Phase 4: Production Readiness
+1. **Final Validation**
+   - Run complete validation suite in development environment
+   - Verify all objects function correctly with expected data
+   - Confirm architectural compliance and performance requirements
+   - Validate all downstream dependencies remain functional
+
+2. **Production Deployment Preparation**
+   - Generate production deployment script using variable templates
+   - Create rollback procedures if modifying existing objects
+   - Prepare stakeholder communication and deployment timeline
+   - Document any breaking changes or migration requirements
+
+## Success Criteria
+
+### Technical Requirements
+- [ ] All objects successfully created in development environments
+- [ ] Complete QC validation suite passes with documented results
+- [ ] Performance requirements met with optimized queries
+- [ ] Architecture compliance verified (5-layer referencing rules)
+- [ ] All downstream dependencies tested and functional
+
+### Quality Assurance - MANDATORY VALIDATION
+- [ ] **DUPLICATE TESTING COMPLETE**: Explicit duplicate analysis with documented results
+- [ ] **DATA COMPLETENESS VERIFIED**: All expected records present with count reconciliation
+- [ ] **DATA INTEGRITY VALIDATED**: Referential integrity and constraint checks pass
+- [ ] **PERFORMANCE REQUIREMENTS MET**: Query execution times within acceptable limits
+- [ ] **COMPARISON ANALYSIS COMPLETE**: If replacing existing, detailed before/after comparison
+- [ ] Source-to-target data validation confirms 100% accuracy
+- [ ] Join integrity tests pass for all table relationships with documented results
+- [ ] Business logic validation confirms expected calculations with test cases
+- [ ] If ALTER_EXISTING: Migration analysis shows expected changes only with diff documentation
+- [ ] If MULTIPLE_RELATED_OBJECTS: Cross-object relationships validated with dependency testing
+
+### Documentation and Delivery - Human-Optimized
+- [ ] **Simple README.md**: Clear, concise business summary (no technical jargon)
+- [ ] **CLAUDE.md created**: Complete context file for future AI assistance
+- [ ] **File consolidation complete**: Outdated files updated/removed, no redundancy
+- [ ] **Final deliverables only**: Only essential numbered files remain
+- [ ] Production deployment template ready for execution
+- [ ] QC results documented with pass/fail status and specific findings
+- [ ] File organization optimized for human review and understanding
+
+### Architecture and Compliance
+- [ ] Objects follow proper layer referencing rules
+- [ ] Schema filtering implemented correctly (LMS_SCHEMA(), LOS_SCHEMA())
+- [ ] COPY GRANTS and environment variables used appropriately
+- [ ] Deployment strategy accounts for proper sequencing
+
+## Output Structure - Simplified and Clean
+
+```
+tickets/[user]/DI-XXX/
+├── README.md                    # Simple business summary for human reviewers
+├── CLAUDE.md                    # Complete technical context for future AI assistance
+├── final_deliverables/          # Essential deliverables only
+│   ├── 1_data_object_creation.sql
+│   ├── 2_production_deploy_template.sql
+│   └── 3_validation_summary.csv
+├── qc_validation.sql            # Single comprehensive QC validation file
+└── source_materials/            # PRP and reference materials only
+```
+
+**Simplified Approach:**
+- **Single QC File**: All validation tests consolidated into `qc_validation.sql`
+- **Essential Files Only**: Remove development artifacts and working files
+- **Human-Optimized**: Clear structure for review and understanding
+- **CLAUDE.md**: Complete technical context for future AI assistance
+
+## Error Handling and Fallback
+
+1. **Database Connection Issues**
+   - Verify Snowflake CLI authentication and Duo Security status
+   - Check database and schema permissions
+   - Provide clear error messages with resolution steps
+
+2. **PRP Validation Failures**
+   - Identify missing critical context sections
+   - Request additional database research if needed
+   - Validate architectural compliance before proceeding
+
+3. **Quality Control Failures**
+   - Document specific QC failures with detailed analysis
+   - Provide recommended remediation steps
+   - Do not proceed to production without QC validation
+
+4. **Performance Issues**
+   - Document performance bottlenecks with EXPLAIN output
+   - Provide optimization recommendations
+   - Consider alternative approaches if performance targets not met
+
+## Security and Compliance
+
+- **PII Handling**: Ensure proper data masking and access controls
+- **Schema Filtering**: Validate multi-instance LoanPro filtering
+- **Regulatory Compliance**: Follow financial services data requirements
+- **Access Control**: Use COPY GRANTS to preserve existing permissions
+
+## Final Notes
+
+- **Development First**: Always create and test in development environments before production
+- **Quality Gates**: All validation must pass before production deployment
+- **Stakeholder Review**: Present development results for approval before production deployment
+- **Rollback Planning**: Have rollback procedures ready for any production changes
+
+## CRITICAL VALIDATION REQUIREMENTS
+
+**MANDATORY TESTS - DO NOT PROCEED WITHOUT:**
+
+1. **DUPLICATE DETECTION**: Explicit duplicate analysis with counts and sample records
+2. **DATA COMPLETENESS**: Full record count reconciliation between source and target
+3. **DATA INTEGRITY**: Referential integrity checks and constraint validation
+4. **PERFORMANCE VALIDATION**: Query execution time analysis within acceptable limits
+5. **COMPARISON TESTING**: If altering existing objects, detailed before/after comparison
+
+**FILE ORGANIZATION REQUIREMENTS:**
+
+- **Simple README.md**: Business summary for human reviewers (no technical jargon)
+- **CLAUDE.md**: Complete technical context for future AI assistance
+- **Single QC File**: All validation tests in `qc_validation.sql`
+- **File Consolidation**: Update/overwrite outdated files, eliminate redundancy
+- **Essential deliverables only**: Remove development artifacts and working files
+
+**TODOWRITE INTEGRATION:**
+- Use TodoWrite tool to create comprehensive task tracking throughout execution
+- Mark tasks as in_progress, completed as work progresses
+- Ensure systematic completion of all validation requirements
+
+This command ensures comprehensive, quality-assured Snowflake data object implementation with mandatory validation requirements, simplified file organization, and systematic task tracking.
