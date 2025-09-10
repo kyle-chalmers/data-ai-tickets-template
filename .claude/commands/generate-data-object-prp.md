@@ -2,7 +2,7 @@
 
 ## Data Object Requirements: $ARGUMENTS
 
-Generate a complete PRP for Snowflake data object creation OR modification (views, tables, dynamic tables) with comprehensive database research. Read the INITIAL.md requirements file first to understand operation type (CREATE_NEW/ALTER_EXISTING), business objectives, data grain, sources needed, and integration points. If no Jira ticket exists and CREATE_NEW is specified, create the ticket first using acli.
+Generate a complete PRP for Snowflake data object creation OR modification (views, tables, dynamic tables) with comprehensive database research. Supports both single object and multiple related objects operations. Read the INITIAL.md requirements file first to understand operation type (CREATE_NEW/ALTER_EXISTING), scope (SINGLE_OBJECT/MULTIPLE_RELATED_OBJECTS), business objectives, data grain, sources needed, and integration points. If no Jira ticket exists and CREATE_NEW is specified, create the ticket first using acli.
 
 **Template Reference:** Use `PRPs/templates/data-object-initial.md` as the standard input format for data object requests.
 
@@ -12,7 +12,8 @@ The AI agent only gets the context you provide in the PRP and training data. Inc
 
 1. **Database Schema Analysis**
    - Use Snow CLI to explore existing database objects: `snow sql -q "SHOW TABLES IN SCHEMA schema_name"`
-   - If ALTER_EXISTING: Get current object DDL: `snow sql -q "SELECT GET_DDL('VIEW', 'schema.existing_object')"`
+   - If ALTER_EXISTING: Get current object DDL for all objects: `snow sql -q "SELECT GET_DDL('VIEW', 'schema.existing_object')"`
+   - If MULTIPLE_RELATED_OBJECTS: Map inter-object dependencies and creation order requirements
    - Identify source tables and views: `snow sql -q "DESCRIBE TABLE schema.table_name"`
    - Map data relationships and dependencies: `snow sql -q "SELECT GET_DDL('VIEW', 'schema.view_name')"`
    - Check existing patterns in similar objects within the 5-layer architecture
@@ -77,25 +78,32 @@ Using PRPs/templates/prp_base.md as template:
 
 ### Implementation Blueprint
 - **Operation Strategy**: CREATE_NEW vs ALTER_EXISTING approach and migration plan
-- **Data Architecture Design**: Which layer(s) the object belongs in and why
-- **Current State Preservation**: If ALTER_EXISTING, document current object structure and behavior
+- **Scope Strategy**: SINGLE_OBJECT vs MULTIPLE_RELATED_OBJECTS deployment approach
+- **Data Architecture Design**: Which layer(s) the objects belong in and why
+- **Object Dependency Mapping**: If multiple objects, document inter-dependencies and creation order
+- **Current State Preservation**: If ALTER_EXISTING, document current object structures and behavior
 - **Source Table Analysis**: Detailed breakdown of input tables and relationships
 - **Migration Analysis**: If changing sources, detailed comparison of old vs new data sources
-- **Transformation Logic**: Business rules, calculations, filtering, aggregations
+- **Transformation Logic**: Business rules, calculations, filtering, aggregations for each object
 - **Development Phase**: Create objects in DEVELOPMENT and BUSINESS_INTELLIGENCE_DEV using production data
+- **Sequential vs Parallel Development**: Strategy for multiple objects creation/deployment
 - **Before/After Testing**: If ALTER_EXISTING, comprehensive comparison between current and new implementation
 - **Join Validation**: Comprehensive testing of all table joins and relationship integrity
+- **Cross-Object Validation**: If multiple objects, test relationships between created objects
 - **Downstream Impact Analysis**: Identify and test all dependent objects with migration scenarios
 - **Quality Control Plan**: Source-to-target validation queries and comprehensive data quality checks
 - **Performance Optimization**: Query optimization and execution strategies
-- **Production Deployment Strategy**: Use `documentation/db_deploy_template.sql` for final deployment
-- **Task Order**: Analysis → Development → Testing → Comparison → User Review → Production Deployment
+- **Production Deployment Strategy**: Use `documentation/db_deploy_template.sql` for final deployment with proper sequencing
+- **Task Order**: Analysis → Development → Testing → Cross-Object Validation → Comparison → User Review → Production Deployment
 
-### Validation Gates (Must be Executable for the specific data object)
+### Validation Gates (Must be Executable for the specific data object(s))
 ```bash
-# Development Environment Object Creation
-snow sql -q "DESCRIBE DEVELOPMENT.[SCHEMA].[OBJECT_NAME]" --format csv
-snow sql -q "DESCRIBE BUSINESS_INTELLIGENCE_DEV.[SCHEMA].[OBJECT_NAME]" --format csv
+# Development Environment Object Creation (all objects)
+snow sql -q "DESCRIBE DEVELOPMENT.[SCHEMA].[PRIMARY_OBJECT_NAME]" --format csv
+snow sql -q "DESCRIBE BUSINESS_INTELLIGENCE_DEV.[SCHEMA].[PRIMARY_OBJECT_NAME]" --format csv
+
+# Multiple Objects Validation (if MULTIPLE_RELATED_OBJECTS)
+snow sql -q "$(cat qc_queries/0a_multi_object_creation_validation.sql)" --format csv
 
 # Current State Documentation (if ALTER_EXISTING)
 snow sql -q "$(cat qc_queries/0_current_state_baseline.sql)" --format csv
@@ -109,16 +117,19 @@ snow sql -q "$(cat qc_queries/1b_before_after_data_comparison.sql)" --format csv
 # Join Integrity Testing
 snow sql -q "$(cat qc_queries/2_join_validation_tests.sql)" --format csv
 
+# Cross-Object Relationship Testing (if MULTIPLE_RELATED_OBJECTS)
+snow sql -q "$(cat qc_queries/2b_cross_object_relationship_validation.sql)" --format csv
+
 # Downstream Dependencies Testing
 snow sql -q "$(cat qc_queries/3_downstream_dependency_validation.sql)" --format csv
 
 # Migration Impact Assessment (if ALTER_EXISTING)
 snow sql -q "$(cat qc_queries/3b_migration_impact_validation.sql)" --format csv
 
-# Business Logic Validation
+# Business Logic Validation (all objects)
 snow sql -q "$(cat qc_queries/4_business_logic_validation.sql)" --format csv
 
-# Performance Validation
+# Performance Validation (all objects)
 snow sql -q "EXPLAIN $(cat final_deliverables/optimized_query.sql)" --format csv
 
 # Production Deployment Readiness (after user review)
@@ -134,19 +145,22 @@ Save as: `PRPs/snowflake-data-object-{object-name}.md`
 
 ## Quality Checklist
 - [ ] Operation type clearly identified (CREATE_NEW/ALTER_EXISTING) with appropriate strategy
-- [ ] Complete database schema analysis with DDL and sample data included
+- [ ] Scope clearly identified (SINGLE_OBJECT/MULTIPLE_RELATED_OBJECTS) with deployment approach
+- [ ] If MULTIPLE_RELATED_OBJECTS: Inter-object dependencies mapped with creation/deployment order
+- [ ] Complete database schema analysis with DDL and sample data included for all objects
 - [ ] If ALTER_EXISTING: Current state documented with baseline queries and expected changes
-- [ ] Architecture compliance verified (5-layer referencing rules)  
+- [ ] Architecture compliance verified (5-layer referencing rules) for all objects
 - [ ] All source tables and relationships documented with Snow CLI output
 - [ ] Join validation tests created and executable for all table relationships
+- [ ] If MULTIPLE_RELATED_OBJECTS: Cross-object relationship validation queries created
 - [ ] If ALTER_EXISTING: Before/after comparison queries created for data migration validation
 - [ ] Downstream dependency analysis completed with migration impact assessment
 - [ ] Development environment objects created in DEVELOPMENT/BUSINESS_INTELLIGENCE_DEV
 - [ ] Source-to-target data validation queries executable and documented
 - [ ] Business logic patterns identified from existing tickets
 - [ ] Quality control validation queries are executable with comprehensive testing
-- [ ] Production deployment template follows `documentation/db_deploy_template.sql` pattern
-- [ ] Performance optimization considerations documented
+- [ ] Production deployment template follows `documentation/db_deploy_template.sql` pattern with proper sequencing
+- [ ] Performance optimization considerations documented for all objects
 - [ ] Data lineage and transformation logic clearly specified
 - [ ] Error handling and edge cases covered
 - [ ] References specific database objects and existing patterns
