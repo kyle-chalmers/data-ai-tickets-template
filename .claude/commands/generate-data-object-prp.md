@@ -2,7 +2,7 @@
 
 ## Data Object Requirements: $ARGUMENTS
 
-Generate a complete PRP for Snowflake data object creation (views, tables, dynamic tables) with comprehensive database research. Read the INITIAL.md requirements file first to understand business objectives, data grain, sources needed, and integration points. If no Jira ticket exists and CREATE_NEW is specified, create the ticket first using acli.
+Generate a complete PRP for Snowflake data object creation OR modification (views, tables, dynamic tables) with comprehensive database research. Read the INITIAL.md requirements file first to understand operation type (CREATE_NEW/ALTER_EXISTING), business objectives, data grain, sources needed, and integration points. If no Jira ticket exists and CREATE_NEW is specified, create the ticket first using acli.
 
 **Template Reference:** Use `PRPs/templates/data-object-initial.md` as the standard input format for data object requests.
 
@@ -12,6 +12,7 @@ The AI agent only gets the context you provide in the PRP and training data. Inc
 
 1. **Database Schema Analysis**
    - Use Snow CLI to explore existing database objects: `snow sql -q "SHOW TABLES IN SCHEMA schema_name"`
+   - If ALTER_EXISTING: Get current object DDL: `snow sql -q "SELECT GET_DDL('VIEW', 'schema.existing_object')"`
    - Identify source tables and views: `snow sql -q "DESCRIBE TABLE schema.table_name"`
    - Map data relationships and dependencies: `snow sql -q "SELECT GET_DDL('VIEW', 'schema.view_name')"`
    - Check existing patterns in similar objects within the 5-layer architecture
@@ -28,7 +29,9 @@ The AI agent only gets the context you provide in the PRP and training data. Inc
    - Check for duplicates, nulls, data types: `snow sql -q "SELECT DISTINCT column FROM table"`
    - Test all joins between source objects: `snow sql -q "SELECT COUNT(*) FROM table1 t1 LEFT JOIN table2 t2 ON t1.key = t2.key WHERE t2.key IS NULL"`
    - Compare record counts: source vs target object validation
-   - If replacing existing object: identify downstream dependencies using `INFORMATION_SCHEMA.TABLE_CONSTRAINTS` and `SHOW DEPENDENT OBJECTS`
+   - If ALTER_EXISTING: Compare old vs new data sources with sample queries to identify expected differences
+   - If ALTER_EXISTING: Create before/after comparison queries to validate the migration
+   - Identify downstream dependencies using `INFORMATION_SCHEMA.TABLE_CONSTRAINTS` and `SHOW DEPENDENT OBJECTS`
    - Test downstream impact: validate dependent views, tables, and reports still function correctly
    - Document data lineage and transformation requirements
 
@@ -57,29 +60,36 @@ The AI agent only gets the context you provide in the PRP and training data. Inc
 Using PRPs/templates/prp_base.md as template:
 
 ### Critical Context to Include and pass to the AI agent as part of the PRP
+- **Operation Type**: CREATE_NEW or ALTER_EXISTING with specific requirements and expectations
 - **Business Requirements**: Complete INITIAL.md content with data grain, use cases, stakeholders
+- **Current State Analysis**: If ALTER_EXISTING, complete DDL and data samples from existing object
 - **Database Objects**: Complete DDL of related tables/views with `GET_DDL()` output
 - **Schema Relationships**: Table joins, foreign keys, and data lineage mapping with join validation results
 - **Architecture Patterns**: Layer-specific referencing rules and `documentation/db_deploy_template.sql` pattern
+- **Data Migration Analysis**: If changing sources, before/after comparison and expected differences
 - **Data Samples**: Representative data from source tables (first 5-10 rows with business context)
 - **Business Logic**: Existing transformation patterns, calculation logic, and KPI definitions
-- **Downstream Dependencies**: If replacing existing object, complete dependency analysis and impact assessment
+- **Downstream Dependencies**: Complete dependency analysis and impact assessment for existing consumers
 - **Development Environment Setup**: Objects created in DEVELOPMENT/BUSINESS_INTELLIGENCE_DEV for testing
 - **Jira Context**: Full ticket details, stakeholder requirements, acceptance criteria
 - **Performance/Compliance**: Indexing patterns, PII handling, regulatory requirements
 - **Documentation URLs**: Snowflake documentation for specific features used
 
 ### Implementation Blueprint
+- **Operation Strategy**: CREATE_NEW vs ALTER_EXISTING approach and migration plan
 - **Data Architecture Design**: Which layer(s) the object belongs in and why
+- **Current State Preservation**: If ALTER_EXISTING, document current object structure and behavior
 - **Source Table Analysis**: Detailed breakdown of input tables and relationships
+- **Migration Analysis**: If changing sources, detailed comparison of old vs new data sources
 - **Transformation Logic**: Business rules, calculations, filtering, aggregations
 - **Development Phase**: Create objects in DEVELOPMENT and BUSINESS_INTELLIGENCE_DEV using production data
+- **Before/After Testing**: If ALTER_EXISTING, comprehensive comparison between current and new implementation
 - **Join Validation**: Comprehensive testing of all table joins and relationship integrity
-- **Downstream Impact Analysis**: If replacing existing object, identify and test all dependent objects
+- **Downstream Impact Analysis**: Identify and test all dependent objects with migration scenarios
 - **Quality Control Plan**: Source-to-target validation queries and comprehensive data quality checks
 - **Performance Optimization**: Query optimization and execution strategies
 - **Production Deployment Strategy**: Use `documentation/db_deploy_template.sql` for final deployment
-- **Task Order**: Development → Testing → User Review → Production Deployment
+- **Task Order**: Analysis → Development → Testing → Comparison → User Review → Production Deployment
 
 ### Validation Gates (Must be Executable for the specific data object)
 ```bash
@@ -87,14 +97,23 @@ Using PRPs/templates/prp_base.md as template:
 snow sql -q "DESCRIBE DEVELOPMENT.[SCHEMA].[OBJECT_NAME]" --format csv
 snow sql -q "DESCRIBE BUSINESS_INTELLIGENCE_DEV.[SCHEMA].[OBJECT_NAME]" --format csv
 
+# Current State Documentation (if ALTER_EXISTING)
+snow sql -q "$(cat qc_queries/0_current_state_baseline.sql)" --format csv
+
 # Source-to-Target Data Validation
 snow sql -q "$(cat qc_queries/1_source_target_count_comparison.sql)" --format csv
+
+# Before/After Comparison (if ALTER_EXISTING)
+snow sql -q "$(cat qc_queries/1b_before_after_data_comparison.sql)" --format csv
 
 # Join Integrity Testing
 snow sql -q "$(cat qc_queries/2_join_validation_tests.sql)" --format csv
 
-# Downstream Dependencies Testing (if replacing existing object)
+# Downstream Dependencies Testing
 snow sql -q "$(cat qc_queries/3_downstream_dependency_validation.sql)" --format csv
+
+# Migration Impact Assessment (if ALTER_EXISTING)
+snow sql -q "$(cat qc_queries/3b_migration_impact_validation.sql)" --format csv
 
 # Business Logic Validation
 snow sql -q "$(cat qc_queries/4_business_logic_validation.sql)" --format csv
@@ -114,11 +133,14 @@ snow sql -q "EXPLAIN $(cat final_deliverables/optimized_query.sql)" --format csv
 Save as: `PRPs/snowflake-data-object-{object-name}.md`
 
 ## Quality Checklist
+- [ ] Operation type clearly identified (CREATE_NEW/ALTER_EXISTING) with appropriate strategy
 - [ ] Complete database schema analysis with DDL and sample data included
+- [ ] If ALTER_EXISTING: Current state documented with baseline queries and expected changes
 - [ ] Architecture compliance verified (5-layer referencing rules)  
 - [ ] All source tables and relationships documented with Snow CLI output
 - [ ] Join validation tests created and executable for all table relationships
-- [ ] Downstream dependency analysis completed (if replacing existing object)
+- [ ] If ALTER_EXISTING: Before/after comparison queries created for data migration validation
+- [ ] Downstream dependency analysis completed with migration impact assessment
 - [ ] Development environment objects created in DEVELOPMENT/BUSINESS_INTELLIGENCE_DEV
 - [ ] Source-to-target data validation queries executable and documented
 - [ ] Business logic patterns identified from existing tickets
