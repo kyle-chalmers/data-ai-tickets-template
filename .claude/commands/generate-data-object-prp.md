@@ -58,7 +58,7 @@ The AI agent only gets the context you provide in the PRP and training data. Inc
 
 ## PRP Generation
 
-Using PRPs/templates/prp_base.md as template:
+Using PRPs/templates/data-object-initial.md as input template:
 
 ### Critical Context to Include and pass to the AI agent as part of the PRP
 - **Operation Type**: CREATE_NEW or ALTER_EXISTING with specific requirements and expectations
@@ -98,43 +98,24 @@ Using PRPs/templates/prp_base.md as template:
 
 ### Validation Gates (Must be Executable for the specific data object(s))
 ```bash
-# Development Environment Object Creation (all objects)
-snow sql -q "DESCRIBE DEVELOPMENT.[SCHEMA].[PRIMARY_OBJECT_NAME]" --format csv
-snow sql -q "DESCRIBE BUSINESS_INTELLIGENCE_DEV.[SCHEMA].[PRIMARY_OBJECT_NAME]" --format csv
+# Development Environment Object Creation
+snow sql -q "DESCRIBE DEVELOPMENT.[SCHEMA].[OBJECT_NAME]" --format csv
+snow sql -q "DESCRIBE BUSINESS_INTELLIGENCE_DEV.[SCHEMA].[OBJECT_NAME]" --format csv
 
-# Multiple Objects Validation (if MULTIPLE_RELATED_OBJECTS)
-snow sql -q "$(cat qc_queries/0a_multi_object_creation_validation.sql)" --format csv
+# Comprehensive QC Validation (all tests in single file)
+snow sql -q "$(cat qc_validation.sql)" --format csv
 
-# Current State Documentation (if ALTER_EXISTING)
-snow sql -q "$(cat qc_queries/0_current_state_baseline.sql)" --format csv
-
-# Source-to-Target Data Validation
-snow sql -q "$(cat qc_queries/1_source_target_count_comparison.sql)" --format csv
-
-# Before/After Comparison (if ALTER_EXISTING)
-snow sql -q "$(cat qc_queries/1b_before_after_data_comparison.sql)" --format csv
-
-# Join Integrity Testing
-snow sql -q "$(cat qc_queries/2_join_validation_tests.sql)" --format csv
-
-# Cross-Object Relationship Testing (if MULTIPLE_RELATED_OBJECTS)
-snow sql -q "$(cat qc_queries/2b_cross_object_relationship_validation.sql)" --format csv
-
-# Downstream Dependencies Testing
-snow sql -q "$(cat qc_queries/3_downstream_dependency_validation.sql)" --format csv
-
-# Migration Impact Assessment (if ALTER_EXISTING)
-snow sql -q "$(cat qc_queries/3b_migration_impact_validation.sql)" --format csv
-
-# Business Logic Validation (all objects)
-snow sql -q "$(cat qc_queries/4_business_logic_validation.sql)" --format csv
-
-# Performance Validation (all objects)
-snow sql -q "EXPLAIN $(cat final_deliverables/optimized_query.sql)" --format csv
+# Performance Validation
+snow sql -q "EXPLAIN $(cat final_deliverables/1_data_object_creation.sql)" --format csv
 
 # Production Deployment Readiness (after user review)
-# snow sql -q "$(cat final_deliverables/production_deploy_template.sql)"
+# snow sql -q "$(cat final_deliverables/2_production_deploy_template.sql)"
 ```
+
+**Simplified Validation Approach:**
+- **Single QC File**: All validation tests consolidated in `qc_validation.sql`
+- **Comprehensive Testing**: Includes duplicate detection, completeness, integrity, performance, and comparison testing
+- **Executable Commands**: All validation gates can be run with simple Snow CLI commands
 
 *** CRITICAL AFTER YOU ARE DONE RESEARCHING AND EXPLORING THE CODEBASE BEFORE YOU START WRITING THE PRP ***
 
