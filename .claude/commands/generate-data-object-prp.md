@@ -26,7 +26,10 @@ The AI agent only gets the context you provide in the PRP and training data. Inc
 3. **Data Quality Assessment**
    - Run sample queries on source tables: `snow sql -q "SELECT COUNT(*) FROM table LIMIT 1000"`
    - Check for duplicates, nulls, data types: `snow sql -q "SELECT DISTINCT column FROM table"`
-   - Validate business logic with existing QC patterns
+   - Test all joins between source objects: `snow sql -q "SELECT COUNT(*) FROM table1 t1 LEFT JOIN table2 t2 ON t1.key = t2.key WHERE t2.key IS NULL"`
+   - Compare record counts: source vs target object validation
+   - If replacing existing object: identify downstream dependencies using `INFORMATION_SCHEMA.TABLE_CONSTRAINTS` and `SHOW DEPENDENT OBJECTS`
+   - Test downstream impact: validate dependent views, tables, and reports still function correctly
    - Document data lineage and transformation requirements
 
 4. **Business Context Research**
@@ -56,10 +59,12 @@ Using PRPs/templates/prp_base.md as template:
 ### Critical Context to Include and pass to the AI agent as part of the PRP
 - **Business Requirements**: Complete INITIAL.md content with data grain, use cases, stakeholders
 - **Database Objects**: Complete DDL of related tables/views with `GET_DDL()` output
-- **Schema Relationships**: Table joins, foreign keys, and data lineage mapping  
-- **Architecture Patterns**: Layer-specific referencing rules and deployment templates
+- **Schema Relationships**: Table joins, foreign keys, and data lineage mapping with join validation results
+- **Architecture Patterns**: Layer-specific referencing rules and `documentation/db_deploy_template.sql` pattern
 - **Data Samples**: Representative data from source tables (first 5-10 rows with business context)
 - **Business Logic**: Existing transformation patterns, calculation logic, and KPI definitions
+- **Downstream Dependencies**: If replacing existing object, complete dependency analysis and impact assessment
+- **Development Environment Setup**: Objects created in DEVELOPMENT/BUSINESS_INTELLIGENCE_DEV for testing
 - **Jira Context**: Full ticket details, stakeholder requirements, acceptance criteria
 - **Performance/Compliance**: Indexing patterns, PII handling, regulatory requirements
 - **Documentation URLs**: Snowflake documentation for specific features used
@@ -68,27 +73,37 @@ Using PRPs/templates/prp_base.md as template:
 - **Data Architecture Design**: Which layer(s) the object belongs in and why
 - **Source Table Analysis**: Detailed breakdown of input tables and relationships
 - **Transformation Logic**: Business rules, calculations, filtering, aggregations
-- **Deployment Strategy**: Multi-environment deployment using variable templates
-- **Quality Control Plan**: Validation queries and data quality checks
+- **Development Phase**: Create objects in DEVELOPMENT and BUSINESS_INTELLIGENCE_DEV using production data
+- **Join Validation**: Comprehensive testing of all table joins and relationship integrity
+- **Downstream Impact Analysis**: If replacing existing object, identify and test all dependent objects
+- **Quality Control Plan**: Source-to-target validation queries and comprehensive data quality checks
 - **Performance Optimization**: Query optimization and execution strategies
-- **Task Order**: Sequential implementation steps from research to deployment
+- **Production Deployment Strategy**: Use `documentation/db_deploy_template.sql` for final deployment
+- **Task Order**: Development → Testing → User Review → Production Deployment
 
 ### Validation Gates (Must be Executable for the specific data object)
 ```bash
-# Object Creation Validation
-snow sql -q "DESCRIBE [SCHEMA].[OBJECT_NAME]" --format csv
+# Development Environment Object Creation
+snow sql -q "DESCRIBE DEVELOPMENT.[SCHEMA].[OBJECT_NAME]" --format csv
+snow sql -q "DESCRIBE BUSINESS_INTELLIGENCE_DEV.[SCHEMA].[OBJECT_NAME]" --format csv
 
-# Data Integrity Check  
-snow sql -q "SELECT COUNT(*) as total_records FROM [SCHEMA].[OBJECT_NAME]" --format csv
+# Source-to-Target Data Validation
+snow sql -q "$(cat qc_queries/1_source_target_count_comparison.sql)" --format csv
+
+# Join Integrity Testing
+snow sql -q "$(cat qc_queries/2_join_validation_tests.sql)" --format csv
+
+# Downstream Dependencies Testing (if replacing existing object)
+snow sql -q "$(cat qc_queries/3_downstream_dependency_validation.sql)" --format csv
 
 # Business Logic Validation
-snow sql -q "$(cat qc_queries/business_logic_validation.sql)" --format csv
+snow sql -q "$(cat qc_queries/4_business_logic_validation.sql)" --format csv
 
-# Performance Check
-snow sql -q "SELECT COUNT(*) FROM [SCHEMA].[OBJECT_NAME] WHERE [KEY_FILTER]" --format csv
+# Performance Validation
+snow sql -q "EXPLAIN $(cat final_deliverables/optimized_query.sql)" --format csv
 
-# Architecture Compliance
-snow sql -q "SELECT GET_DDL('VIEW', '[SCHEMA].[OBJECT_NAME]')" --format csv
+# Production Deployment Readiness (after user review)
+# snow sql -q "$(cat final_deliverables/production_deploy_template.sql)"
 ```
 
 *** CRITICAL AFTER YOU ARE DONE RESEARCHING AND EXPLORING THE CODEBASE BEFORE YOU START WRITING THE PRP ***
@@ -102,9 +117,13 @@ Save as: `PRPs/snowflake-data-object-{object-name}.md`
 - [ ] Complete database schema analysis with DDL and sample data included
 - [ ] Architecture compliance verified (5-layer referencing rules)  
 - [ ] All source tables and relationships documented with Snow CLI output
+- [ ] Join validation tests created and executable for all table relationships
+- [ ] Downstream dependency analysis completed (if replacing existing object)
+- [ ] Development environment objects created in DEVELOPMENT/BUSINESS_INTELLIGENCE_DEV
+- [ ] Source-to-target data validation queries executable and documented
 - [ ] Business logic patterns identified from existing tickets
-- [ ] Quality control validation queries are executable
-- [ ] Deployment strategy includes dev/prod environment handling
+- [ ] Quality control validation queries are executable with comprehensive testing
+- [ ] Production deployment template follows `documentation/db_deploy_template.sql` pattern
 - [ ] Performance optimization considerations documented
 - [ ] Data lineage and transformation logic clearly specified
 - [ ] Error handling and edge cases covered
