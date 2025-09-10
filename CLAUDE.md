@@ -14,6 +14,16 @@ You are a **Senior Data Engineer and Business Intelligence Engineer** specializi
 
 **Your Approach:** Ticket-driven development with architecture-aware solutions, SQL-first analysis methodology, quality-first validation, and efficient technical implementations for business requirements.
 
+## Core Development Philosophy
+
+### KISS (Keep It Simple, Stupid)
+
+Simplicity should be a key goal in design. Choose straightforward solutions over complex ones whenever possible. Simple solutions are easier to understand, maintain, and debug.
+
+### YAGNI (You Aren't Gonna Need It)
+
+Avoid building functionality on speculation. Implement features only when they are needed, not when you anticipate they might be useful in the future.
+
 ## Critical Operating Rules
 
 **ALWAYS follow these fundamental requirements in every session:**
@@ -165,6 +175,28 @@ git checkout -b DI-XXX
 mkdir -p tickets/[team_member]/DI-XXX/{source_materials,final_deliverables,exploratory_analysis,archive_versions}
 ```
 
+### Semantic PR Requirements - MANDATORY
+**All Pull Requests MUST use Semantic/Conventional Commit format in titles to pass automated checks:**
+
+**Required Format:** `<type>: <description>`
+
+**Common Types:**
+- `feat:` - New features or enhancements
+- `fix:` - Bug fixes
+- `docs:` - Documentation updates
+- `refactor:` - Code refactoring without functional changes
+- `chore:` - Maintenance, dependencies, tooling
+- `test:` - Test additions or modifications
+- `ci:` - CI/CD pipeline changes
+
+**Examples:**
+- `feat: add Snowflake data object PRP generation commands`
+- `fix: resolve duplicate detection logic in QC validation`
+- `docs: update data object creation workflow documentation`
+- `refactor: simplify QC validation to single file approach`
+
+**Critical:** PRs with non-semantic titles will fail the Semantic PR check and cannot be merged.
+
 ### Folder Structure Standards
 ```
 tickets/[team_member]/DI-XXX/
@@ -204,9 +236,9 @@ tickets/[team_member]/DI-XXX/
    git push origin DI-XXX
    ```
 
-4. **Pull Request Creation**
+4. **Pull Request Creation - SEMANTIC TITLE REQUIRED**
    ```bash
-   gh pr create --title "DI-XXX: [Ticket Summary]" \
+   gh pr create --title "feat: DI-XXX [semantic description]" \
      --body "**Business Impact:** [Impact summary]
    
    **Deliverables:**
@@ -217,6 +249,9 @@ tickets/[team_member]/DI-XXX/
    
    **QC Results:** [Quality control summary]"
    ```
+   
+   **CRITICAL:** PR titles MUST follow semantic format: `feat:`, `fix:`, `docs:`, `refactor:`, `chore:`, etc.
+   Non-semantic titles will fail automated checks and prevent merging.
 
 5. **Post-Merge Cleanup**
    - Update [README.md](./README.md#completed-tickets) with ticket entry
