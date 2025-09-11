@@ -34,19 +34,19 @@ NOTE: Scope of email campaign suppression needs clarification - marked for follo
 -- ========================================
 -- BOUNCE SET-LEVEL SUPPRESSION
 -- ========================================
--- Bounce handles ALL communication channels (phone, SMS, email)
--- Apply comprehensive channel suppression
+-- Bounce handles ALL communication channels (phone, SMS, email, letter)
+-- Apply individual channel suppressions following existing BI-2482 pattern
 
 -- To be added to BI-2482 suppression section (after existing set suppressions)
 
--- Bounce Multi-Channel Suppression
+-- Bounce Phone Suppression
 insert into CRON_STORE.RPT_OUTBOUND_LISTS_SUPPRESSION
-select current_date                          as LOAD_DATE,
-       'Set'                                 as SUPPRESSION_TYPE,
-       'DNC: Phone/Text/Email/Letter'       as SUPPRESSION_REASON,
-       L.LEAD_GUID                          as PAYOFF_UID,
-       'BOUNCE'                             as SET_NAME,
-       'N/A'                                as LIST_NAME
+select current_date as LOAD_DATE,
+       'Set'        as SUPPRESSION_TYPE,
+       'DNC: Phone' as SUPPRESSION_REASON,
+       L.LEAD_GUID  as PAYOFF_UID,
+       'BOUNCE'     as SET_NAME,
+       'N/A'        as LIST_NAME
 from ANALYTICS.VW_LOAN as L
          inner join ANALYTICS.VW_LOAN_CONTACT_RULES as LCR
                     on L.LOAN_ID = LCR.LOAN_ID
@@ -54,10 +54,61 @@ from ANALYTICS.VW_LOAN as L
          left join CRON_STORE.RPT_OUTBOUND_LISTS_SUPPRESSION as SP
                    on L.LEAD_GUID = SP.PAYOFFUID
                        and SP.SUPPRESSION_TYPE = 'Global'
-where (LCR.SUPPRESS_PHONE = true 
-    OR LCR.SUPPRESS_TEXT = true 
-    OR LCR.SUPPRESS_EMAIL = true 
-    OR LCR.SUPPRESS_LETTER = true)  -- Any channel suppression excludes from Bounce
+where LCR.SUPPRESS_PHONE = true
+  and SP.PAYOFFUID is null;
+
+-- Bounce Text Suppression  
+insert into CRON_STORE.RPT_OUTBOUND_LISTS_SUPPRESSION
+select current_date as LOAD_DATE,
+       'Set'        as SUPPRESSION_TYPE,
+       'DNC: Text'  as SUPPRESSION_REASON,
+       L.LEAD_GUID  as PAYOFF_UID,
+       'BOUNCE'     as SET_NAME,
+       'N/A'        as LIST_NAME
+from ANALYTICS.VW_LOAN as L
+         inner join ANALYTICS.VW_LOAN_CONTACT_RULES as LCR
+                    on L.LOAN_ID = LCR.LOAN_ID
+                        and LCR.CONTACT_RULE_END_DATE is null
+         left join CRON_STORE.RPT_OUTBOUND_LISTS_SUPPRESSION as SP
+                   on L.LEAD_GUID = SP.PAYOFFUID
+                       and SP.SUPPRESSION_TYPE = 'Global'
+where LCR.SUPPRESS_TEXT = true
+  and SP.PAYOFFUID is null;
+
+-- Bounce Email Suppression
+insert into CRON_STORE.RPT_OUTBOUND_LISTS_SUPPRESSION
+select current_date as LOAD_DATE,
+       'Set'        as SUPPRESSION_TYPE,
+       'DNC: Email' as SUPPRESSION_REASON,
+       L.LEAD_GUID  as PAYOFF_UID,
+       'BOUNCE'     as SET_NAME,
+       'N/A'        as LIST_NAME
+from ANALYTICS.VW_LOAN as L
+         inner join ANALYTICS.VW_LOAN_CONTACT_RULES as LCR
+                    on L.LOAN_ID = LCR.LOAN_ID
+                        and LCR.CONTACT_RULE_END_DATE is null
+         left join CRON_STORE.RPT_OUTBOUND_LISTS_SUPPRESSION as SP
+                   on L.LEAD_GUID = SP.PAYOFFUID
+                       and SP.SUPPRESSION_TYPE = 'Global'
+where LCR.SUPPRESS_EMAIL = true
+  and SP.PAYOFFUID is null;
+
+-- Bounce Letter Suppression
+insert into CRON_STORE.RPT_OUTBOUND_LISTS_SUPPRESSION
+select current_date as LOAD_DATE,
+       'Set'        as SUPPRESSION_TYPE,
+       'DNC: Letter' as SUPPRESSION_REASON,
+       L.LEAD_GUID   as PAYOFF_UID,
+       'BOUNCE'      as SET_NAME,
+       'N/A'         as LIST_NAME
+from ANALYTICS.VW_LOAN as L
+         inner join ANALYTICS.VW_LOAN_CONTACT_RULES as LCR
+                    on L.LOAN_ID = LCR.LOAN_ID
+                        and LCR.CONTACT_RULE_END_DATE is null
+         left join CRON_STORE.RPT_OUTBOUND_LISTS_SUPPRESSION as SP
+                   on L.LEAD_GUID = SP.PAYOFFUID
+                       and SP.SUPPRESSION_TYPE = 'Global'
+where LCR.SUPPRESS_LETTER = true
   and SP.PAYOFFUID is null;
 
 -- ========================================
