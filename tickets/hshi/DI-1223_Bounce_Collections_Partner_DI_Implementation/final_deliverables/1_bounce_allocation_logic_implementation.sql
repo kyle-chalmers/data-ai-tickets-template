@@ -17,7 +17,20 @@ IMPLEMENTATION NOTES:
 - Uses same business rules: DPD3-119, excludes SST portfolio
 - Same suppression logic as SIMM applies to Bounce
 - Risk team (Davis/Harjot) has confirmed allocation approach
+- IMPORTANT: Update DELETE statement to include 'BOUNCE' in list cleanup
 */
+
+-- ========================================
+-- REQUIRED UPDATE: TABLE CLEANUP
+-- ========================================
+-- CRITICAL: Update the DELETE statement in BI-2482 (lines 199-203)
+-- Add 'BOUNCE' to the SET_NAME list to ensure proper daily cleanup
+
+-- OLD DELETE statement:
+-- where SET_NAME in ('Call List', 'Remitter', 'SMS', 'GR Email', 'High Risk Mail', 'Recovery Weekly', 'Recovery Monthly Email', 'GR Physical Mail', 'SIMM', 'SST')
+
+-- NEW DELETE statement (REQUIRED):
+-- where SET_NAME in ('Call List', 'Remitter', 'SMS', 'GR Email', 'High Risk Mail', 'Recovery Weekly', 'Recovery Monthly Email', 'GR Physical Mail', 'SIMM', 'SST', 'BOUNCE')
 
 -- ========================================
 -- BOUNCE ACCOUNT ALLOCATION QUERY

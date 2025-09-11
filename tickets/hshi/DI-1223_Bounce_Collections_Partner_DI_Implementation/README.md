@@ -56,7 +56,16 @@ Deploy Bounce as a new first-party collections partner alongside existing SIM pa
 
 **Changes Needed**:
 
-1. **Add Bounce Allocation Logic** (after existing SIMM logic ~line 393):
+1. **Update DELETE Statement** (lines 199-203):
+```python
+# Change FROM:
+where SET_NAME in ('Call List', 'Remitter', 'SMS', 'GR Email', 'High Risk Mail', 'Recovery Weekly', 'Recovery Monthly Email', 'GR Physical Mail', 'SIMM', 'SST')
+
+# Change TO:
+where SET_NAME in ('Call List', 'Remitter', 'SMS', 'GR Email', 'High Risk Mail', 'Recovery Weekly', 'Recovery Monthly Email', 'GR Physical Mail', 'SIMM', 'SST', 'BOUNCE')
+```
+
+2. **Add Bounce Allocation Logic** (after existing SIMM logic ~line 393):
 ```python
 # Bounce Collections Allocation (NEW)
 insert into CRON_STORE.RPT_OUTBOUND_LISTS
@@ -91,11 +100,11 @@ and substring(PAYOFFUID, 16, 1) in ('0', '1', '2', '3')  # Reduced allocation
 
 3. **Add Bounce Suppression Logic** (in suppression section ~line 600):
 ```python
-# Bounce Multi-Channel Suppression
+# Bounce Phone Suppression
 insert into CRON_STORE.RPT_OUTBOUND_LISTS_SUPPRESSION
 select current_date as LOAD_DATE,
        'Set'        as SUPPRESSION_TYPE,
-       'DNC: Phone/Text/Email/Letter' as SUPPRESSION_REASON,
+       'DNC: Phone' as SUPPRESSION_REASON,
        L.LEAD_GUID  as PAYOFF_UID,
        'BOUNCE'     as SET_NAME,
        'N/A'        as LIST_NAME
@@ -103,10 +112,65 @@ from ANALYTICS.VW_LOAN as L
 inner join ANALYTICS.VW_LOAN_CONTACT_RULES as LCR
     on L.LOAN_ID = LCR.LOAN_ID
     and LCR.CONTACT_RULE_END_DATE is null
-where (LCR.SUPPRESS_PHONE = true 
-    OR LCR.SUPPRESS_TEXT = true 
-    OR LCR.SUPPRESS_EMAIL = true 
-    OR LCR.SUPPRESS_LETTER = true);
+left join CRON_STORE.RPT_OUTBOUND_LISTS_SUPPRESSION as SP
+    on L.LEAD_GUID = SP.PAYOFFUID
+    and SP.SUPPRESSION_TYPE = 'Global'
+where LCR.SUPPRESS_PHONE = true
+  and SP.PAYOFFUID is null;
+
+# Bounce Text Suppression  
+insert into CRON_STORE.RPT_OUTBOUND_LISTS_SUPPRESSION
+select current_date as LOAD_DATE,
+       'Set'        as SUPPRESSION_TYPE,
+       'DNC: Text'  as SUPPRESSION_REASON,
+       L.LEAD_GUID  as PAYOFF_UID,
+       'BOUNCE'     as SET_NAME,
+       'N/A'        as LIST_NAME
+from ANALYTICS.VW_LOAN as L
+inner join ANALYTICS.VW_LOAN_CONTACT_RULES as LCR
+    on L.LOAN_ID = LCR.LOAN_ID
+    and LCR.CONTACT_RULE_END_DATE is null
+left join CRON_STORE.RPT_OUTBOUND_LISTS_SUPPRESSION as SP
+    on L.LEAD_GUID = SP.PAYOFFUID
+    and SP.SUPPRESSION_TYPE = 'Global'
+where LCR.SUPPRESS_TEXT = true
+  and SP.PAYOFFUID is null;
+
+# Bounce Email Suppression
+insert into CRON_STORE.RPT_OUTBOUND_LISTS_SUPPRESSION
+select current_date as LOAD_DATE,
+       'Set'        as SUPPRESSION_TYPE,
+       'DNC: Email' as SUPPRESSION_REASON,
+       L.LEAD_GUID  as PAYOFF_UID,
+       'BOUNCE'     as SET_NAME,
+       'N/A'        as LIST_NAME
+from ANALYTICS.VW_LOAN as L
+inner join ANALYTICS.VW_LOAN_CONTACT_RULES as LCR
+    on L.LOAN_ID = LCR.LOAN_ID
+    and LCR.CONTACT_RULE_END_DATE is null
+left join CRON_STORE.RPT_OUTBOUND_LISTS_SUPPRESSION as SP
+    on L.LEAD_GUID = SP.PAYOFFUID
+    and SP.SUPPRESSION_TYPE = 'Global'
+where LCR.SUPPRESS_EMAIL = true
+  and SP.PAYOFFUID is null;
+
+# Bounce Letter Suppression
+insert into CRON_STORE.RPT_OUTBOUND_LISTS_SUPPRESSION
+select current_date as LOAD_DATE,
+       'Set'        as SUPPRESSION_TYPE,
+       'DNC: Letter' as SUPPRESSION_REASON,
+       L.LEAD_GUID   as PAYOFF_UID,
+       'BOUNCE'      as SET_NAME,
+       'N/A'         as LIST_NAME
+from ANALYTICS.VW_LOAN as L
+inner join ANALYTICS.VW_LOAN_CONTACT_RULES as LCR
+    on L.LOAN_ID = LCR.LOAN_ID
+    and LCR.CONTACT_RULE_END_DATE is null
+left join CRON_STORE.RPT_OUTBOUND_LISTS_SUPPRESSION as SP
+    on L.LEAD_GUID = SP.PAYOFFUID
+    and SP.SUPPRESSION_TYPE = 'Global'
+where LCR.SUPPRESS_LETTER = true
+  and SP.PAYOFFUID is null;
 
 # Cross-Set Suppression (scope to be confirmed)
 insert into CRON_STORE.RPT_OUTBOUND_LISTS_SUPPRESSION
