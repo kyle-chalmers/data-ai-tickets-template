@@ -31,12 +31,14 @@ Execute a comprehensive Snowflake data object creation or modification following
    - Follow 5-layer architecture compliance (FRESHSNOW → BRIDGE → ANALYTICS → REPORTING)
    - Use production data for realistic testing
    - Implement proper schema filtering (LMS_SCHEMA(), LOS_SCHEMA())
+   - **CRITICAL**: Verify all column values are business-ready and data structure matches expected grain
 
 2. **Quality Control Implementation - CRITICAL**
    - **MANDATORY DUPLICATE TESTING**: Check for duplicate records with detailed analysis
    - **MANDATORY COMPLETENESS VALIDATION**: Verify all expected records are present
    - **MANDATORY DATA INTEGRITY CHECKS**: Validate referential integrity and business rules
    - **MANDATORY PERFORMANCE TESTING**: Ensure queries run efficiently with acceptable response times
+   - **CRITICAL QC ESCALATION**: If any QC uncertainties or data quality concerns arise, present findings to user for clarification before proceeding
    - Execute all validation gates from PRP with comprehensive documentation
    - Create single comprehensive QC file: `qc_validation.sql` with all tests
    - If ALTER_EXISTING: **CRITICAL** - Compare new vs existing object data with diff analysis

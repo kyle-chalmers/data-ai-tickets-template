@@ -1,0 +1,73 @@
+-- Test query to validate MOST_RECENT_ACTIVE_BANKRUPTCY and MOST_RECENT_BANKRUPTCY column logic
+-- This query shows how both columns work by displaying the ranking logic
+-- Ticket: DI-1239
+
+-- Sample records showing both column functionality
+SELECT 
+    LOAN_ID,
+    BANKRUPTCY_ID,
+    CASE_NUMBER,
+    BANKRUPTCY_CHAPTER,
+    ACTIVE,
+    DUPE_CASE_NUMBER,
+    MOST_RECENT_ACTIVE_BANKRUPTCY,
+    MOST_RECENT_BANKRUPTCY,
+    DATA_SOURCE,
+    CREATED_DATE_PT,
+    LAST_UPDATED_DATE_PT
+FROM BUSINESS_INTELLIGENCE_DEV.ANALYTICS.VW_LOAN_BANKRUPTCY
+WHERE LOAN_ID IN (
+    -- Find loans with multiple bankruptcy records to test the ranking
+    SELECT LOAN_ID 
+    FROM BUSINESS_INTELLIGENCE_DEV.ANALYTICS.VW_LOAN_BANKRUPTCY 
+    GROUP BY LOAN_ID 
+    HAVING COUNT(*) > 1
+)
+ORDER BY LOAN_ID, LAST_UPDATED_DATE_PT DESC
+LIMIT 10;
+
+-- Validation metrics: Count of most recent active bankruptcies per loan
+-- Each loan should have at most 1 record marked as 'Y' for MOST_RECENT_ACTIVE_BANKRUPTCY
+SELECT 
+    'Total loans with bankruptcy records' as METRIC,
+    COUNT(DISTINCT LOAN_ID) as COUNT
+FROM BUSINESS_INTELLIGENCE_DEV.ANALYTICS.VW_LOAN_BANKRUPTCY
+
+UNION ALL
+
+SELECT 
+    'Total bankruptcy records' as METRIC,
+    COUNT(*) as COUNT
+FROM BUSINESS_INTELLIGENCE_DEV.ANALYTICS.VW_LOAN_BANKRUPTCY
+
+UNION ALL
+
+SELECT 
+    'Records marked as most recent active' as METRIC,
+    COUNT(*) as COUNT
+FROM BUSINESS_INTELLIGENCE_DEV.ANALYTICS.VW_LOAN_BANKRUPTCY
+WHERE MOST_RECENT_ACTIVE_BANKRUPTCY = 'Y'
+
+UNION ALL
+
+SELECT 
+    'Records marked as most recent (any status)' as METRIC,
+    COUNT(*) as COUNT
+FROM BUSINESS_INTELLIGENCE_DEV.ANALYTICS.VW_LOAN_BANKRUPTCY
+WHERE MOST_RECENT_BANKRUPTCY = 'Y'
+
+UNION ALL
+
+SELECT 
+    'Active bankruptcy records' as METRIC,
+    COUNT(*) as COUNT
+FROM BUSINESS_INTELLIGENCE_DEV.ANALYTICS.VW_LOAN_BANKRUPTCY
+WHERE ACTIVE = 1
+
+UNION ALL
+
+SELECT 
+    'Non-duplicate bankruptcy records' as METRIC,
+    COUNT(*) as COUNT
+FROM BUSINESS_INTELLIGENCE_DEV.ANALYTICS.VW_LOAN_BANKRUPTCY
+WHERE DUPE_CASE_NUMBER = FALSE;
