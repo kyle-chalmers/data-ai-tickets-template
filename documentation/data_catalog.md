@@ -398,14 +398,31 @@ JOIN monthly_loan_tape mlt
 </details>
 
 <details>
-<summary><b>RPT_OUTBOUND_LISTS_HIST</b> - Collection agency placements</summary>
+<summary><b>RPT_OUTBOUND_LISTS</b> - Daily outbound campaign lists</summary>
 
 | Field | Type | Description |
 |-------|------|-------------|
-| **PAYOFFUID** | PK | Loan identifier |
-| **SET_NAME** | PK | Agency (e.g., 'SIMM') |
-| **LOAN_TAPE_ASOFDATE** | PK | Placement date |
+| **LOAD_DATE** | PK | Date of list generation |
+| **SET_NAME** | PK | Campaign set identifier |
+| **LIST_NAME** | String | Specific list name |
+| **PAYOFFUID** | PK | Customer identifier |
+| SUPPRESSION_FLAG | Boolean | Whether customer is suppressed |
+| LOAN_TAPE_ASOFDATE | Date | Loan data as-of date |
+
+> Primary operational table for daily outbound campaign list generation
+</details>
+
+<details>
+<summary><b>RPT_OUTBOUND_LISTS_HIST</b> - Historical outbound campaign lists</summary>
+
+| Field | Type | Description |
+|-------|------|-------------|
+| **PAYOFFUID** | PK | Customer identifier |
+| **SET_NAME** | PK | Campaign set (e.g., 'SIMM') |
+| **LOAD_DATE** | PK | List generation date |
+| LIST_NAME | String | Specific list name |
 | SUPPRESSION_FLAG | Boolean | FALSE = Active |
+| LOAN_TAPE_ASOFDATE | Date | Loan data as-of date |
 
 **SIMM Statistics:**
 - Manages ~47% of delinquent loans
@@ -424,6 +441,36 @@ FROM RPT_OUTBOUND_LISTS_HIST
 WHERE SET_NAME = 'SIMM' AND SUPPRESSION_FLAG = FALSE
 GROUP BY PAYOFFUID
 ```
+</details>
+
+<details>
+<summary><b>RPT_OUTBOUND_LISTS_SUPPRESSION</b> - Campaign suppression tracking</summary>
+
+| Field | Type | Description |
+|-------|------|-------------|
+| **LOAD_DATE** | PK | Date of suppression |
+| **SUPPRESSION_TYPE** | PK | Global, Set, List, Cross Set, Cross List |
+| **SUPPRESSION_REASON** | PK | Specific reason for suppression |
+| **PAYOFF_UID** | PK | Customer identifier |
+| SET_NAME | String | Campaign set (if applicable) |
+| LIST_NAME | String | Specific list (if applicable) |
+
+> Tracks suppression reasons for compliance and audit trail
+</details>
+
+<details>
+<summary><b>RPT_OUTBOUND_LISTS_SUPPRESSION_HIST</b> - Historical suppression tracking</summary>
+
+| Field | Type | Description |
+|-------|------|-------------|
+| **LOAD_DATE** | PK | Date of suppression |
+| **SUPPRESSION_TYPE** | PK | Global, Set, List, Cross Set, Cross List |
+| **SUPPRESSION_REASON** | PK | Specific reason for suppression |
+| **PAYOFF_UID** | PK | Customer identifier |
+| SET_NAME | String | Campaign set (if applicable) |
+| LIST_NAME | String | Specific list (if applicable) |
+
+> Historical audit trail of all suppression decisions for compliance tracking
 </details>
 
 <details>
