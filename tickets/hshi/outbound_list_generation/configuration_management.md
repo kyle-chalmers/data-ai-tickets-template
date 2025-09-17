@@ -29,7 +29,7 @@ INSERT INTO LKP_GENESYS_LIST_AUTOMATION_CONFIG VALUES (
 
 **Key Requirements**:
 - `CAMPAIGN` field must match `LIST_NAME` in `RPT_OUTBOUND_LISTS`
-- `CHANNEL` determines which Genesis integration is used
+- `CHANNEL` determines which Genesys integration is used
 - `QUERY_CONDITION` can be used for automated list generation
 - `IS_ACTIVE` must be `true` for active campaigns
 
@@ -54,7 +54,7 @@ WHEN 'DPD3_14_CALLS' THEN (
 1. **Development Environment**: Test new campaign in dev first
 2. **Data Validation**: Verify correct record counts and business logic
 3. **Suppression Testing**: Ensure proper suppression rules apply
-4. **Genesis Integration**: Confirm upload and activation work correctly
+4. **Genesys Integration**: Confirm upload and activation work correctly
 
 ### Step 5: Production Deployment
 1. **Code Deployment**: Deploy tested code to production
@@ -158,7 +158,7 @@ END
 - **Data Validation**: Verify correct records selected
 - **Volume Testing**: Confirm expected list sizes
 - **Suppression Testing**: Validate all suppression rules apply
-- **Integration Testing**: Ensure Genesis upload works correctly
+- **Integration Testing**: Ensure Genesys upload works correctly
 
 #### Performance Testing
 - **Execution Time**: Measure impact on workflow duration

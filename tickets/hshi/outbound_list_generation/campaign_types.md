@@ -5,22 +5,22 @@
 | Set Name | Lists | Destination System | Job | Primary Suppression |
 |----------|-------|-------------------|-----|---------------------|
 | **BI-2482: Collections & Recovery (GR)** |
-| Call List | DPD3-14, DPD15-29, DPD30-59, DPD60-89, DPD90+, Blue, Due Diligence DPD3-89 | Genesis (Phone) | BI-2482 + BI-737 | Global + State Regulations + DNC Phone + Phone Test |
-| SMS | Payment Reminder, Due Date, DPD3-44, TruStage DPD17/33 | Genesis (Text) | BI-2482 + BI-820 | Global + DNC Text + Autopay |
-| GR Email | GR Email | Genesis (Email) | BI-2482 | Global + DNC Email |
-| GR Physical Mail | DPD15 Control/Test, DPD75 Control/Test | Genesis (Mail) | BI-2482 + BI-2609 | Global + DNC Letter |
-| Recovery Weekly | Recovery Weekly | Genesis (Mail) | BI-2482 | Global + DNC Letter (Tuesday only) |
-| Recovery Monthly Email | Recovery Monthly Email | Genesis (Email) | BI-2482 | Global + DNC Email/Letter + State Limitations (1st Tuesday) |
-| Remitter | DPD60+ Min Pay | Genesis (Text) | BI-2482 + BI-813 | Global + DNC Text |
+| Call List | DPD3-14, DPD15-29, DPD30-59, DPD60-89, DPD90+, Blue, Due Diligence DPD3-89 | Genesys (Phone) | BI-2482 + BI-737 | Global + State Regulations + DNC Phone + Phone Test |
+| SMS | Payment Reminder, Due Date, DPD3-44, TruStage DPD17/33 | Genesys (Text) | BI-2482 + BI-820 | Global + DNC Text + Autopay |
+| GR Email | GR Email | Genesys (Email) | BI-2482 | Global + DNC Email |
+| GR Physical Mail | DPD15 Control/Test, DPD75 Control/Test | Genesys (Mail) | BI-2482 + BI-2609 | Global + DNC Letter |
+| Recovery Weekly | Recovery Weekly | Genesys (Mail) | BI-2482 | Global + DNC Letter (Tuesday only) |
+| Recovery Monthly Email | Recovery Monthly Email | Genesys (Email) | BI-2482 | Global + DNC Email/Letter + State Limitations (1st Tuesday) |
+| Remitter | DPD60+ Min Pay | Genesys (Text) | BI-2482 + BI-813 | Global + DNC Text |
 | SIMM | DPD3-119 | SIMM Partner System | BI-2482 + DI-862 | Global + DNC Phone |
-| SST | DPD3-119 | Genesis (Phone) | BI-2482 | Global + State Regulations + DNC Phone |
+| SST | DPD3-119 | Genesys (Phone) | BI-2482 | Global + State Regulations + DNC Phone |
 | **DI-986: Marketing & Customer Engagement (Funnel)** |
-| Email Non-Opener SMS | AppAbandon, OfferShown, OfferSelected, DocUpload, ESign | Genesis (Text) | DI-749 + DI-986 | Global + DNC Text + Email Non-Opener Logic |
+| Email Non-Opener SMS | AppAbandon, OfferShown, OfferSelected, DocUpload, ESign | Genesys (Text) | DI-749 + DI-986 | Global + DNC Text + Email Non-Opener Logic |
 | Allocated Capital Partner | PartnerAllocated | Partner Email System | DI-986 | Global + Partner-Specific Rules |
 | Prescreen Email | Prescreen Email Campaign | SFMC | DI-986 + DI-977 | Global + DNC Email + State Exclusions (NV, IA, MA) |
 | PIF Email | PIF Email, 6M to PIF Email | SFMC via SFTP | DI-986 + DI-1049 | Global + DNC Email + Account/Customer Level |
-| SMS Funnel Communication | Started, Credit Freeze, Offers Shown, Offer Selected, Doc Upload, Underwriting, Allocated, Loan Docs Ready | Genesis (Text) | DI-986 | Global + DNC Text + Application Journey Logic |
-| AutoPaySMS | AutoPay Enrollment | Genesis (Text) | DI-986 | Global + DNC Text + AutoPay Status |
+| SMS Funnel Communication | Started, Credit Freeze, Offers Shown, Offer Selected, Doc Upload, Underwriting, Allocated, Loan Docs Ready | Genesys (Text) | DI-986 | Global + DNC Text + Application Journey Logic |
+| AutoPaySMS | AutoPay Enrollment | Genesys (Text) | DI-986 | Global + DNC Text + AutoPay Status |
 
 ## Campaign Details
 

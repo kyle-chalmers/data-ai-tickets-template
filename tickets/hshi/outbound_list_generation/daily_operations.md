@@ -8,10 +8,10 @@
 - **Process**: Generate all outbound lists in Snowflake
 - **Output**: Lists ready in `CRON_STORE.RPT_OUTBOUND_LISTS`
 
-### 8:30 AM - Genesis Upload
+### 8:30 AM - Genesys Upload
 **Owner**: Divya (Engineering team)
 - **Duration**: ~30 minutes
-- **Process**: Upload lists to Genesis system
+- **Process**: Upload lists to Genesys system
 - **Status**: Lists available for campaign execution
 
 ### 9:00 AM - Ready for Execution
@@ -21,8 +21,8 @@
 
 ### 10:30 PM - Results Export
 **Owner**: Divya (Engineering team)
-- **Process**: Extract campaign results from Genesis
-- **Data Flow**: Genesis → Kafka → Snowflake
+- **Process**: Extract campaign results from Genesys
+- **Data Flow**: Genesys → Kafka → Snowflake
 - **Output**: Campaign performance data available for analysis
 
 ## Workflow Dependencies
@@ -53,8 +53,8 @@ Parallel Execution:
 - [ ] Check for any job failures in Databricks
 - [ ] Validate list generation counts
 
-### 9:00 AM - Genesis Integration Check
-- [ ] Confirm lists uploaded to Genesis
+### 9:00 AM - Genesys Integration Check
+- [ ] Confirm lists uploaded to Genesys
 - [ ] Verify campaign activation status
 - [ ] Check Tableau monitoring dashboard
 
@@ -88,6 +88,6 @@ Parallel Execution:
 - **Data Pipeline Delays**: Verify source data availability
 
 ### Evening Issues (10:30 PM+)
-- **Export Failures**: Check Genesis connectivity
+- **Export Failures**: Check Genesys connectivity
 - **Volume Mismatches**: Validate campaign execution
 - **Kafka Processing**: Monitor data flow to Snowflake

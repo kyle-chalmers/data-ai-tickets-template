@@ -28,14 +28,14 @@
 - Check cluster logs and Snowflake connectivity for complete failures
 - Validate source data freshness before re-running
 
-#### Genesis Upload Failures (8:30 AM)
+#### Genesys Upload Failures (8:30 AM)
 **Symptoms**:
-- Lists generated but not appearing in Genesis
+- Lists generated but not appearing in Genesys
 - Partial uploads with some campaigns missing
 - Upload process timing out
 
 **Common Causes**:
-- Genesis system connectivity issues
+- Genesys system connectivity issues
 - Authentication problems
 - Large data volumes exceeding timeout limits
 - Configuration table inconsistencies
@@ -43,7 +43,7 @@
 **Troubleshooting Steps**:
 1. Contact Divya to check upload process status
 2. Verify `LKP_GENESYS_LIST_AUTOMATION_CONFIG` table accuracy
-3. Check Genesis system status and connectivity
+3. Check Genesys system status and connectivity
 4. Review upload logs for specific error messages
 
 **Recovery Actions**:
@@ -60,20 +60,20 @@
 - Delayed export processing
 
 **Common Causes**:
-- Genesis API connectivity issues
+- Genesys API connectivity issues
 - Kafka messaging service problems
-- Campaign execution issues in Genesis
+- Campaign execution issues in Genesys
 - Data processing delays
 
 **Troubleshooting Steps**:
 1. Check Tableau monitoring dashboard for alerts
-2. Verify Genesis campaign execution status
+2. Verify Genesys campaign execution status
 3. Monitor Kafka message processing
 4. Review data engineering pipeline status
 
 **Recovery Actions**:
 - Contact Divya for export process restart
-- Check Genesis system for campaign execution issues
+- Check Genesys system for campaign execution issues
 - Verify Kafka to Snowflake data flow
 
 ## Performance Optimization
@@ -181,7 +181,7 @@
 1. **Immediate Assessment** (7:00 AM):
    - Check Databricks system status
    - Verify Snowflake connectivity
-   - Contact Divya for Genesis system status
+   - Contact Divya for Genesys system status
 
 2. **Emergency Communication** (7:30 AM):
    - Notify collections management
@@ -190,7 +190,7 @@
 
 3. **Recovery Process**:
    - Manual data extraction if needed
-   - Backup Google Sheet upload to Genesis
+   - Backup Google Sheet upload to Genesys
    - Coordinate with teams for adjusted schedules
 
 ### Partner Communication
@@ -203,7 +203,7 @@
 
 ### Technical Issues
 - **Databricks Problems**: BI Team (biteam@happymoney.com)
-- **Genesis Integration**: Divya (Engineering)
+- **Genesys Integration**: Divya (Engineering)
 - **Data Pipeline Issues**: Data Engineering Team
 
 ### Business Issues
