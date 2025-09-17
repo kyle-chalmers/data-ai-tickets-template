@@ -1,23 +1,23 @@
-# Genesis Integration Process
+# Genesys Integration Process
 
 ## Overview
-After Databricks generates outbound lists in Snowflake, they are automatically uploaded to Genesis for campaign execution. This involves daily import/export processes with comprehensive monitoring.
+After Databricks generates outbound lists in Snowflake, they are automatically uploaded to Genesys for campaign execution. This involves daily import/export processes with comprehensive monitoring.
 
 ## Daily Import Process (8:30 AM Eastern)
 
 ### Phase 1: List Preparation (6:00-7:00 AM)
 - **Source**: Lists generated in Snowflake by Databricks workflow
-- **Output**: Campaign lists ready for Genesis upload
+- **Output**: Campaign lists ready for Genesys upload
 - **Configuration**: Driven by `LKP_GENESYS_LIST_AUTOMATION_CONFIG`
 
-### Phase 2: Genesis Upload (8:30 AM)
+### Phase 2: Genesys Upload (8:30 AM)
 - **Owner**: Divya (Engineering team)
 - **Duration**: ~30 minutes
-- **Process**: Automated system reads active campaigns and uploads to Genesis
+- **Process**: Automated system reads active campaigns and uploads to Genesys
 - **Architecture**: Sets and individual lists within sets
 
 ### Phase 3: Campaign Activation (9:00 AM)
-- **Status**: All lists available in Genesis
+- **Status**: All lists available in Genesys
 - **Teams**: Collections and marketing teams begin outbound activities
 - **Channels**: Phone calls, SMS messages, emails ready for deployment
 
@@ -26,7 +26,7 @@ After Databricks generates outbound lists in Snowflake, they are automatically u
 ### Results Extraction
 - **Schedule**: Daily at 10:30 PM Eastern
 - **Owner**: Divya (Engineering team)
-- **Purpose**: Retrieve campaign execution results from Genesis
+- **Purpose**: Retrieve campaign execution results from Genesys
 
 ### Data Captured
 - Successful outbound attempts
@@ -35,7 +35,7 @@ After Databricks generates outbound lists in Snowflake, they are automatically u
 - Contact attempt outcomes
 
 ### Data Flow Architecture
-1. **Genesis → Kafka**: Results extracted and sent to Kafka messaging
+1. **Genesys → Kafka**: Results extracted and sent to Kafka messaging
 2. **Kafka → Snowflake**: Automated process loads data into Snowflake
 3. **Analytics**: Results available for performance analysis and compliance
 
@@ -109,11 +109,11 @@ After Databricks generates outbound lists in Snowflake, they are automatically u
 ### Common Failure Scenarios
 
 #### 6:00 AM Job Fails
-- **Impact**: No lists generated for Genesis upload
+- **Impact**: No lists generated for Genesys upload
 - **Recovery**: Manual job restart, coordinate with Divya for delayed upload
 
 #### 8:30 AM Upload Fails
-- **Impact**: Lists unavailable in Genesis for execution
+- **Impact**: Lists unavailable in Genesys for execution
 - **Recovery**: Divya re-triggers upload or manual upload via backup Google Sheet
 
 #### Partial Upload Issues
@@ -137,7 +137,7 @@ After Databricks generates outbound lists in Snowflake, they are automatically u
 
 ### Internal Notification Enhancement
 - **Slack Integration**: Job failure notifications to team channels
-- **Monitoring**: Focus on Genesis list generation workflow
+- **Monitoring**: Focus on Genesys list generation workflow
 - **Escalation**: Internal resolution before partner notifications
 
 ### Suppression Reporting
@@ -145,12 +145,12 @@ After Databricks generates outbound lists in Snowflake, they are automatically u
   - Volume suppressed by global rules
   - Volume suppressed by set-level rules
   - Volume suppressed by list-level rules
-  - Final approved volume for Genesis upload
+  - Final approved volume for Genesys upload
 - **Purpose**: Validate suppression effectiveness and optimization
 
 ### SMS Opt-out Integration
-- **Current State**: Genesis handles opt-outs automatically
-- **Enhancement**: Pull Genesis opt-out data to Snowflake
+- **Current State**: Genesys handles opt-outs automatically
+- **Enhancement**: Pull Genesys opt-out data to Snowflake
 - **Use Cases**:
   - Customer behavior analysis (opt-out patterns)
   - Enhanced contact rules for all channels

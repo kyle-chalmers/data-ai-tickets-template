@@ -30,8 +30,8 @@ This documentation covers the complete outbound list generation system consistin
 - Infrastructure and cluster configuration
 - Data sources and output tables
 
-### Genesis Integration
-🔄 **[Genesis Integration Process](genesis_integration.md)**
+### Genesys Integration
+🔄 **[Genesys Integration Process](genesis_integration.md)**
 - Daily import/export process (8:30 AM and 10:30 PM)
 - Campaign configuration management
 - Results processing and monitoring
@@ -52,7 +52,7 @@ This documentation covers the complete outbound list generation system consistin
 
 **Workflow Schedule**: Daily at 6:00 AM EST (`14 0 6 * * ?`)
 **Primary Output**: `CRON_STORE.RPT_OUTBOUND_LISTS`
-**Monitoring Dashboard**: Tableau Genesis Integration Dashboard
+**Monitoring Dashboard**: Tableau Genesys Integration Dashboard
 **Notifications**: hshi@happymoney.com
 
 ---
