@@ -8,9 +8,9 @@
 | Call List | DPD3-14, DPD15-29, DPD30-59, DPD60-89, DPD90+, Blue, Due Diligence DPD3-89 | Genesys (Phone) | BI-2482 + BI-737 | Global + State Regulations + DNC Phone + Phone Test |
 | SMS | Payment Reminder, Due Date, DPD3-44, TruStage DPD17/33 | Genesys (Text) | BI-2482 + BI-820 | Global + DNC Text + Autopay |
 | GR Email | GR Email | Genesys (Email) | BI-2482 | Global + DNC Email |
-| GR Physical Mail | DPD15 Control/Test, DPD75 Control/Test | Genesys (Mail) | BI-2482 + BI-2609 | Global + DNC Letter |
+| ~~GR Physical Mail~~ | ~~DPD15 Control/Test, DPD75 Control/Test~~ | ~~Genesys (Mail)~~ | ~~ARCHIVED (DI-1255)~~ | ~~Archived~~ |
 | Recovery Weekly | Recovery Weekly | Genesys (Mail) | BI-2482 | Global + DNC Letter (Tuesday only) |
-| Recovery Monthly Email | Recovery Monthly Email | Genesys (Email) | BI-2482 | Global + DNC Email/Letter + State Limitations (1st Tuesday) |
+| ~~Recovery Monthly Email~~ | ~~Recovery Monthly Email~~ | ~~Genesys (Email)~~ | ~~ARCHIVED (DI-1255)~~ | ~~Archived~~ |
 | Remitter | DPD60+ Min Pay | Genesys (Text) | BI-2482 + BI-813 | Global + DNC Text |
 | SIMM | DPD3-119 | SIMM Partner System | BI-2482 + DI-862 | Global + DNC Phone |
 | SST | DPD3-119 | Genesys (Phone) | BI-2482 | Global + State Regulations + DNC Phone |
@@ -89,3 +89,17 @@
 | **Campaign Types** | DPD-based, recovery-focused | Journey-based, engagement-focused |
 | **Data Sources** | Loan tape, collections data | Application data, marketing data |
 | **Compliance Requirements** | Strict (state regulations) | Moderate (marketing regulations) |
+
+---
+
+## Recent Changes
+
+### DI-1255: Campaign Archival (September 2025)
+**Archived Campaigns** - The following campaigns were confirmed inactive by business stakeholders and have been archived:
+
+- **GR Physical Mail**: DPD15/DPD75 physical mail campaigns and related upload jobs (BI-2609)
+- **Recovery Monthly Email**: Monthly recovery email campaigns and related upload jobs (BI-2108)
+
+**Impact**: Reduced daily processing overhead, eliminated unnecessary suppression queries, cleaner outbound lists data.
+
+**Active Campaigns Preserved**: GR Email, Recovery Weekly, and all other active campaigns continue to function normally.

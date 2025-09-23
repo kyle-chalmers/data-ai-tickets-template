@@ -204,6 +204,45 @@ END
 - **Error Isolation**: Prevent single job failures from cascading
 - **Resource Balancing**: Distribute load across available resources
 
+## Campaign Retirement Process
+
+### Recent Campaign Archival: DI-1255 (September 2025)
+
+**Archived Campaigns**:
+- **GR Physical Mail**: Confirmed inactive by business stakeholders
+  - Removed from BI-2482 campaign generation
+  - Archived BI-2609 upload job sections
+- **Recovery Monthly Email**: Confirmed inactive by business stakeholders
+  - Removed from BI-2482 campaign generation
+  - Retired BI-2108 job to `retired_jobs/`
+
+**Process Followed**:
+1. **Business Validation**: Confirmed with Collections team that campaigns were inactive
+2. **Impact Analysis**: Verified no active dependencies or downstream systems
+3. **Code Modification**:
+   - Removed campaign generation logic
+   - Removed associated suppression queries
+   - Updated history table references
+   - Preserved all active campaigns and critical suppression logic
+4. **Documentation**: Updated all relevant documentation and job descriptions
+5. **Testing**: Verified active campaigns continue to function normally
+
+**Business Impact**:
+- Reduced daily processing overhead
+- Eliminated 3 unnecessary suppression queries
+- Cleaner outbound lists data
+- Improved code maintainability
+
+### Standard Retirement Process
+
+**For future campaign retirements**:
+1. **Business Confirmation**: Verify with stakeholders that campaign is truly inactive
+2. **Dependency Analysis**: Check for downstream jobs and systems
+3. **Code Changes**: Remove generation/suppression logic, preserve active functionality
+4. **Job Retirement**: Move entire jobs to `retired_jobs/` if fully dependent on archived campaign
+5. **Documentation**: Update all relevant guides and documentation
+6. **Monitoring**: Verify no errors from removed references
+
 ## Quarterly Review Process
 
 ### Suppression Rules Review

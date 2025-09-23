@@ -55,6 +55,15 @@ This documentation covers the complete outbound list generation system consistin
 **Monitoring Dashboard**: Tableau Genesys Integration Dashboard
 **Notifications**: hshi@happymoney.com
 
+## Recent Updates
+
+### DI-1255: Campaign Archival (September 2025)
+**Archived inactive campaigns** based on business stakeholder confirmation:
+- **GR Physical Mail**: DPD15/DPD75 campaigns and BI-2609 upload job sections
+- **Recovery Monthly Email**: Monthly email campaigns and BI-2108 job retirement
+
+**Impact**: Reduced processing overhead, eliminated unnecessary queries, cleaner data. All active campaigns preserved.
+
 ---
 
 *For questions: biteam@happymoney.com*
