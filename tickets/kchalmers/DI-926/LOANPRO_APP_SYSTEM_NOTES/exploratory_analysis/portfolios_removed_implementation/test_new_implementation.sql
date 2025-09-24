@@ -1,0 +1,97 @@
+-- DI-926: Test new PORTFOLIOS_REMOVED implementation
+-- Test with sample records to verify functionality
+
+USE WAREHOUSE BUSINESS_INTELLIGENCE_LARGE;
+
+-- Test 1: Verify new columns exist and have expected data for sample records
+SELECT
+    RECORD_ID,
+    APP_ID,
+    NOTE_TITLE_DETAIL,
+    NOTE_NEW_VALUE,
+    NOTE_NEW_VALUE_LABEL,
+    NOTE_OLD_VALUE,
+    NOTE_OLD_VALUE_LABEL,
+    PORTFOLIOS_ADDED,
+    PORTFOLIOS_ADDED_CATEGORY,
+    PORTFOLIOS_ADDED_LABEL,
+    PORTFOLIOS_REMOVED,
+    PORTFOLIOS_REMOVED_CATEGORY,
+    PORTFOLIOS_REMOVED_LABEL
+FROM BUSINESS_INTELLIGENCE_DEV.BRIDGE.VW_LOANPRO_APP_SYSTEM_NOTES
+WHERE RECORD_ID IN (681640067, 681639797, 681640775)
+ORDER BY RECORD_ID;
+
+-- Test 2: Verify NOTE_NEW_VALUE equals NOTE_NEW_VALUE_LABEL for removed portfolios
+SELECT
+    'Sample Records Test' as test_type,
+    RECORD_ID,
+    NOTE_NEW_VALUE,
+    NOTE_NEW_VALUE_LABEL,
+    CASE WHEN NOTE_NEW_VALUE = NOTE_NEW_VALUE_LABEL THEN 'PASS' ELSE 'FAIL' END as match_test,
+    PORTFOLIOS_REMOVED,
+    PORTFOLIOS_REMOVED_LABEL
+FROM BUSINESS_INTELLIGENCE_DEV.BRIDGE.VW_LOANPRO_APP_SYSTEM_NOTES
+WHERE RECORD_ID IN (681640067, 681639797, 681640775)
+ORDER BY RECORD_ID;
+
+-- Test 3: Compare with production for the same records
+WITH dev_data AS (
+    SELECT
+        RECORD_ID,
+        APP_ID,
+        NOTE_TITLE_DETAIL,
+        NOTE_NEW_VALUE,
+        NOTE_NEW_VALUE_LABEL,
+        NOTE_OLD_VALUE,
+        PORTFOLIOS_ADDED,
+        PORTFOLIOS_REMOVED,
+        PORTFOLIOS_REMOVED_CATEGORY,
+        PORTFOLIOS_REMOVED_LABEL
+    FROM BUSINESS_INTELLIGENCE_DEV.BRIDGE.VW_LOANPRO_APP_SYSTEM_NOTES
+    WHERE RECORD_ID IN (681640067, 681639797, 681640775)
+),
+prod_data AS (
+    SELECT
+        RECORD_ID,
+        APP_ID,
+        NOTE_TITLE_DETAIL,
+        NOTE_NEW_VALUE,
+        NOTE_NEW_VALUE_LABEL,
+        NOTE_OLD_VALUE,
+        PORTFOLIOS_ADDED,
+        PORTFOLIOS_REMOVED,
+        PORTFOLIOS_ADDED_CATEGORY,
+        PORTFOLIOS_ADDED_LABEL
+    FROM BUSINESS_INTELLIGENCE.BRIDGE.app_system_note_entity
+    WHERE RECORD_ID IN (681640067, 681639797, 681640775)
+)
+SELECT
+    'DEV vs PROD Comparison' as comparison_type,
+    d.RECORD_ID,
+    d.NOTE_TITLE_DETAIL as dev_note_title_detail,
+    p.NOTE_TITLE_DETAIL as prod_note_title_detail,
+    d.NOTE_NEW_VALUE as dev_note_new_value,
+    p.NOTE_NEW_VALUE as prod_note_new_value,
+    d.NOTE_NEW_VALUE_LABEL as dev_note_new_value_label,
+    p.NOTE_NEW_VALUE_LABEL as prod_note_new_value_label,
+    d.PORTFOLIOS_REMOVED as dev_portfolios_removed,
+    p.PORTFOLIOS_REMOVED as prod_portfolios_removed,
+    d.PORTFOLIOS_REMOVED_CATEGORY as dev_portfolios_removed_category,
+    d.PORTFOLIOS_REMOVED_LABEL as dev_portfolios_removed_label
+FROM dev_data d
+FULL OUTER JOIN prod_data p ON d.RECORD_ID = p.RECORD_ID
+ORDER BY d.RECORD_ID;
+
+-- Test 4: Verify other portfolio types still work correctly
+SELECT
+    'Other Portfolio Types Test' as test_type,
+    NOTE_TITLE_DETAIL,
+    COUNT(*) as record_count,
+    COUNT(DISTINCT PORTFOLIOS_ADDED) as unique_added_portfolios,
+    COUNT(DISTINCT PORTFOLIOS_REMOVED) as unique_removed_portfolios
+FROM BUSINESS_INTELLIGENCE_DEV.BRIDGE.VW_LOANPRO_APP_SYSTEM_NOTES
+WHERE (PORTFOLIOS_ADDED IS NOT NULL OR PORTFOLIOS_REMOVED IS NOT NULL)
+    AND CREATED_TS >= '2025-09-20'
+GROUP BY NOTE_TITLE_DETAIL
+ORDER BY record_count DESC;

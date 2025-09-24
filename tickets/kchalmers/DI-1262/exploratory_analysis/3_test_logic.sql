@@ -1,0 +1,43 @@
+/*
+DI-1262: Test Logic for LOAN_DEBT_SETTLEMENT
+Validate the multi-source consolidation approach
+*/
+
+-- Test the union logic with small sample
+WITH custom_settings_source AS (
+    SELECT
+        CAST(cls.LOAN_ID AS VARCHAR) as LOAN_ID,
+        'CUSTOM_FIELDS' as DATA_SOURCE,
+        cls.SETTLEMENTSTATUS,
+        cls.DEBT_SETTLEMENT_COMPANY
+    FROM BUSINESS_INTELLIGENCE.BRIDGE.VW_LMS_CUSTOM_LOAN_SETTINGS_CURRENT cls
+    WHERE (cls.SETTLEMENTSTATUS IS NOT NULL AND cls.SETTLEMENTSTATUS <> '')
+       OR (cls.DEBT_SETTLEMENT_COMPANY IS NOT NULL AND cls.DEBT_SETTLEMENT_COMPANY <> '')
+    LIMIT 5
+),
+
+portfolio_source AS (
+    SELECT DISTINCT
+        CAST(port.LOAN_ID AS VARCHAR) as LOAN_ID,
+        'PORTFOLIO' as DATA_SOURCE,
+        NULL as SETTLEMENTSTATUS,
+        NULL as DEBT_SETTLEMENT_COMPANY
+    FROM BUSINESS_INTELLIGENCE.ANALYTICS.VW_LOAN_PORTFOLIOS_AND_SUB_PORTFOLIOS port
+    WHERE port.PORTFOLIO_CATEGORY = 'Settlement'
+      AND port.LOAN_ID NOT IN (SELECT LOAN_ID FROM custom_settings_source)
+    LIMIT 3
+),
+
+test_union AS (
+    SELECT * FROM custom_settings_source
+    UNION ALL
+    SELECT * FROM portfolio_source
+)
+
+SELECT
+    LOAN_ID,
+    DATA_SOURCE,
+    SETTLEMENTSTATUS,
+    DEBT_SETTLEMENT_COMPANY
+FROM test_union
+ORDER BY DATA_SOURCE, LOAN_ID;

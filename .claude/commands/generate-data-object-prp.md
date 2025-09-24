@@ -101,6 +101,11 @@ Using PRPs/templates/data-object-initial.md as input template:
 - **Transformation Logic**: Business rules, calculations, filtering, aggregations for each object
 - **Development Phase**: Create objects in DEVELOPMENT and BUSINESS_INTELLIGENCE_DEV using production data
 - **CRITICAL VALIDATION REQUIREMENT**: Include explicit instruction for implementer to perform independent data exploration and validation before following PRP guidance
+- **DATA GRAIN AND DEDUPLICATION ANALYSIS**: For sources containing historical or time-series data, require thorough exploration:
+  - **Mandatory Investigation**: Analyze record counts vs unique identifiers to detect potential duplicates
+  - **Grain Analysis**: Determine the correct business grain and identify appropriate deduplication strategies
+  - **Time-Series Considerations**: Explore date/timestamp patterns and determine current vs historical record requirements
+  - **Validation First**: Always implement duplicate detection as the primary QC test to surface data quality issues early
 - **Sequential vs Parallel Development**: Strategy for multiple objects creation/deployment
 - **Before/After Testing**: If ALTER_EXISTING, comprehensive comparison between current and new implementation
 - **Join Validation**: Comprehensive testing of all table joins and relationship integrity
@@ -146,7 +151,7 @@ snow sql -q "EXPLAIN $(cat final_deliverables/1_data_object_creation.sql)" --for
 ## Output Structure
 
 ### PRP Document Location
-Save as: `PRPs/snowflake-data-object-{object-name}.md` (same folder as INITIAL.md if provided)
+Save as: `PRPs/snowflake-data-object-{object-name}.md` **in the same folder as INITIAL.md file**
 
 ### Expected Ticket Folder Reference
 **CRITICAL**: Include explicit ticket folder reference in PRP for execute command compatibility:

@@ -432,6 +432,8 @@ tickets/[team_member]/DI-XXX/
 - **ALWAYS include column headers** in CSV outputs
 - **Use CAST()** for data type conversions when joining
 - **Handle missing columns** gracefully using alternatives
+- **No hardcoding test results**: do not hardcode things like "pass", "fail", or any other strings for query tests. Not all tests will have a pass/fail result, but if they do, make sure you use conditional logic to get the end result.
+- **SQL Test Formatting**: Place test titles (`--X.Y: Test Description`) directly above queries with no separator lines
 
 #### Query Optimization
 Always evaluate queries for efficiency before finalizing:

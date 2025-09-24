@@ -34,16 +34,26 @@ Execute a comprehensive Snowflake data object creation or modification following
    - **CRITICAL**: Verify all column values are business-ready and data structure matches expected grain
 
 2. **Quality Control Implementation - CRITICAL**
-   - **MANDATORY DUPLICATE TESTING**: Check for duplicate records with detailed analysis
-   - **MANDATORY COMPLETENESS VALIDATION**: Verify all expected records are present
-   - **MANDATORY DATA INTEGRITY CHECKS**: Validate referential integrity and business rules
-   - **MANDATORY PERFORMANCE TESTING**: Ensure queries run efficiently with acceptable response times
+   - **STEP 1 - CREATE OBJECT FIRST**: Always create the actual development object using production data BEFORE writing QC validation
+   - **STEP 2 - PERMISSION TROUBLESHOOTING**: If permission errors occur, systematically explore available roles and schemas:
+     - Test different database roles and document permission constraints
+     - Work within available permissions rather than stopping execution
+     - Never proceed with QC until actual object is successfully created
+   - **STEP 3 - QC THE ACTUAL OBJECT**: Write `qc_validation.sql` to validate the ACTUAL development object, not source tables
+   - **QC Target**: All validation queries must reference the created development object
+   - **MANDATORY DUPLICATE TESTING**: Check for duplicate records in the development object with detailed analysis
+     - **CRITICAL EXPLORATION**: Investigate any duplicate records to understand root cause and implement appropriate solutions
+     - **DATA GRAIN ANALYSIS**: Ensure implementation matches intended business grain through thorough data exploration
+   - **MANDATORY COMPLETENESS VALIDATION**: Verify all expected records are present in the development object
+   - **MANDATORY DATA INTEGRITY CHECKS**: Validate referential integrity and business rules in the development object
+   - **MANDATORY PERFORMANCE TESTING**: Ensure development object queries run efficiently with acceptable response times
+   - **QC QUERY FORMAT**: Use clean, functional queries with test identifiers in comments (e.g., `--1.1: Test Name`) not in SELECT statements
+   - **CONSOLIDATE QC QUERIES**: Group related tests to minimize number of queries for easier execution
    - **CRITICAL QC ESCALATION**: If any QC uncertainties or data quality concerns arise, present findings to user for clarification before proceeding
-   - Execute all validation gates from PRP with comprehensive documentation
-   - Create single comprehensive QC file: `qc_validation.sql` with all tests
+   - Execute all validation gates from PRP against the development object with comprehensive documentation
    - If ALTER_EXISTING: **CRITICAL** - Compare new vs existing object data with diff analysis
    - If MULTIPLE_RELATED_OBJECTS: Test cross-object relationships and dependencies
-   - Validate join integrity and business logic with explicit validation queries
+   - Validate join integrity and business logic with explicit validation queries against development objects
 
 3. **Performance Optimization**
    - Execute EXPLAIN plans for all objects
@@ -83,6 +93,11 @@ Execute a comprehensive Snowflake data object creation or modification following
    - Create rollback procedures if modifying existing objects
    - Prepare stakeholder communication and deployment timeline
    - Document any breaking changes or migration requirements
+
+3. **Jira Ticket Transition**
+   - Transition corresponding Jira ticket status to "In-Spec"
+   - Assign ticket to the user who issued the command
+   - Add completion comment with deliverable summary that is under 100 words
 
 ## Success Criteria
 

@@ -7,10 +7,11 @@
 **Deployment**: Development complete, production scripts ready  
 
 ## Current Deployment State
-- **✅ Development**: All layers operational (287.9M records)
-- **⏳ Production**: Scripts ready, awaiting deployment approval
-- **✅ QC**: Comprehensive validation complete
-- **✅ Architecture**: FRESHSNOW view → FRESHSNOW table → BRIDGE view → ANALYTICS view
+- **✅ Development**: BRIDGE layer deployed with FRESHSNOW views using ARCA production sources
+- **✅ Development Table**: BUSINESS_INTELLIGENCE_DEV.BRIDGE.LOANPRO_APP_SYSTEM_NOTES (333.5M records)
+- **⏳ Production**: Scripts ready in final_deliverables/, awaiting deployment approval
+- **✅ QC**: Validation complete - found 13.2M additional records and enhanced label resolution vs production
+- **✅ Architecture**: ARCA.FRESHSNOW sources → BI_DEV.BRIDGE view → BI_DEV.BRIDGE table
 
 ## Key Business Value
 - **Superior Data Currency**: 90 minutes more current than production ETL
@@ -54,10 +55,10 @@
 ### QC Validation (Before Production)
 ```sql
 -- Execute validation suite:
-1. Basic validation: qc_queries/1_development_deployment_validation.sql
-2. Setup validation: qc_queries/2_development_setup_validation.sql
-3. Full validation: qc_queries/3_full_dataset_validation.sql  
-4. Performance tests: qc_queries/4_comprehensive_validation_queries.sql
+1. Record/ID comparison: qc_queries/1_record_id_app_id_comparison.sql
+2. Column value comparison: qc_queries/2_column_value_comparison.sql
+3. APP_LOAN_PRODUCTION compatibility: qc_queries/3_app_loan_production_compatibility.sql
+4. VW_APPL_HISTORY downstream compatibility: qc_queries/4_appl_history_downstream_compatibility.sql
 ```
 
 ## Current Objects Deployed (Development)
@@ -138,6 +139,78 @@
 - **Rollback Plan**: Can revert to stored procedure if issues arise  
 - **Comprehensive Testing**: 287.9M records validated across all scenarios
 - **Schema Compatibility**: Maintains downstream consumer compatibility
+
+## QC Testing Context for Future Sessions
+
+### Tables for Comparison
+- **Development**: `BUSINESS_INTELLIGENCE_DEV.BRIDGE.LOANPRO_APP_SYSTEM_NOTES` (new architecture)
+- **Production**: `BUSINESS_INTELLIGENCE.BRIDGE.app_system_note_entity` (current production)
+
+### Key Testing Parameters
+- **Date Filter**: `created_ts <= '2025-09-18'` for consistent populations
+- **Primary Key**: `RECORD_ID` for joining tables
+- **Expected Volume**: ~309M records in production, ~333M in development
+
+### Known Differences (As of 2025-09-19)
+1. **Record Count**: Dev has 13.2M additional RECORD_IDs not in production
+2. **APP_ID Mapping**: 11.2M records have different APP_IDs between systems
+3. **NOTE_NEW_VALUE_LABEL**: 74% mismatch rate - dev has enhanced label resolution
+4. **NOTE_TITLE_DETAIL**: Production uses suffixed categories (e.g., "Portfolios Added - Label"), dev uses base categories
+
+### Column Mapping for Testing
+| Dev Column | Prod Column | Notes |
+|------------|-------------|-------|
+| RECORD_ID | RECORD_ID | Primary key |
+| APP_ID | APP_ID | Different mappings found |
+| CREATED_TS | CREATED_TS | Perfect match |
+| LASTUPDATED_TS | LASTUPDATED_TS | Perfect match |
+| LOAN_STATUS_NEW | LOAN_STATUS_NEW | 1.9% mismatch |
+| LOAN_STATUS_OLD | LOAN_STATUS_OLD | 1.9% mismatch |
+| NOTE_NEW_VALUE | NOTE_NEW_VALUE | 1.1% mismatch |
+| NOTE_NEW_VALUE_LABEL | NOTE_NEW_VALUE_LABEL | 73.9% mismatch |
+| NOTE_OLD_VALUE | NOTE_OLD_VALUE | 0.9% mismatch |
+| NOTE_OLD_VALUE_LABEL | (doesn't exist) | New in dev |
+| NOTE_TITLE_DETAIL | NOTE_TITLE_DETAIL | 1.5% mismatch |
+| NOTE_TITLE | NOTE_TITLE | Perfect match |
+| PORTFOLIOS_ADDED | PORTFOLIOS_ADDED | Perfect match |
+| PORTFOLIOS_ADDED_CATEGORY | PORTFOLIOS_ADDED_CATEGORY | 0.6% mismatch |
+| PORTFOLIOS_ADDED_LABEL | PORTFOLIOS_ADDED_LABEL | 0.6% mismatch |
+
+### QC Query Patterns to Reuse
+1. **Count Comparison**: Use CTEs to calculate metrics separately, then JOIN
+2. **Mismatch Detection**: LEFT/RIGHT JOINs for existence, INNER JOIN for value differences
+3. **NULL-safe Comparison**: `(dev_col != prod_col OR (dev_col IS NULL) != (prod_col IS NULL))`
+4. **Performance**: Add LIMIT for column comparison queries on large datasets
+
+## Recent QC Test Updates (2025-09-23)
+
+### Column Value Comparison Test Improvements
+**File**: `qc_queries/2_column_value_comparison.sql`
+
+#### ✅ **Issues Fixed**:
+1. **Test 2.13**: Added missing `p.NOTE_TITLE_DETAIL as prod_note_title_detail` column selection for proper dev vs prod comparison
+2. **Label Validation Logic**: Corrected tests 2.2-2.5 to validate dev labels against dev values instead of incorrect cross-table comparisons
+3. **Portfolio Field Tests**: Added comprehensive portfolio field comparison tests (2.6-2.10)
+
+#### 🔧 **New Test Structure**:
+- **Test 2.2**: NOTE_NEW_VALUE_LABEL validation (dev label vs dev NOTE_NEW_VALUE/NOTE_NEW_VALUE_LABEL)
+- **Test 2.3**: NOTE_OLD_VALUE_LABEL validation (dev label vs dev NOTE_OLD_VALUE/NOTE_OLD_VALUE_LABEL)
+- **Test 2.4**: NOTE_NEW_VALUE_LABEL mismatch examples
+- **Test 2.5**: NOTE_OLD_VALUE_LABEL mismatch examples
+- **Test 2.6**: PORTFOLIOS_ADDED aggregated comparison
+- **Test 2.7**: PORTFOLIOS_ADDED_CATEGORY aggregated comparison
+- **Test 2.8**: PORTFOLIOS_ADDED_LABEL aggregated comparison
+- **Test 2.9**: Portfolio fields value differences (grouped by values)
+- **Test 2.10**: Portfolio fields specific record examples
+
+#### 📊 **Validation Results**:
+- **NOTE_NEW_VALUE_LABEL**: 88.5% match NOTE_NEW_VALUE, 11.5% match NOTE_NEW_VALUE_LABEL ✅
+- **NOTE_OLD_VALUE_LABEL**: 100% match NOTE_OLD_VALUE ✅
+- **Portfolio Fields**: 100% match rates across all portfolio fields ✅
+- **Test 2.13**: Now properly shows dev vs prod NOTE_TITLE_DETAIL differences ✅
+
+#### 💡 **Key Improvement**:
+Previous tests incorrectly compared values between dev and production tables. New tests properly validate that dev label fields contain logically consistent values within the dev table itself, which is the correct validation approach.
 
 ---
 **Confidence Level**: HIGH - Architecture provides superior accuracy and performance vs current production
