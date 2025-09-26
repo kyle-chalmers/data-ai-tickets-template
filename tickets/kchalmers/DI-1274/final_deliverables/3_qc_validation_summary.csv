@@ -1,0 +1,14 @@
+Test_Name,Status,Details,Result
+Duplicate_Detection,PASS,"504 total records, 504 unique loans, 0 duplicates",PASS
+Data_Grain_Validation,PASS,"One row per LOAN_ID achieved",PASS
+Record_Count_Validation,PASS,"504 loans vs expected ~504 from PRP research",PASS
+Custom_Fields_Coverage,PASS,"411 loans (81.5%) have fraud custom fields",PASS
+Portfolio_Coverage,PASS,"356 loans (70.6%) have fraud portfolios",PASS
+Sub_Status_Coverage,PASS,"17 loans (3.4%) have fraud sub-statuses with LMS_SCHEMA filter",PASS
+Source_Distribution,PASS,"17 Complete (3.4%), 336 Partial (66.7%), 151 Single Source (30.0%)",PASS
+Workflow_Progression,PASS,"14 loans (3.9% of portfolio loans) show progression from declined to confirmed",PASS
+Data_Conflicts,IDENTIFIED,"7 loans have conflicting fraud determinations between sources",INFORMATIONAL
+LEAD_GUID_Population,PASS,"99.8% coverage (501 of 504 loans have LEAD_GUID)",PASS
+Performance_Test,PASS,"View executes quickly, returns 504 records",PASS
+Business_Logic,PASS,"Portfolio aggregation, date handling, and flags working correctly",PASS
+Schema_Filtering,PASS,"LMS_SCHEMA filter correctly applied, excluding 19K+ loans from other schema",PASS

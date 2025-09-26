@@ -1,0 +1,55 @@
+# Data Object Request
+
+## Request Type
+- **Operation:** CREATE_NEW
+- **Scope:** SINGLE_OBJECT
+
+## Object Definition(s)
+- **Primary Object Name:** VW_LOAN_FRAUD
+- **Object Type:** VIEW
+- **Target Schema Layer:** BUSINESS_INTELLIGENCE.ANALYTICS
+
+## Data Grain & Aggregation
+- **Grain:** One row per loan
+- **Time Period:** all time
+- **Key Dimensions:** all fraud related fields, with loan_id as the primary key for the loan
+
+## Business Context
+**Business Purpose:** This is needed as a source for fraud related metrics and analysis, and to ensure that we are capturing all of our fraud in a single source of truth, and also highlighting potential data issues associated with these fraud that are in. This will serve as a suppression source to ensure we are not including loans that have fraud in debt sales. Completing this will also help us complete DI-1246 and DI-1235.
+
+**Primary Use Cases:** 
+- Suppression from debt sale files
+- Analysis of fraud data
+- Identifying data quality issues with fraud data
+
+**Key Metrics/KPIs:** Count of active fraudulent loans, a timeline of fraud cases, and it should help us uncover inconsistencies and data issues with our fraud data
+
+## Data Sources
+**New/Target Sources:** 
+- BUSINESS_INTELLIGENCE.BRIDGE.VW_LMS_CUSTOM_LOAN_SETTINGS_CURRENT for all custom fields associated with the loan that are relevant to fraud 
+- BUSINESS_INTELLIGENCE.ANALYTICS.VW_LOAN_PORTFOLIOS_AND_SUB_PORTFOLIOS for all fraud portfolios associated with the loan 
+- BUSINESS_INTELLIGENCE.BRIDGE.VW_LOAN_SETTINGS_ENTITY_CURRENT joined with BUSINESS_INTELLIGENCE.BRIDGE.VW_LOAN_SUB_STATUS_ENTITY_CURRENT on LOAN_SUB_STATUS_ID = ID to get the current status
+
+**Expected Relationships:** on LOAN_ID, and then on LOAN_SUB_STATUS_ID = ID for the loan sub status and loan settings views
+
+**Data Quality Considerations:** Some fraudulent loans may have data via fraud sub statuses, fraud portfolios, and fraud custom fields, but there may be varying combinations of what data is available.
+
+**Expected Data Differences:** We should mark the sources of the data, whether we have data coming from all 3 sources, or just one or two.
+
+**Column Values:** Some fields may be entirely NULL, and if they are NULL they can be excluded. I will need you to take an exploratory approach to determine appropriate column values.
+
+## Requirements
+- **Performance:** As quickly as possible
+- **Refresh Pattern:** It should be up to date with the source
+- **Data Retention:** all time
+
+## Ticket Information
+- **Existing Jira Ticket:** CREATE_NEW
+- **Stakeholders:** Kyle Chalmers
+
+## Additional Context
+There are a lot of fraud fields stored within the custom fields of the loan, and we will need to sort out what fields are valuable and which ones are not valuable. I've created a query below to help provide the context needed for looking at the fraud custom fields, but please note there may be other fields I am missing. Please confirm with me what the fields you are selecting, but generally speaking these fields have "FRAUD" in them, but some may not.
+I will need you to take an exploratory approach to determine what the appropriate columns are to include and confirm them with me, and explain why you are including them or excluding them.
+
+**External References:** While it will not be exactly like this, the data created for BUSINESS_INTELLIGENCE.ANALYTICS.VW_LOAN_DEBT_SETTLEMENT is a good model for how to combine different sources of data into a single source of truth.
+Look at the fraud fields, sub-statuses, and portfolios utilized and the logic in this query that filters out and searches for fraud data /Users/kchalmers/Development/data-intelligence-tickets/tickets/kchalmers/DI-1141/final_deliverables/sql_queries/3_Debt_Sale_Population_Final_Bounce_Q2_2025_Debt_Sale_OPTIMIZED.sql . development._tin.bankruptcy_debt_suspend_lookup should not be utilized as a source. This is what we created as a temporary step to filter debt settlements out of the debt sale population.
