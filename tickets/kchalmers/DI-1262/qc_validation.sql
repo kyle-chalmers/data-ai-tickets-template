@@ -146,3 +146,11 @@ SELECT
     MAX(SETTLEMENT_AMOUNT) as max_settlement_amount,
     AVG(SETTLEMENT_AMOUNT) as avg_settlement_amount
 FROM BUSINESS_INTELLIGENCE_DEV.ANALYTICS.VW_LOAN_DEBT_SETTLEMENT;
+
+
+-- ============================================
+-- 5. SIMPLE SELECT
+-- ============================================
+
+--5.1: Select * from the table
+SELECT * FROM BUSINESS_INTELLIGENCE_DEV.ANALYTICS.VW_LOAN_DEBT_SETTLEMENT;
