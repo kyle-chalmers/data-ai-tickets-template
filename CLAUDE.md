@@ -113,6 +113,33 @@ See the **[Prerequisite Installation Guide](./documentation/prerequisite_install
 - Custom integrations (Slack CLI functions)
 - Platform-specific installation instructions (macOS Homebrew, Windows options)
 
+### Custom Sub-Agents
+
+This repository includes specialized sub-agents stored in `.claude/agents/` that Claude Code will automatically discover and use for specific tasks:
+
+#### Jira Ticket Setup Agent
+**Location:** `.claude/agents/jira-ticket-setup-agent.md`
+
+**Purpose:** Automates the complete Jira ticket workflow including:
+- Creating DI project tickets with proper epic linking
+- Transitioning tickets to appropriate status
+- Creating git branches from main
+- Setting up standardized folder structure
+- Initializing ticket README files
+
+**When Used:** Claude Code will automatically invoke this agent when you request Jira ticket creation, branch setup, or ticket workflow initialization.
+
+**Usage Examples:**
+- "Create a ticket to investigate missing data in the payment dashboard"
+- "Setup a new ticket for building a loan metrics view, assign to kyle"
+- "Create branch and folders for DI-1234"
+
+**Features:**
+- Handles epic linking requirement (default: DI-1238)
+- Supports all DI issue types (Dashboard, Research, Data Engineering Task, etc.)
+- Can perform full workflow or individual steps
+- Includes error handling for common CLI issues
+
 ## Available CLI Tools
 
 ### Core Platform Tools

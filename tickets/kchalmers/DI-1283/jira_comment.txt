@@ -1,0 +1,7 @@
+Investigation complete. Two separate issues identified:
+
+*Email data (RESOLVED):* Databricks job BI-2011 failed Sept 24 due to incorrect schema reference. Fixed line 389 to use BRIDGE.VW_CLS_APPL_HISTORY. Email metrics now flowing through Sept 29.
+
+*Phone call data (IN PROGRESS):* Genesys phone call activity stopped Sept 17. GENESYS_FACT_PHONE_CALL_CONVERSATION has no data after Sept 17, causing zero connections/voicemails. This is a data engineering pipeline issue being resolved by Metin.
+
+Dashboard will show complete data once phone pipeline is restored.
