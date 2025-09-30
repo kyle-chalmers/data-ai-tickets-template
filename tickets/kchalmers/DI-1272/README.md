@@ -136,6 +136,365 @@ Enhanced the `VW_LMS_CUSTOM_LOAN_SETTINGS_CURRENT` view by adding **185 missing 
 5. **Performance**: Current query performance acceptable with 67% more fields
 6. **Field Usage**: Population rates indicate current business value and adoption
 
+## 100% NULL Fields Analysis - LoanPro Cleanup Opportunity
+
+### Overview
+**Finding**: **226 of 463 custom fields (49%) are completely unused** across all 127,023 LMS records analyzed (September 2025).
+
+**Business Impact**: Nearly half of LoanPro custom fields contain zero data, creating unnecessary clutter in the UI, admin interfaces, and system complexity.
+
+**Recommendation**: Systematic removal of unused fields to streamline LoanPro configuration and improve user experience.
+
+### Fields by Category (226 Total)
+
+**High-Priority Cleanup Candidates (62 fields)**
+- Repossession Fields: 13 (entire module unused)
+- Investor Fields: 15 (INVESTOR1-15 all null)
+- CLS System Integration: 9 (legacy/future capability)
+- Extended Fraud Investigation: 25 (FRAUD_JIRA_TICKET_9-20, FRAUD_STATUS_RESULTS_9-20, FRAUD_CONTACT_EMAIL)
+
+**Business Process Fields - Unused Portions (78 fields)**
+- Bankruptcy: 20 (including BANKRUPTCY_BALANCE, BANKRUPTCY_CHAPTER, court order fields)
+- SCRA/Military: 12 (all military service tracking fields)
+- Skip-A-Pay/Hardship: 9 (all skip-a-pay program variants)
+- Loan Modification: 8 (unused modification tracking fields)
+- DCA/Collections: 8 (DCA workflow fields)
+- Settlement: 7 (settlement tracking fields)
+- Debt Sale: 8 (debt sale workflow)
+- Attorney: 7 (attorney contact details)
+
+**System Integration & Legacy Fields (86 fields)**
+- Miscellaneous/Legacy: 47 (various unused features)
+- Credit Bureau/Reporting: 8 (bureau score tracking, complaint fields)
+- Servicer/Third-Party: 6 (servicer management)
+- Trustage Insurance: 5 (insurance program fields)
+- Funding/Origination: 6 (funding process fields)
+- Recall/Objection: 5 (recall workflow)
+- Portfolio/Channel: 3 (portfolio classification)
+
+### Detailed Field Inventory
+
+<details>
+<summary><b>Repossession Fields (13 fields)</b></summary>
+
+- REPOSSESSION_CASE_NUMBER
+- REPOSSESSION_CITY
+- REPOSSESSION_COMPANY_CONTACT_NAME
+- REPOSSESSION_COMPANY_EMAIL_ADDRESS
+- REPOSSESSION_COMPANY_NAME
+- REPOSSESSION_COMPANY_PHONE_NUMBER
+- REPOSSESSION_COUNTY
+- REPOSSESSION_DATE
+- REPOSSESSION_MANAGER_DECLINE_DATE
+- REPOSSESSION_REVIEW_DECISION
+- REPOSSESSION_STATE
+- CUSTOMER_REDEEMED_COLLATERAL
+- BALANCE_AT_TIME_OF_DEBT_SALE
+</details>
+
+<details>
+<summary><b>Fraud Investigation Fields - Extended Slots (25 fields)</b></summary>
+
+- FRAUD_JIRA_TICKET_9 through FRAUD_JIRA_TICKET_20 (12 fields)
+- FRAUD_STATUS_RESULTS_9 through FRAUD_STATUS_RESULTS_20 (12 fields)
+- FRAUD_CONTACT_EMAIL (1 field)
+
+**Note**: Slots 1-8 are actively used (0.33% population); slots 9-20 completely unused
+</details>
+
+<details>
+<summary><b>Investor Fields (15 fields)</b></summary>
+
+- INVESTOR1
+- INVESTOR2
+- INVESTOR3
+- INVESTOR4
+- INVESTOR5
+- INVESTOR6
+- INVESTOR7
+- INVESTOR8
+- INVESTOR9
+- INVESTOR10
+- INVESTOR11
+- INVESTOR12
+- INVESTOR13
+- INVESTOR14
+- INVESTOR15
+</details>
+
+<details>
+<summary><b>CLS System Integration (9 fields)</b></summary>
+
+- CLS_ACCOUNT_ID
+- CLS_CLEARING_DATE
+- CLS_CREATED_DATETIME
+- CLS_LAST_MODIFIED_DATETIME
+- CLS_REVERSAL_REASON_CODE
+- CLS_REVERSAL_REFERENCE
+- CLS_REVERSAL_TRANSACTION_NAME
+- CLS_TRANSACTION_DATE
+- REVERSAL_TRANSACTION_DATETIME
+</details>
+
+<details>
+<summary><b>Bankruptcy Fields (20 fields)</b></summary>
+
+- BANKRUPTCY_BALANCE
+- BANKRUPTCY_CHAPTER
+- BANKRUPTCY_ORDERED_NEW_INTEREST_RATE
+- BANKRUPTCY_ORDERED_NEW_LOAN_AMOUNT
+- BANKRUPTCY_ORDERED_NEW_PAYMENT_AMOUNT
+- BANKRUPTCY_ORDERED_NUMBER_OF_PAYMENTS
+- BANKRUPTCY_VENDOR
+- DATE_CLOSED
+- DATE_CONVERTED
+- DATE_DISCHARGED
+- DATE_DISMISSED
+- DATE_JOINT_DEBTOR_DISCHARGED
+- DATE_JOINT_DEBTOR_DISMISSED
+- DATE_PLAN_CONFIRMED
+- DATE_REOPENED
+- DATE_TERMINATED
+- DATE_TRANSFERRED
+- JOINT_DEBTOR_DISCHARGED_DATE
+- JOINT_DEBTOR_DISMISSED_DATE
+- JOINT_DEBTOR_DISPOSITION
+</details>
+
+<details>
+<summary><b>SCRA/Military Fields (12 fields)</b></summary>
+
+- ACTIVE_DUTY_END_DATE
+- ACTIVE_DUTY_START_DATE
+- MILITARY_BRANCH
+- SCRA_ACTIVE_DUTY_END_DATE5
+- SCRA_ACTIVE_DUTY_START_DATE5
+- SCRA_CERTIFIED
+- SCRA_DECLINE_REASON
+- SCRA_END_DATE
+- SCRA_NOTIFICATION_DATE5
+- SCRA_ORDERS_RECEIVED_DATE
+- SCRA_REQUEST_RECEIVED_DATE
+- SCRA_START_DATE
+</details>
+
+<details>
+<summary><b>Skip-A-Pay/Hardship Fields (9 fields)</b></summary>
+
+- DISASTER_SKIP_A_PAY_ENROLLMENT
+- DSAP1_MOD_END_DATE
+- DSAP2_MOD_END_DATE
+- DSAP_MOD_START_DATE
+- SSAP1_MOD_END_DATE
+- SSAP2_MOD_END_DATE
+- SSAP_MOD_START_DATE
+- STANDARD_SKIP_A_PAY_ENROLLMENT_START_DATE
+- HARDSHIP_ENROLLMENT_START_DATE
+</details>
+
+<details>
+<summary><b>Loan Modification Fields (8 fields)</b></summary>
+
+- MOD_TERM_EXTENSION
+- PAYMENT_AMOUNT_BEFORE_MODIFICATION
+- PERCENTAGE_OF_CURRENT_PAYMENT
+- MANAGER_REVIEW_PERCENTAGE_OF_CURRENT_PAYMENT
+- MANAGER_REVIEW_PERCENTAGE_OF_CURRENT_PAYMENT_C
+- MEMBER_REQUESTED_PAYMENT_REDUCTION_RANGE
+- MEMBER_REQUESTED_PAYMENT_REDUCTION_RANGE_C
+- MATURITY_DATE_BEFORE_MOD_C
+</details>
+
+<details>
+<summary><b>DCA/Collections Fields (8 fields)</b></summary>
+
+- DCA_CLOSE_DATE
+- DCA_CLOSE_REASON
+- DCA_END_DATE
+- DCA_RECALL_ACKNOWLEDGMENT_DATE
+- DCA_START_DATE
+- AMOUNT_DUE_TO_HAPPY_MONEY_DCA
+- FEE_RATE_DCA
+- THIRD_PARTY_COLLECTION_AGENCY
+</details>
+
+<details>
+<summary><b>Settlement Fields (7 fields)</b></summary>
+
+- SETTLEMENT_AGREEMENT_AMOUNT_DCA
+- SETTLEMENT_COMPANY_DCA
+- SETTLEMENT_END_DATE
+- SETTLEMENT_SETUP_DATE
+- SETTLEMENT_STATUS_DCA
+- UNPAID_SETTLEMENT_BALANCE
+- DEBT_REPURCHASE_STATUS
+</details>
+
+<details>
+<summary><b>Debt Sale Fields (8 fields)</b></summary>
+
+- DEBT_BUYER
+- DEBT_REQUEST_SENT_TEST
+- DEBT_REQUEST_TEST
+- DEBT_SALE_STATUS
+- SOLD_DATE
+- SECONDARY_BUYER
+- SECONDARY_SELLER
+- DATE_SUBMITTED_TO_REFERRER
+</details>
+
+<details>
+<summary><b>Attorney Fields (7 fields)</b></summary>
+
+- ATTORNEY_ORGANIZATION
+- ATTORNEY_PHONE_2
+- ATTORNEY_PHONE_3
+- ATTORNEY_PREFERRED_METHOD_OF_CONTACT_C
+- ATTORNEY_STREET_1
+- ATTORNEY_STREET_2
+- ATTORNEY_STREET_3
+</details>
+
+<details>
+<summary><b>Trustage Insurance Fields (5 fields)</b></summary>
+
+- TRUSTAGE_CLAIM_NUMBER
+- TRUSTAGE_END_DATE
+- TRUSTAGE_PAYMENT_GUARD_INSURANCE_PROGRAM_ENROLLMENT_DATE
+- TRUSTAGE_START_DATE
+- HARDSHIP_DESCRIPTION
+</details>
+
+<details>
+<summary><b>Credit Bureau/Reporting Fields (8 fields)</b></summary>
+
+- BORROWER_SUBSCRIBER_ID
+- LATEST_BUREAU_SCORE
+- LATEST_BUREAU_SCORE_DATE
+- REFRESHED_BUREAU_SCORE
+- REFRESHED_BUREAU_SCORE_DATE
+- CORRECTED_CREDIT_REPORTING_ITEM
+- INCORRECT_CREDIT_REPORTING_ITEM
+- COMPLAINT_STATUS
+</details>
+
+<details>
+<summary><b>Servicer/Third-Party Fields (6 fields)</b></summary>
+
+- SERVICER_END_DATE
+- SERVICER_NAME
+- SERVICER_START_DATE
+- THIRD_PARTY_COMMUNICATION_WITH_HM_ABOUT_DEBT
+- THIRD_PARTY_CONTACT
+- CREDIT_COUNSELOR_COMPANY
+</details>
+
+<details>
+<summary><b>Recall/Objection Fields (5 fields)</b></summary>
+
+- HM_RECALL_DATE
+- HM_RECALL_REASON
+- RECALL_OBJECTION_APPROVED_DATE
+- RECALL_OBJECTION_DENIED_DATE
+- RECALL_OBJECTION_REASON
+</details>
+
+<details>
+<summary><b>Funding/Origination Fields (6 fields)</b></summary>
+
+- FUNDING_CANCELLATION_REASON
+- FUNDING_STATUS
+- INDIRECT_AMOUNT_ORIGINATION_INTEREST
+- INDIRECT_LENDER_ORIGINATION_FEE
+- INDIRECT_PURCHASE_DATE
+- ORIGINATION_FEE
+</details>
+
+<details>
+<summary><b>Portfolio/Channel Fields (3 fields)</b></summary>
+
+- PORTFOLIO_ID_C
+- PORTFOLIO_NAME_C
+- CHANNEL
+</details>
+
+<details>
+<summary><b>Miscellaneous/Legacy Fields (47 fields)</b></summary>
+
+- ADVERSE_ACTION_TEMPLATE_ID
+- AGENT_NAME_COMPLETED_POC
+- AMOUNT_DUE_TO_HAPPY_MONEY
+- CHOSEN_NAME
+- CLAIM_COMPLETED_DATE
+- COMMUNICATION_STATUS
+- CONTINGENCY_STATUS_CODE
+- CONTINGENCY_STATUS_CODE_APPLY_DATE
+- CONVERTED_DATE
+- DATE_ENTERED
+- DEATH_CONFIRMED_DATE
+- DISCHARGED_DATE
+- DISPOSITION
+- DNU
+- EXPECTED_RESPONSE_DATE
+- EXTERNAL_DELIVERY_ID
+- FEMA_ACTIVE_END_DATE
+- FEMA_ACTIVE_START_DATE
+- FILING_FEE_STATUS
+- HARDSHIP_ENROLLMENT_END_DATE
+- INCOME_TYPE5
+- IS_MIGRATED
+- LAST_DATE_TO_FILE_CLAIMS
+- LAST_DATE_TO_FILE_CLAIMS_GOVT
+- MEMBER_PORTAL_VERSION
+- NEW_DUE_DATE
+- NUMBER_OF_SKIPS
+- NUMBER_PAYMENTS_SKIPPED
+- PAYOFF_UID
+- PLAN_CONFIRMED_DATE
+- PROCESSING_FEES_PAID
+- PROMISE_TO_PAY_DATE
+- PROMO_PERIOD_EXPIRATION_DATE
+- REAFFIRMATION_DATE
+- REFERRAL_SHOWN_DATE
+- REOPENED_DATE
+- REPURPOSE_2
+- REPURPOSE_3
+- REPURPOSE_4
+- REPURPOSE_CF
+- REQUESTED_FIRST_PAYMENT_DATE
+- SALE_DATE_CONFIGURATION
+- SALE_FLAG
+- SOURCE_OF_REFERRAL
+- STATE_RATE
+- TEMPORARY_PAYMENT_REDUCTION_TERM
+- TENANT_ID
+- TEN_DAY_PAYOFF
+- US_CITIZENSHIP
+- VALIDATION_OF_DEBT_STATUS
+</details>
+
+### Cleanup Recommendations
+
+**Immediate Removal Candidates (62 fields)**
+1. **Repossession module**: 13 fields - entire feature unused
+2. **Investor tracking**: 15 fields - INVESTOR1-15 all null
+3. **CLS integration**: 9 fields - legacy/future system
+4. **Extended fraud slots**: 25 fields - slots 9-20 unused (keep 1-8)
+
+**Phase 2 Review (78 fields)**
+Business process fields requiring stakeholder validation before removal:
+- Bankruptcy, SCRA, Settlement, DCA workflows
+- Confirm these represent abandoned features vs. future needs
+
+**Phase 3 Cleanup (86 fields)**
+System integration and legacy fields requiring technical review
+
+### SERV Ticket Reference
+**SERV-755**: LoanPro Custom Fields Cleanup - Remove 199 Unused Fields (100% NULL)
+https://happymoneyinc.atlassian.net/browse/SERV-755
+
+---
+
 ## Deployment Notes
 
 ### Pre-Deployment
