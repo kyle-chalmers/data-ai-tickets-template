@@ -83,7 +83,6 @@ MVW_LOAN_TAPE (PAYOFFUID)
 ### Final Deliverables
 1. **`1_mississippi_regulatory_exam_data.sql`** - Main query with parameters and documentation
 2. **`MS_Regulatory_Exam_2023_2025.csv`** - CSV export with all 181 loans (182 total lines with header)
-3. **`MS_Regulatory_Exam_2023_2025.xlsx`** - Excel spreadsheet for regulatory submission (formatted)
 
 ### Quality Control
 1. **`qc_queries/1_qc_validation.sql`** - Comprehensive validation queries (10 tests)
@@ -164,32 +163,11 @@ snow sql -f final_deliverables/1_mississippi_regulatory_exam_data.sql --format c
 snow sql -f qc_queries/1_qc_validation.sql --format csv > qc_results.csv
 ```
 
-### Converting CSV to Excel
-Excel file already provided in final_deliverables/, or regenerate using:
-```python
-import csv, openpyxl
-from openpyxl.styles import Font, Alignment
-
-wb = openpyxl.Workbook()
-ws = wb.active
-ws.title = 'Mississippi Loans'
-
-with open('MS_Regulatory_Exam_2023_2025.csv', 'r') as f:
-    for row in csv.reader(f):
-        ws.append(row)
-
-for cell in ws[1]:
-    cell.font = Font(bold=True)
-    cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
-
-wb.save('MS_Regulatory_Exam_2023_2025.xlsx')
-```
-
 ## Regulatory Submission
 
-**Primary Deliverable**: `MS_Regulatory_Exam_2023_2025.xlsx`
+**Primary Deliverable**: `MS_Regulatory_Exam_2023_2025.csv`
 
-This Excel spreadsheet contains all 181 Mississippi loans with complete borrower information and loan details as requested by the Mississippi State Regulator for the exam period October 1, 2023 – September 30, 2025.
+This CSV file contains all 181 Mississippi loans with complete borrower information and loan details as requested by the Mississippi State Regulator for the exam period October 1, 2023 – September 30, 2025.
 
 ## Status
 
