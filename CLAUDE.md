@@ -480,6 +480,29 @@ tickets/[team_member]/DI-XXX/
 5. **Join Validation**: Verify join conditions and unmatched records
 6. **Data Structure Verification**: Confirm understanding of tables and relationships
 
+**Performance Workaround for Long-Running QC Queries:**
+When QC queries take a long time to execute (e.g., comparing large views/tables), use temporary tables to materialize the data once:
+```sql
+-- Use larger warehouse for better performance
+use warehouse BUSINESS_INTELLIGENCE_LARGE;
+
+-- Create temp tables to materialize data once
+CREATE OR REPLACE TEMP TABLE dev_data_temp AS
+SELECT * FROM BUSINESS_INTELLIGENCE_DEV.REPORTING.VW_SOME_VIEW;
+
+CREATE OR REPLACE TEMP TABLE prod_data_temp AS
+SELECT * FROM BUSINESS_INTELLIGENCE.REPORTING.VW_SOME_VIEW;
+
+-- Run all QC tests against temp tables instead of re-querying views
+SELECT COUNT(*) FROM dev_data_temp;
+SELECT COUNT(*) FROM prod_data_temp;
+-- Additional QC tests...
+```
+This approach:
+- Materializes expensive views once at the start
+- Allows multiple QC tests without re-executing the underlying view queries
+- Significantly improves QC script performance for complex views
+
 ### SQL Development Standards
 
 #### Development Process
