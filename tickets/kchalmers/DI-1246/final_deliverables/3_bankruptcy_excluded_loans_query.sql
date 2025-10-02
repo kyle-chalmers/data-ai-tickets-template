@@ -1,0 +1,160 @@
+/*******************************************************************************
+DI-1246: Bankruptcy Excluded Loans Analysis
+Purpose: Identify loans that met all criteria EXCEPT were excluded due to
+         active bankruptcy status
+
+Business Context: Shows impact of bankruptcy exclusion rule on final population
+Created: 2025-10-02
+*******************************************************************************/
+
+-- Parameters
+SET start_recovery_date = '2025-01-01';
+
+-- Main Query: Loans excluded due to active bankruptcy
+WITH latest_loan_tape AS (
+    SELECT
+        LOANID,
+        PAYOFFUID AS LEAD_GUID,
+        STATUS,
+        CHARGEOFFDATE,
+        PRINCIPALBALANCEATCHARGEOFF,
+        LASTPAYMENTDATE,
+        RECOVERYPAYMENTAMOUNT,
+        PLACEMENT_STATUS,
+        PLACEMENT_STATUS_STARTDATE
+    FROM BUSINESS_INTELLIGENCE.DATA_STORE.MVW_LOAN_TAPE
+    WHERE ASOFDATE = (SELECT MAX(ASOFDATE) FROM BUSINESS_INTELLIGENCE.DATA_STORE.MVW_LOAN_TAPE)
+),
+
+charged_off_loans AS (
+    SELECT *
+    FROM latest_loan_tape
+    WHERE STATUS = 'Charge off'
+      AND LASTPAYMENTDATE >= $start_recovery_date
+),
+
+settled_in_full_loans AS (
+    SELECT
+        ds.LOAN_ID,
+        ds.LEAD_GUID,
+        ds.CURRENT_STATUS,
+        ds.SETTLEMENTSTATUS,
+        ds.SETTLEMENTAGREEMENTAMOUNT,
+        ds.SETTLEMENT_COMPLETION_DATE
+    FROM BUSINESS_INTELLIGENCE.ANALYTICS.VW_LOAN_DEBT_SETTLEMENT ds
+    WHERE ds.CURRENT_STATUS = 'Closed - Settled in Full'
+),
+
+bankruptcy_exclusions AS (
+    SELECT DISTINCT
+        vb.LOAN_ID,
+        vl.LEAD_GUID,
+        vb.CASE_NUMBER,
+        vb.BANKRUPTCY_CHAPTER,
+        vb.PETITION_STATUS,
+        vb.FILING_DATE,
+        vb.DISMISSED_DATE
+    FROM BUSINESS_INTELLIGENCE.ANALYTICS.VW_LOAN_BANKRUPTCY vb
+    INNER JOIN BUSINESS_INTELLIGENCE.ANALYTICS.VW_LOAN vl
+        ON CAST(vb.LOAN_ID AS VARCHAR) = CAST(vl.LOAN_ID AS VARCHAR)
+    WHERE vb.MOST_RECENT_ACTIVE_BANKRUPTCY = 'Y'
+      AND vb.ACTIVE = 1
+),
+
+-- Charge-off loans that WOULD have been included but have active bankruptcy
+excluded_charge_offs AS (
+    SELECT
+        CAST(col.LOANID AS VARCHAR) AS LOAN_ID,
+        col.CHARGEOFFDATE AS CHARGE_OFF_DATE,
+        col.PRINCIPALBALANCEATCHARGEOFF AS CHARGE_OFF_PRINCIPAL,
+        NULL AS SETTLEMENT_AMOUNT,
+        NULL AS SETTLEMENT_STATUS,
+        CAST(NULL AS DATE) AS SETTLEMENT_COMPLETION_DATE,
+        col.LASTPAYMENTDATE AS LAST_PAYMENT_DATE,
+        col.RECOVERYPAYMENTAMOUNT AS TOTAL_RECOVERY_AMOUNT,
+        col.PLACEMENT_STATUS,
+        col.PLACEMENT_STATUS_STARTDATE AS PLACEMENT_STATUS_START_DATE,
+        'Charge Off' AS POPULATION_SOURCE,
+        be.CASE_NUMBER AS BANKRUPTCY_CASE_NUMBER,
+        be.BANKRUPTCY_CHAPTER,
+        be.PETITION_STATUS AS BANKRUPTCY_STATUS,
+        be.FILING_DATE AS BANKRUPTCY_FILING_DATE,
+        be.DISMISSED_DATE AS BANKRUPTCY_DISMISSED_DATE,
+        'Active Bankruptcy' AS EXCLUSION_REASON
+    FROM charged_off_loans col
+    INNER JOIN bankruptcy_exclusions be
+        ON LOWER(col.LEAD_GUID) = LOWER(be.LEAD_GUID)
+),
+
+-- Settled in full loans that WOULD have been included but have active bankruptcy
+excluded_settlements AS (
+    SELECT
+        CAST(sifl.LOAN_ID AS VARCHAR) AS LOAN_ID,
+        lt.CHARGEOFFDATE AS CHARGE_OFF_DATE,
+        lt.PRINCIPALBALANCEATCHARGEOFF AS CHARGE_OFF_PRINCIPAL,
+        CAST(sifl.SETTLEMENTAGREEMENTAMOUNT AS VARCHAR) AS SETTLEMENT_AMOUNT,
+        sifl.SETTLEMENTSTATUS AS SETTLEMENT_STATUS,
+        sifl.SETTLEMENT_COMPLETION_DATE AS SETTLEMENT_COMPLETION_DATE,
+        lt.LASTPAYMENTDATE AS LAST_PAYMENT_DATE,
+        lt.RECOVERYPAYMENTAMOUNT AS TOTAL_RECOVERY_AMOUNT,
+        lt.PLACEMENT_STATUS AS PLACEMENT_STATUS,
+        lt.PLACEMENT_STATUS_STARTDATE AS PLACEMENT_STATUS_START_DATE,
+        'Settled in Full' AS POPULATION_SOURCE,
+        be.CASE_NUMBER AS BANKRUPTCY_CASE_NUMBER,
+        be.BANKRUPTCY_CHAPTER,
+        be.PETITION_STATUS AS BANKRUPTCY_STATUS,
+        be.FILING_DATE AS BANKRUPTCY_FILING_DATE,
+        be.DISMISSED_DATE AS BANKRUPTCY_DISMISSED_DATE,
+        'Active Bankruptcy' AS EXCLUSION_REASON
+    FROM settled_in_full_loans sifl
+    INNER JOIN latest_loan_tape lt
+        ON LOWER(sifl.LEAD_GUID) = LOWER(lt.LEAD_GUID)
+    INNER JOIN bankruptcy_exclusions be
+        ON LOWER(sifl.LEAD_GUID) = LOWER(be.LEAD_GUID)
+    WHERE lt.LASTPAYMENTDATE >= $start_recovery_date
+)
+
+-- Final output: All loans excluded due to bankruptcy
+SELECT
+    LOAN_ID,
+    CHARGE_OFF_DATE,
+    CHARGE_OFF_PRINCIPAL,
+    SETTLEMENT_AMOUNT,
+    SETTLEMENT_STATUS,
+    SETTLEMENT_COMPLETION_DATE,
+    LAST_PAYMENT_DATE,
+    TOTAL_RECOVERY_AMOUNT,
+    PLACEMENT_STATUS,
+    PLACEMENT_STATUS_START_DATE,
+    POPULATION_SOURCE,
+    BANKRUPTCY_CASE_NUMBER,
+    BANKRUPTCY_CHAPTER,
+    BANKRUPTCY_STATUS,
+    BANKRUPTCY_FILING_DATE,
+    BANKRUPTCY_DISMISSED_DATE,
+    EXCLUSION_REASON
+FROM excluded_charge_offs
+
+UNION ALL
+
+SELECT
+    LOAN_ID,
+    CHARGE_OFF_DATE,
+    CHARGE_OFF_PRINCIPAL,
+    SETTLEMENT_AMOUNT,
+    SETTLEMENT_STATUS,
+    SETTLEMENT_COMPLETION_DATE,
+    LAST_PAYMENT_DATE,
+    TOTAL_RECOVERY_AMOUNT,
+    PLACEMENT_STATUS,
+    PLACEMENT_STATUS_START_DATE,
+    POPULATION_SOURCE,
+    BANKRUPTCY_CASE_NUMBER,
+    BANKRUPTCY_CHAPTER,
+    BANKRUPTCY_STATUS,
+    BANKRUPTCY_FILING_DATE,
+    BANKRUPTCY_DISMISSED_DATE,
+    EXCLUSION_REASON
+FROM excluded_settlements
+
+ORDER BY LAST_PAYMENT_DATE DESC, LOAN_ID;

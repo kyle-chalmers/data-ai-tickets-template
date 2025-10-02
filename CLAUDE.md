@@ -140,6 +140,52 @@ This repository includes specialized sub-agents stored in `.claude/agents/` that
 - Can perform full workflow or individual steps
 - Includes error handling for common CLI issues
 
+#### SQL Code Review and Data Quality Agent
+**Location:** `.claude/agents/data-quality-review-agent.md`
+
+**Purpose:** Provides comprehensive independent review of SQL code and data quality for Snowflake deliverables, including:
+- Deep technical SQL code review
+- Snowflake best practices validation
+- Independent query re-execution and verification
+- Data quality validation and testing
+- Anti-pattern detection
+- Final approval for PR submission
+
+**When to Use:** Invoke this agent before creating pull requests when:
+- SQL queries are complete and ready for technical review
+- You need independent verification of query correctness
+- Data outputs require quality validation
+- QC validation queries need independent testing
+- You want to catch SQL anti-patterns and performance issues
+
+**Usage Example:**
+```markdown
+DI-XXXX is complete with all deliverables. Please invoke the SQL Code Review
+and Data Quality Agent to perform:
+1. Deep SQL code review of all queries
+2. Independent re-execution and verification
+3. Data quality validation
+4. Anti-pattern detection
+5. Final approval for PR submission
+```
+
+**Review Coverage:**
+- **SQL Structure**: Code organization, formatting, documentation
+- **Query Correctness**: Join logic, filters, aggregations, subqueries
+- **Snowflake-Specific**: Warehouse selection, table types, clustering, caching
+- **Data Types**: Type consistency, conversions, NULL handling
+- **Performance**: Query optimization, index usage, execution plans
+- **Data Quality**: Duplicates, NULLs, ranges, referential integrity
+- **Anti-Patterns**: 50+ common SQL issues categorized by severity
+
+**Key Benefits:**
+- Independent verification catches errors before PR submission
+- Standardized review checklist ensures consistency
+- Re-executes queries to validate results match original
+- Provides detailed review report with specific findings
+- Identifies performance issues and optimization opportunities
+- Flags critical issues, performance concerns, and data quality risks
+
 ## Available CLI Tools
 
 ### Core Platform Tools
