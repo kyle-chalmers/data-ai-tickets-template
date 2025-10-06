@@ -1,0 +1,23 @@
+/*
+================================================================================
+DI-1211 QC: Record Count Validation
+================================================================================
+*/
+
+USE WAREHOUSE BUSINESS_INTELLIGENCE_LARGE;
+USE ROLE BUSINESS_INTELLIGENCE;
+
+--1.1: Total Record Count
+SELECT
+    COUNT(*) AS TOTAL_RECORDS,
+    COUNT(DISTINCT LOAN_ID) AS DISTINCT_LOAN_IDS,
+    COUNT(DISTINCT LEAD_GUID) AS DISTINCT_LEAD_GUIDS
+FROM BUSINESS_INTELLIGENCE_DEV.CRON_STORE.DI_1211_PLACEMENT_DATA_QUALITY;
+
+--1.2: Duplicate Check - Should Return 0 Rows
+SELECT
+    LOAN_ID,
+    COUNT(*) AS DUPLICATE_COUNT
+FROM BUSINESS_INTELLIGENCE_DEV.CRON_STORE.DI_1211_PLACEMENT_DATA_QUALITY
+GROUP BY LOAN_ID
+HAVING COUNT(*) > 1;

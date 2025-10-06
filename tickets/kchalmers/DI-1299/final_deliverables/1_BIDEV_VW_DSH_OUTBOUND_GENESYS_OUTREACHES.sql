@@ -1,13 +1,15 @@
 CREATE OR REPLACE VIEW BUSINESS_INTELLIGENCE_DEV.REPORTING.VW_DSH_OUTBOUND_GENESYS_OUTREACHES COPY GRANTS
 AS
+-- OPTIMIZATION APPROACH: Eliminate correlated subqueries while maintaining EXACT PROD email calculation
+-- Key changes:
+--   1. min_dates CTE eliminates 6+ correlated subqueries (4.5M row scans → 1)
+--   2. loan_tape_base filters to Oct 2023+ for dqs/phone/text CTEs (performance)
+--   3. loan_tape_emails uses FULL history (matches PROD exactly for email attribution)
 -- OPTIMIZATION 1: Calculate minimum dates once (eliminates 6+ correlated subqueries)
 WITH min_dates AS (
     SELECT
         MIN(DATE(DATEADD('day', -1, record_insert_date))) as min_record_insert_date,
-        MIN(DATE(LOADDATE)) as min_loaddate,
-        -- Email min date: Start from when phone/text outreaches began (not 2018)
-        -- This prevents full 533M row scan while still capturing all relevant emails
-        MIN(DATE(DATEADD('day', -1, record_insert_date))) as min_email_date
+        MIN(DATE(LOADDATE)) as min_loaddate
     FROM BUSINESS_INTELLIGENCE.ANALYTICS_PII.GENESYS_OUTBOUND_LIST_EXPORTS
 ),
 -- OPTIMIZATION 2: Filtered loan tape for dqs CTE
@@ -24,8 +26,8 @@ loan_tape_base AS (
     CROSS JOIN min_dates md
     WHERE DATE(ASOFDATE) >= md.min_record_insert_date
 ),
--- OPTIMIZATION 3: Filtered loan tape for emails (uses same min date as phone/text)
--- Note: Emails before Oct 2023 won't be attributed, but that aligns with dashboard scope
+-- Email loan tape source: Full history scan (matches PROD behavior exactly)
+-- Note: No date filter to ensure all emails can be attributed to historical loan tape records
 loan_tape_emails AS (
     SELECT
         ASOFDATE,
@@ -34,8 +36,6 @@ loan_tape_emails AS (
         DAYSPASTDUE,
         PORTFOLIONAME
     FROM BUSINESS_INTELLIGENCE.DATA_STORE.MVW_LOAN_TAPE_DAILY_HISTORY
-    CROSS JOIN min_dates md
-    WHERE DATE(ASOFDATE) >= md.min_email_date
 ),
 -- DQS CTE: Delinquent population metrics
 dqs AS (

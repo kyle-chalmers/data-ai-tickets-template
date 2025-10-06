@@ -22,41 +22,50 @@ The current view has critical performance issues:
 
 ## Solution Approach
 
-**Key Optimizations:**
-1. Convert to dynamic table with 12-hour refresh lag
-2. Eliminate correlated subqueries (6+ executions → 1)
-3. Reduce MVW_LOAN_TAPE scans (3 scans → 1 shared CTE)
-4. Pre-materialize expensive joins via dynamic table
-5. Maintain double-join pattern for phone/SMS (business requirement)
+**Implementation Decision: Keeping as View (Not Dynamic Table)**
+
+After analysis, the optimization focuses on eliminating correlated subqueries while maintaining EXACT production email calculation logic. The view structure is preserved per requirements.
+
+**Key Optimizations Applied:**
+1. **Eliminate correlated subqueries** (6+ executions → 1 via `min_dates` CTE)
+   - Impact: 6+ scans of 4.5M rows → 1 scan
+2. **Reduce MVW_LOAN_TAPE scans for phone/text** (filtered `loan_tape_base` CTE)
+   - Impact: Filters to Oct 2023+ for dqs, phone_calls, sent_texts CTEs
+3. **Preserve full MVW_LOAN_TAPE scan for emails** (unfiltered `loan_tape_emails` CTE)
+   - Required: Ensures all emails can be attributed to historical loan tape records
+   - Trade-off: Email CTE slower but produces exact PROD results
+4. **Maintain double-join pattern for phone/SMS** (business requirement preserved)
 
 ## Deliverables
 
-1. **1_email_campaign_lookup_creation_dev.sql** - Optional email campaign lookup table (future enhancement)
-2. **2_optimized_dynamic_table_dev.sql** - Development dynamic table creation
-3. **3_production_deployment.sql** - Production deployment script with rollback plan
-4. **qc_validation.sql** - Comprehensive quality control validation (8 tests)
-5. **original_code/original_view_ddl.sql** - Backup of original view definition
+1. **1_BIDEV_VW_DSH_OUTBOUND_GENESYS_OUTREACHES.sql** - Optimized DEV view (exact PROD email calculation)
+2. **qc_validation.sql** - Comprehensive quality control validation comparing DEV vs PROD
+3. **original_code/original_view_ddl.sql** - Backup of original PROD view definition
+
+**Files Deprecated (Dynamic Table Approach):**
+- `2_email_campaign_lookup_creation_dev.sql` - Optional future enhancement
+- `3_production_deployment.sql` - Dynamic table deployment (not used)
 
 ## Implementation Status
 
-**Status:** Ready for Review and Deployment
+**Status:** DEV View Updated - Email Logic Fixed (2025-10-02)
 
-**Permission Limitations:** Current execution encountered insufficient privileges for BUSINESS_INTELLIGENCE_DEV.REPORTING schema. SQL scripts are complete and ready for execution by authorized user (DBA/Admin).
+**Recent Changes:**
+- **Fixed email calculation logic** to match PROD exactly
+- Removed date filter from `loan_tape_emails` CTE that was causing 50-80% email count discrepancies
+- DEV view now uses full MVW_LOAN_TAPE_DAILY_HISTORY for email attribution (matches PROD)
+- Maintained optimizations: eliminated correlated subqueries, filtered loan tape for phone/text CTEs
 
 **Next Steps:**
-1. Review SQL scripts with appropriate permissions
-2. Execute `1_email_campaign_lookup_creation_dev.sql` in development (optional)
-3. Execute `2_optimized_dynamic_table_dev.sql` in development
-4. Run `qc_validation.sql` to validate development objects
-5. After QC passes, execute `3_production_deployment.sql` in production
+1. Run `qc_validation.sql` to verify DEV vs PROD match (Note: Will be slow due to full loan tape scans)
+2. Verify all email counts match between DEV and PROD
+3. Decide on production deployment approach (view optimization vs dynamic table conversion)
 
 ## Technical Details
 
-**Object Type:** Dynamic Table
-**Target Database:** BUSINESS_INTELLIGENCE.REPORTING
-**Target Lag:** 12 hours
-**Refresh Mode:** FULL (complex query with multiple aggregations)
-**Warehouse:** BUSINESS_INTELLIGENCE
+**Object Type:** VIEW (optimized, not dynamic table)
+**Current Location:** BUSINESS_INTELLIGENCE_DEV.REPORTING.VW_DSH_OUTBOUND_GENESYS_OUTREACHES
+**Production Location:** BUSINESS_INTELLIGENCE.REPORTING.VW_DSH_OUTBOUND_GENESYS_OUTREACHES
 
 **Data Grain:** Daily aggregated metrics by:
 - ASOFDATE (date)
@@ -98,25 +107,17 @@ QC validation tests are defined in `qc_validation.sql`:
 
 1. **Double-Join Pattern Required:** Phone and SMS CTEs use two joins (inin-outbound-id AND PAYOFFUID+date) to capture both campaign-based and manual calls/texts. This business requirement is preserved.
 
-2. **12-Hour Refresh Sufficient:** Daily dashboard refresh needs are met with 12-hour dynamic table refresh lag.
+2. **Full Email History Required:** Email attribution requires scanning full MVW_LOAN_TAPE_DAILY_HISTORY to match PROD behavior exactly. Cannot apply date filters without losing email counts.
 
-3. **Full History Required:** External partners need complete history from Oct 2023 to present.
+3. **Email Campaign Hard-Coding Acceptable:** Current deployment uses hard-coded email campaign DPD logic matching PROD. Lookup table approach is optional future enhancement.
 
-4. **Email Campaign Hard-Coding Acceptable:** Initial deployment uses current hard-coded email campaign logic. Lookup table approach is optional future enhancement.
+4. **View Performance Trade-off:** Optimized view is faster than original PROD (eliminated correlated subqueries) but slower than dynamic table approach due to full loan tape scans for emails.
 
-5. **FULL Refresh Mode:** Dynamic table uses FULL refresh due to complex multi-table aggregations (no incremental key available).
-
-6. **Backward Compatibility Critical:** View wrapper maintains identical interface for external dashboards.
+5. **Exact PROD Match Priority:** Maintaining identical email calculation logic takes precedence over maximum performance optimization.
 
 ## Rollback Plan
 
-If issues arise post-deployment:
-```sql
-DROP VIEW BUSINESS_INTELLIGENCE.REPORTING.VW_DSH_OUTBOUND_GENESYS_OUTREACHES;
-ALTER VIEW BUSINESS_INTELLIGENCE.REPORTING.VW_DSH_OUTBOUND_GENESYS_OUTREACHES_BACKUP_20251001
-  RENAME TO VW_DSH_OUTBOUND_GENESYS_OUTREACHES;
-DROP DYNAMIC TABLE BUSINESS_INTELLIGENCE.REPORTING.DT_DSH_OUTBOUND_GENESYS_OUTREACHES;
-```
+If issues arise with DEV view, restore original PROD definition from `original_code/original_view_ddl.sql`.
 
 ## Stakeholder Communication
 
