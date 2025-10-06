@@ -1,0 +1,51 @@
+## DI-1320: Autopay Not Disabling at Charge-Off - Analysis Complete
+
+**TLDR:** This is an issue especially for loans with no settlement data where we are collecting from them (327 loans, $438K collected), and for loans where we collected after their placement sale date (166 loans to external agencies).
+
+**Population:** 9,015 charged-off loans with autopay currently active
+
+**High Priority Segments:**
+
+**1. 827 loans (9.17%) - Payments collected in LoanPro:**
+- 327 loans have NO settlement data - $438,490 collected from them
+- 500 loans have debt settlement info, with only 29 lacking settled status, status field value, or settlement portfolio
+
+**2. 689 loans (7.64%) - Failed payment attempts in LoanPro:**
+- 648 loans have NO settlement data - $938,014 in failed attempts
+- 41 loans have debt settlement info (18 with actual settlement state/portfolio, 23 without values)
+
+**3. 13 loans (0.14%) - Active payments not yet settled:**
+- None have debt settlements associated
+
+**Remaining 7,486 loans (83.04%):** No LoanPro payment attempts (no payments at all, CLS-only payments, or pre-LoanPro payments)
+
+**Settlement Data Concerns:**
+- 7,310 loans have NO debt settlement data
+- 1,705 have settlement data, but:
+  - 34 loans: "Broken" status
+  - 71 loans: "Inactive" status
+  - 854 loans: Only custom field data (questionable settlements - filtered by DEBT_SETTLEMENT_DATA_SOURCE_LIST = 'CUSTOM_FIELDS,' with blank SETTLEMENTSTATUS)
+
+**Critical Finding - Collections After Placement:**
+166 loans with external placements have active, settled payments AFTER their placement dates:
+- 133 loans: Bounce
+- 26 loans: Resurgent
+- 8 loans: FTFCU
+(Note: ARS, Remitter, HM/ACU excluded as we report payments for these)
+
+**Placement Breakdown:**
+- Bounce: 4,098 (45.45%)
+- HM/ACU: 2,176 (24.14%)
+- Resurgent: 1,672 (18.55%)
+- FTFCU: 1,061 (11.77%)
+- Other: 8 (0.09%)
+
+**LoanPro Status:**
+- Closed - Charged-Off Collectible: 8,857 (99.25%)
+- Closed - Settled in Full: 64 (0.72%)
+- Closed - Charged-Off: 62 (0.70%)
+- Other: 32 (0.36%)
+
+**Data Quality:** 113 loans have mismatching RECOVERIESPAIDTODATE amounts (to be reviewed with Sravan)
+
+**Deliverables:** SQL queries, CSV data, and analysis in tickets/kchalmers/DI-1320/

@@ -107,6 +107,7 @@ This agent has access to:
 - [ ] **Deduplication Logic**: Strategy for handling duplicates documented
 
 ### 2. Data Quality Validation
+- [ ] **CSV Format Validation**: Column headers in row 1, no extra rows above or blank rows at end
 - [ ] **Record Count Verification**: Re-run count queries independently
 - [ ] **Duplicate Detection**: Check for unexpected duplicates in output
 - [ ] **NULL Value Analysis**: Identify and explain NULL patterns
@@ -240,6 +241,158 @@ Provide structured review report:
 -- List all queries executed during review
 ```
 ```
+
+## Jira Comment Style Guide
+
+When creating Jira comments for completed tickets, follow this business-focused style that prioritizes actionable insights for stakeholders:
+
+### Core Principles
+- **Business-first language**: Use terms stakeholders understand, minimize technical jargon
+- **Specific numbers**: Provide concrete counts, amounts, and percentages throughout
+- **Clear segmentation**: Break down populations into meaningful business categories
+- **Context notes**: Explain filters, criteria, and data quality considerations
+- **Action-oriented**: Highlight critical findings and next steps
+
+### Required Structure
+
+**1. TLDR (Top of Comment)**
+- Single sentence summarizing the business problem or key finding
+- Include most critical numbers and impacted populations
+- Focus on what matters to business stakeholders
+
+**2. Population Overview**
+- Total population analyzed with clear criteria
+- Key filters or scope definitions
+
+**3. High Priority Segments**
+- Numbered segments by business importance
+- Each segment includes:
+  - Clear count and percentage
+  - Specific dollar amounts or key metrics
+  - Breakdown by relevant dimensions
+  - Business context for interpretation
+
+**4. Supporting Analysis**
+- Additional breakdowns (status, portfolio, placement, etc.)
+- Data quality concerns with specific examples
+- Cross-referenced findings
+
+**5. Deliverables Reference**
+- File locations and what each contains
+- Any follow-up items or data quality notes
+
+### Formatting Best Practices
+
+**Numbers and Metrics:**
+- Always include both count AND percentage: "827 loans (9.17%)"
+- Use dollar amounts for financial impact: "$438,490 collected"
+- Round percentages to 2 decimals for readability
+
+**Segmentation:**
+- Use **bold** for segment headers and key findings
+- Indent sub-bullets for hierarchical breakdowns
+- Group related items together logically
+
+**Context and Filters:**
+- Explain criteria in parentheses: "(filtered by DEBT_SETTLEMENT_DATA_SOURCE_LIST = 'CUSTOM_FIELDS,' with blank SETTLEMENTSTATUS)"
+- Note exclusions or special handling: "(Note: ARS, Remitter, HM/ACU excluded as we report payments for these)"
+- Call out data quality issues explicitly
+
+**Conciseness:**
+- Target 200 words maximum for Jira comments
+- Every sentence should provide actionable information
+- Remove technical implementation details
+
+### Example Template
+
+```markdown
+## [TICKET-ID]: [Business Problem] - Analysis Complete
+
+**TLDR:** [One sentence with key finding, critical numbers, and business impact]
+
+**Population:** [Total count] [clear description of scope/filters]
+
+**High Priority Segments:**
+
+**1. [X] loans ([Y]%) - [Description]:**
+- [Specific breakdown with numbers]
+- [Additional context or sub-categories]
+
+**2. [X] loans ([Y]%) - [Description]:**
+- [Specific breakdown with numbers]
+- [Additional context or sub-categories]
+
+**[Additional Segments as needed]**
+
+**[Supporting Analysis Category]:**
+- [Key findings with specific numbers]
+- [Breakdown by dimension]:
+  - [Item 1]: [count] ([%])
+  - [Item 2]: [count] ([%])
+
+**[Data Quality or Critical Findings]:**
+[Specific issues with counts and business context]
+(Note: [Explanation of special handling or exclusions])
+
+**Deliverables:** [File locations and what they contain]
+```
+
+### Real Example (DI-1320)
+
+```markdown
+## DI-1320: Autopay Not Disabling at Charge-Off - Analysis Complete
+
+**TLDR:** This is an issue especially for loans with no settlement data where we are collecting from them (327 loans, $438K collected), and for loans where we collected after their placement sale date (166 loans to external agencies).
+
+**Population:** 9,015 charged-off loans with autopay currently active
+
+**High Priority Segments:**
+
+**1. 827 loans (9.17%) - Payments collected in LoanPro:**
+- 327 loans have NO settlement data - $438,490 collected from them
+- 500 loans have debt settlement info, with only 29 lacking settled status, status field value, or settlement portfolio
+
+**2. 689 loans (7.64%) - Failed payment attempts in LoanPro:**
+- 648 loans have NO settlement data - $938,014 in failed attempts
+- 41 loans have debt settlement info (18 with actual settlement state/portfolio, 23 without values)
+
+**3. 13 loans (0.14%) - Active payments not yet settled:**
+- None have debt settlements associated
+
+**Remaining 7,486 loans (83.04%):** No LoanPro payment attempts (no payments at all, CLS-only payments, or pre-LoanPro payments)
+
+**Settlement Data Concerns:**
+- 7,310 loans have NO debt settlement data
+- 1,705 have settlement data, but:
+  - 34 loans: "Broken" status
+  - 71 loans: "Inactive" status
+  - 854 loans: Only custom field data (questionable settlements - filtered by DEBT_SETTLEMENT_DATA_SOURCE_LIST = 'CUSTOM_FIELDS,' with blank SETTLEMENTSTATUS)
+
+**Critical Finding - Collections After Placement:**
+166 loans with external placements have active, settled payments AFTER their placement dates:
+- 133 loans: Bounce
+- 26 loans: Resurgent
+- 8 loans: FTFCU
+(Note: ARS, Remitter, HM/ACU excluded as we report payments for these)
+
+**Deliverables:** SQL queries, CSV data, and analysis in tickets/kchalmers/DI-1320/
+```
+
+### Anti-Patterns to Avoid
+
+**❌ Don't:**
+- Use technical terms without context ("CTE", "LEFT JOIN", "WHERE clause")
+- Include implementation details ("Used dual CTE pattern with PCPCLS alias")
+- Write long explanatory paragraphs
+- Present data without segmentation or context
+- Omit specific numbers or use vague terms ("many loans", "significant amount")
+
+**✅ Do:**
+- Translate technical findings to business impact
+- Use specific numbers with percentages
+- Segment populations by business relevance
+- Explain filters and criteria in plain language
+- Highlight data quality concerns and next steps
 
 ## Usage Instructions
 

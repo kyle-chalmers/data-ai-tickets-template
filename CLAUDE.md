@@ -84,7 +84,7 @@ Avoid building functionality on speculation. Implement features only when they a
    - **FIRST: SQL Analysis** - Start with SQL queries to explore and understand data
    - **SECOND: Python Analysis** - Use Python for complex transformations, statistical analysis, or visualization
    - **CSV Output Requirements**: All SQL outputs should be in CSV format (`--format csv`)
-   - **CSV Quality Control**: Verify CSV files contain only data rows and column headers with no extra rows above or below
+   - **CSV Quality Control**: ALWAYS verify CSV files have column headers in row 1 with no extra rows above, and no blank rows at the end
 
 ## Prerequisites
 
@@ -719,9 +719,44 @@ END;
 **Requirements Clarification:**
 When requirements could be interpreted multiple ways:
 1. **State your understanding** of requirements
-2. **Identify specific scenarios** that could be handled differently  
+2. **Identify specific scenarios** that could be handled differently
 3. **Provide concrete examples** from current data
 4. **Ask for explicit confirmation** of interpretation
+
+**Jira Comment Style Guide:**
+
+Target 200 words maximum with business-focused content:
+
+**Structure:**
+1. **TLDR** - One sentence with key finding, critical numbers, business impact
+2. **Population** - Total count with clear scope/filters
+3. **High Priority Segments** - Numbered by business importance with:
+   - Count and percentage: "827 loans (9.17%)"
+   - Dollar amounts: "$438,490 collected"
+   - Breakdown by relevant dimensions
+4. **Supporting Analysis** - Status, portfolio, placement breakdowns
+5. **Deliverables** - File locations and follow-up items
+
+**Best Practices:**
+- **Business-first language** - Terms stakeholders understand, minimal technical jargon
+- **Specific numbers throughout** - Concrete counts, amounts, percentages
+- **Context in parentheses** - "(filtered by DEBT_SETTLEMENT_DATA_SOURCE_LIST = 'CUSTOM_FIELDS,')"
+- **Note exclusions** - "(Note: ARS excluded as we report payments for these)"
+- **Bold key findings** - Use **bold** for segment headers and critical insights
+- **Hierarchical bullets** - Indent sub-bullets for clear organization
+
+**Avoid:**
+- Technical terms without context ("CTE", "LEFT JOIN")
+- Implementation details ("Used dual CTE pattern")
+- Long explanatory paragraphs
+- Vague terms ("many loans", "significant amount")
+
+**Example Opening:**
+```
+**TLDR:** This is an issue especially for loans with no settlement data where we are collecting from them (327 loans, $438K collected), and for loans where we collected after their placement sale date (166 loans to external agencies).
+```
+
+See `.claude/agents/data-quality-review-agent.md` Jira Comment Style Guide section for full examples.
 
 ### File Organization Standards
 

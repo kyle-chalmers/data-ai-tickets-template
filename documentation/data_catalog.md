@@ -489,18 +489,72 @@ GROUP BY PAYOFFUID
 ### DATA_STORE Schema
 > Historical snapshots and materialized views
 
+#### Loan Tape Table Variants and Filtering
+
+**IMPORTANT:** The loan tape has multiple variants with different filtering requirements:
+
+| Table | When to Filter by ASOFDATE | Usage |
+|-------|---------------------------|-------|
+| `DATA_STORE.MVW_LOAN_TAPE` | ❌ **NEVER** - No date filter needed | Current/latest loan tape snapshot - already filtered to latest |
+| `DATA_STORE.MVW_LOAN_TAPE_DAILY_HISTORY` | ✅ **Only for specific date** | Filter for point-in-time snapshot; omit filter for daily trends/comparisons |
+| `DATA_STORE.MVW_LOAN_TAPE_MONTHLY` | ✅ **Only for specific month** | Filter for specific month-end; omit filter for month-over-month analysis |
+
+**Example Queries:**
+```sql
+-- Current loan tape (NO date filter - already current snapshot)
+SELECT * FROM DATA_STORE.MVW_LOAN_TAPE
+WHERE CHARGEOFFDATE IS NOT NULL;
+
+-- Daily history for SPECIFIC date (point-in-time snapshot)
+SELECT * FROM DATA_STORE.MVW_LOAN_TAPE_DAILY_HISTORY
+WHERE ASOFDATE = '2025-09-30';
+
+-- Daily history for TREND analysis (no filter - multiple dates)
+SELECT ASOFDATE, COUNT(*) AS LOAN_COUNT
+FROM DATA_STORE.MVW_LOAN_TAPE_DAILY_HISTORY
+WHERE ASOFDATE >= '2025-09-01' AND ASOFDATE <= '2025-09-30'
+GROUP BY ASOFDATE
+ORDER BY ASOFDATE;
+
+-- Monthly snapshot for SPECIFIC month-end
+SELECT * FROM DATA_STORE.MVW_LOAN_TAPE_MONTHLY
+WHERE ASOFDATE = '2025-09-30';  -- September 2025 month-end
+
+-- Monthly history for MONTH-OVER-MONTH analysis (no single date filter)
+SELECT ASOFDATE, COUNT(*) AS LOAN_COUNT
+FROM DATA_STORE.MVW_LOAN_TAPE_MONTHLY
+WHERE ASOFDATE >= '2025-01-31' AND ASOFDATE <= '2025-09-30'
+GROUP BY ASOFDATE
+ORDER BY ASOFDATE;
+```
+
+<details>
+<summary><b>MVW_LOAN_TAPE</b> - Current loan tape snapshot</summary>
+
+| Field | Type | Description |
+|-------|------|-------------|
+| **LOANID** | PK | Loan identifier |
+| REPORTDATE | Date | Snapshot date (no filter needed) |
+| PAYOFFUID | String | Cross-system ID |
+| PLACEMENT_STATUS | String | Collection agency placement |
+| CHARGEOFFDATE | Date | Charge-off date |
+| RECOVERYPAYMENTAMOUNT | Number | Total recovery payments |
+
+> Current loan tape - no date filter needed, already latest snapshot
+</details>
+
 <details>
 <summary><b>MVW_LOAN_TAPE_DAILY_HISTORY</b> - Daily loan snapshots</summary>
 
 | Field | Type | Description |
 |-------|------|-------------|
 | **LOANID** | PK | Loan identifier |
-| **ASOFDATE** | PK | Snapshot date |
+| **ASOFDATE** | PK | Snapshot date (filter required) |
 | PAYOFFUID | String | Cross-system ID |
 | DAYSPASTDUE | Number | DPD |
 | REMAININGPRINCIPAL | Number | Balance |
 
-> Historical daily loan performance data
+> Historical daily loan performance data - must filter by ASOFDATE
 </details>
 
 <details>
@@ -509,12 +563,12 @@ GROUP BY PAYOFFUID
 | Field | Type | Description |
 |-------|------|-------------|
 | **LOANID** | PK | Loan identifier |
-| **ASOFDATE** | PK | Month-end date |
+| **ASOFDATE** | PK | Month-end date (filter required) |
 | PAYOFFUID | String | Cross-system ID |
 | DAYSPASTDUE | Number | DPD |
 | LOAN_INTENT | String | Classification |
 
-> Monthly aggregated loan performance
+> Monthly aggregated loan performance - must filter by ASOFDATE (end-of-month)
 </details>
 
 <details>

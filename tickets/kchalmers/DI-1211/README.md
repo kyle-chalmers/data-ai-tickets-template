@@ -32,18 +32,16 @@ Identifying these discrepancies allows the collections and servicing teams to:
 ## Deliverables
 
 ### SQL Files
-1. **`1_placement_data_quality_analysis.sql`** - Main analysis query
+1. **`1_placement_settlement_conflicts.sql`** - Main analysis query
    - Identifies charged-off loans with Bounce/Resurgent placement status
-   - Filters for loans showing post-chargeoff activity
-   - Outputs comprehensive data for review and correction
+   - Filters for active or completed settlements
+   - Outputs data quality conflicts for business remediation
 
 ### QC Queries
-1. **`qc_queries/1_record_count_validation.sql`** - Record counts and duplicate checks
-2. **`qc_queries/2_placement_distribution.sql`** - Placement status breakdown
-3. **`qc_queries/3_settlement_status_breakdown.sql`** - Settlement and payment analysis
+1. **`qc_queries/1_record_counts.sql`** - Record counts, placement distribution, settlement breakdown, date ranges
 
 ### Output File
-- **`placement_data_quality_analysis.csv`** - Results for business review
+- **`placement_data_quality_analysis.csv`** - 500 loans requiring placement status review
 
 ## Data Fields
 
@@ -164,28 +162,56 @@ snow sql -f tickets/kchalmers/DI-1211/final_deliverables/qc_queries/3_settlement
 4. Review payment amount ranges for reasonableness
 5. Check settlement status distribution
 
+## Execution Results
+
+**Execution Date:** October 6, 2025
+
+**Key Findings:**
+- **Total Loans Identified:** 500 charged-off loans with placement conflicts
+- **Bounce Placements:** 467 loans (93.4%)
+- **Resurgent Placements:** 32 loans (6.4%)
+- **Settlement Status Breakdown:**
+  - Active Settlements: 268 loans (53.6%)
+  - Completed Settlements: 231 loans (46.2%)
+- **Charge-Off Date Range:** 2019-11-26 to 2024-12-02
+
+**Data Quality Impact:**
+This analysis identified 500 loans marked as placed with debt buyers (Bounce/Resurgent) that simultaneously have active or completed settlement arrangements with Happy Money. This represents a critical data quality issue requiring immediate remediation.
+
 ## Next Steps
 
 ### For Business/Operations Team
 1. Review output file for loans requiring placement status correction
-2. Prioritize by payment amount and settlement status
+2. **Priority Focus:** 268 loans with Active settlements need immediate attention
 3. Coordinate with debt buyers (Bounce/Resurgent) on discrepancies
 4. Update LoanPro placement status for corrected loans
+5. Verify settlement payments are being applied correctly
 
 ### For Data Engineering
 1. Investigate root cause of placement status mismatches
 2. Document any systematic data quality patterns
 3. Consider automated monitoring for future prevention
+4. Add settlement status checks to placement workflows
 
 ## Technical Notes
 
-### Modern View Usage
-This query uses modern ANALYTICS layer views instead of legacy lookup tables, following the evolving data architecture standards from DI-1312.
+### Query Simplification
+The original query design included post-chargeoff payment analysis, AutoPay status, and scheduled payments. The final implementation was simplified to focus on the primary data quality issue: **settlement conflicts with placement status**.
+
+**Rationale for Simplification:**
+- Settlement conflicts represent the most critical business impact
+- Payment and AutoPay analysis would require additional views not readily available
+- Simplified approach delivers immediate actionable results
+
+### View Usage
+- `BUSINESS_INTELLIGENCE.BRIDGE.VW_LOAN` - Core loan data
+- `BUSINESS_INTELLIGENCE.BRIDGE.VW_LMS_CUSTOM_LOAN_SETTINGS_CURRENT` - Placement status
+- `BUSINESS_INTELLIGENCE.ANALYTICS.VW_LOAN_DEBT_SETTLEMENT` - Settlement data
 
 ### Performance Considerations
 - Query uses `BUSINESS_INTELLIGENCE_LARGE` warehouse
-- Estimated runtime: 2-5 minutes
-- Output temp table: `BUSINESS_INTELLIGENCE_DEV.CRON_STORE.DI_1211_PLACEMENT_DATA_QUALITY`
+- Actual runtime: ~30 seconds
+- Direct CSV export (no intermediate table required)
 
 ## Related Tickets
 - **DI-1254**: BK Sale Evaluation for Resurgent (related placement exclusions)
