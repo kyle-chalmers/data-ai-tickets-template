@@ -288,3 +288,77 @@ All quality control checks completed successfully. The analysis correctly identi
 - ✅ All data quality tests passing with 100% LEAD_GUID and CURRENT_STATUS population
 - ✅ Optimized query structure with significant performance improvements
 - ✅ Multi-remediation analysis completed with comprehensive QC validation
+## DI-1235 Enhancement: ACTIONS and CHECKLIST_ITEMS Sources Added
+
+**Date**: October 2025  
+**Related Ticket**: DI-1235
+
+### Enhancement Summary
+Expanded VW_LOAN_DEBT_SETTLEMENT from 4 to 6 data sources by adding settlement action history and checklist tracking capabilities.
+
+### New Data Sources Added
+
+#### Source 5: Settlement Actions (ACTIONS) ✅ Active
+- **Source**: `BUSINESS_INTELLIGENCE.ANALYTICS.VW_LOAN_ACTION_AND_RESULTS`
+- **Filter**: `RESULT_TEXT = 'Settlement Payment Plan Set up'`
+- **Coverage**: 876 unique loans, 921 total action records
+- **Aggregation**: MIN/MAX dates, COUNT, MAX_BY for latest details
+- **Many:1 Handling**: 45 loans have multiple settlement action records
+
+**New Columns**:
+- `EARLIEST_SETTLEMENT_ACTION_DATE`
+- `LATEST_SETTLEMENT_ACTION_DATE`
+- `SETTLEMENT_ACTION_COUNT`
+- `LATEST_SETTLEMENT_ACTION_AGENT`
+- `LATEST_SETTLEMENT_ACTION_NOTE`
+- `HAS_SETTLEMENT_ACTION`
+
+#### Source 6: Checklist Items (CHECKLIST_ITEMS) ⚠️ Placeholder
+- **Source**: `BUSINESS_INTELLIGENCE.BRIDGE.VW_LMS_CHECKLIST_ITEM_ENTITY_CURRENT`
+- **Status**: Commented placeholder awaiting data population
+- **Current Records**: 0 (data issue being resolved)
+- **Activation**: Requires user guidance on filter criteria and aggregation strategy
+
+### Updated Tracking System
+
+**Previous (DI-1262)**:
+- DATA_SOURCE_COUNT: 1-3 range
+- DATA_COMPLETENESS_FLAG: COMPLETE (3), PARTIAL (2), SINGLE_SOURCE (1)
+- 3 sources: CUSTOM_FIELDS, PORTFOLIOS, SUB_STATUS
+
+**After DI-1235 (Added DOCUMENTS in between)**:
+- DATA_SOURCE_COUNT: 1-5 range (1-6 when CHECKLIST active)
+- DATA_COMPLETENESS_FLAG: COMPLETE (5-6), PARTIAL (2-4), SINGLE_SOURCE (1)
+- 6 sources: CUSTOM_FIELDS, PORTFOLIOS, SUB_STATUS, DOCUMENTS, ACTIONS, CHECKLIST_ITEMS
+
+### Volume Impact
+
+**Original (DI-1262)**: 14,074 loans  
+**After DOCUMENTS**: 14,183 loans  
+**After ACTIONS (DI-1235)**: 14,187 loans (+4 new loans, 0.03% increase)
+
+### Architecture Evolution
+
+The view now follows a 6-source architecture pattern:
+1. **CUSTOM_FIELDS** - Settlement custom field indicators (original)
+2. **PORTFOLIOS** - Settlement portfolio assignments (original)
+3. **SUB_STATUS** - Loan sub status filtering (original)
+4. **DOCUMENTS** - Settlement document tracking (added between DI-1262 and DI-1235)
+5. **ACTIONS** - Settlement action history (DI-1235) ✅
+6. **CHECKLIST_ITEMS** - Settlement checklist tracking (DI-1235, placeholder) ⚠️
+
+### Implementation Details
+
+See DI-1235 ticket folder for:
+- Enhanced view DDL with ACTIONS integration
+- Comprehensive QC validation results (all tests PASS)
+- Production deployment template
+- Complete technical documentation (CLAUDE.md)
+
+### Related Documentation
+- **DI-1235 Ticket**: `/tickets/kchalmers/DI-1235/`
+- **PRP**: `/PRPs/debt_settlement_object_update/snowflake-data-object-vw-loan-debt-settlement-update.md`
+- **Enhanced View**: `BUSINESS_INTELLIGENCE.ANALYTICS.VW_LOAN_DEBT_SETTLEMENT` (production)
+
+---
+*Last Updated: DI-1235 Enhancement (October 2025)*

@@ -222,3 +222,134 @@ tickets/kchalmers/DI-1262/
 - Historical settlement tracking (if needed)
 - Integration with debt sale suppression automation
 - Advanced settlement analytics and metrics
+## DI-1235 Enhancement: 6-Source Architecture (October 2025)
+
+### Architecture Evolution
+**Original (DI-1262)**: 3 sources (CUSTOM_FIELDS, PORTFOLIOS, SUB_STATUS)  
+**Post-DOCUMENTS**: 4 sources  
+**Post-DI-1235**: 6 sources (ACTIONS active, CHECKLIST_ITEMS placeholder)
+
+### Source 5: ACTIONS Implementation
+```sql
+ACTIONS AS (
+    SELECT
+        LOAN_ID::VARCHAR,
+        MIN(ACTION_RESULT_TS) as EARLIEST_SETTLEMENT_ACTION_DATE,
+        MAX(ACTION_RESULT_TS) as LATEST_SETTLEMENT_ACTION_DATE,
+        COUNT(*) as SETTLEMENT_ACTION_COUNT,
+        MAX_BY(AGENT_NAME, ACTION_RESULT_TS) as LATEST_SETTLEMENT_ACTION_AGENT,
+        MAX_BY(NOTE, ACTION_RESULT_TS) as LATEST_SETTLEMENT_ACTION_NOTE,
+        'ACTIONS' as SOURCE
+    FROM BUSINESS_INTELLIGENCE.ANALYTICS.VW_LOAN_ACTION_AND_RESULTS
+    WHERE RESULT_TEXT = 'Settlement Payment Plan Set up'
+    GROUP BY LOAN_ID
+)
+```
+
+**Key Pattern**: Many:1 aggregation using MIN/MAX/COUNT/MAX_BY functions  
+**Coverage**: 876 unique loans, 921 total action records  
+**Business Value**: Settlement workflow visibility and agent tracking
+
+### Source 6: CHECKLIST_ITEMS Placeholder
+```sql
+-- COMMENTED OUT - Awaiting data population
+-- Placeholder structure ready for activation when VW_LMS_CHECKLIST_ITEM_ENTITY_CURRENT has data
+-- Expected fields: SETTLEMENT_CHECKLIST_COUNT, SETTLEMENT_CHECKLISTS, LATEST_CHECKLIST_UPDATE
+```
+
+**Status**: 0 records, awaiting user guidance on filter criteria  
+**Activation**: Requires filter configuration and aggregation strategy confirmation
+
+### Updated Data Tracking
+
+**DATA_SOURCE_COUNT Calculation**:
+```sql
+(
+    CASE WHEN cls.LOAN_ID IS NOT NULL THEN 1 ELSE 0 END +
+    CASE WHEN sp.LOAN_ID IS NOT NULL THEN 1 ELSE 0 END +
+    CASE WHEN d.LOAN_ID IS NOT NULL THEN 1 ELSE 0 END +
+    CASE WHEN sss.LOAN_ID IS NOT NULL AND sss.CURRENT_STATUS = 'Closed - Settled in Full' THEN 1 ELSE 0 END +
+    CASE WHEN act.LOAN_ID IS NOT NULL THEN 1 ELSE 0 END  -- NEW
+    -- + CASE WHEN chk.LOAN_ID IS NOT NULL THEN 1 ELSE 0 END  -- Placeholder
+) as DATA_SOURCE_COUNT
+```
+
+**DATA_COMPLETENESS_FLAG Thresholds**:
+- **COMPLETE**: 5-6 sources (6 when CHECKLIST active)
+- **PARTIAL**: 2-4 sources
+- **SINGLE_SOURCE**: 1 source
+
+**New Boolean Flags**:
+- `HAS_SETTLEMENT_ACTION` - TRUE for loans with ACTIONS data
+- `HAS_SETTLEMENT_CHECKLIST` - Placeholder (commented out)
+
+### Technical Implementation Notes
+
+**Backward Compatibility**: ✅ Maintained
+- All 33 existing columns preserved unchanged
+- New columns added after existing document fields
+- Existing queries continue to work
+- COPY GRANTS preserves permissions
+
+**Join Strategy**:
+```sql
+-- Settlement actions data (NEW - DI-1235)
+LEFT JOIN ACTIONS act
+    ON sl.LOAN_ID = act.LOAN_ID
+
+-- Settlement checklist data (PLACEHOLDER - DI-1235, commented out)
+-- LEFT JOIN CHECKLIST_ITEMS chk
+--     ON sl.LOAN_ID = chk.LOAN_ID
+```
+
+**Settlement Population Union**:
+```sql
+settlement_loans AS (
+    SELECT LOAN_ID FROM CUSTOM_FIELDS
+    UNION SELECT LOAN_ID FROM PORTFOLIOS
+    UNION SELECT LOAN_ID FROM SUB_STATUS WHERE LOAN_SUB_STATUS_ID = '57'
+    UNION SELECT LOAN_ID FROM DOCUMENTS
+    UNION SELECT LOAN_ID FROM ACTIONS  -- NEW
+    -- UNION SELECT LOAN_ID FROM CHECKLIST_ITEMS  -- Placeholder
+)
+```
+
+### QC Validation Results (DI-1235)
+- ✅ No duplicates (one row per LOAN_ID maintained)
+- ✅ ACTIONS source: 876 loans match source exactly
+- ✅ All ACTIONS fields 100% populated for flagged loans
+- ✅ Date logic valid (EARLIEST <= LATEST)
+- ✅ Backward compatibility verified
+- ✅ Join integrity confirmed
+- ✅ Performance acceptable
+
+### Volume Impact Analysis
+- **DI-1262 Original**: 14,074 loans
+- **After DOCUMENTS**: 14,183 loans
+- **After ACTIONS (DI-1235)**: 14,187 loans (+4 new, 0.03% increase)
+- **Enrichment**: 872 existing loans gained ACTIONS data
+
+### Data Distribution (Post-DI-1235)
+- **COMPLETE (5 sources)**: 112 loans (0.79%)
+- **PARTIAL (2-4 sources)**: 1,460 loans (10.29%)
+- **SINGLE_SOURCE**: 12,615 loans (88.92%)
+
+### CHECKLIST_ITEMS Activation Procedure
+When data becomes available:
+1. Uncomment CHECKLIST_ITEMS CTE
+2. Configure filter criteria for settlement checklists
+3. Uncomment settlement_loans UNION for CHECKLIST_ITEMS
+4. Uncomment LEFT JOIN in main query
+5. Uncomment checklist column selections
+6. Uncomment HAS_SETTLEMENT_CHECKLIST flag
+7. Uncomment checklist term in DATA_SOURCE_COUNT
+8. Update DATA_SOURCE_LIST array construction
+
+### Related DI-1235 Documentation
+- **Ticket Folder**: `tickets/kchalmers/DI-1235/`
+- **PRP**: `PRPs/debt_settlement_object_update/snowflake-data-object-vw-loan-debt-settlement-update.md`
+- **Enhanced DDL**: `tickets/kchalmers/DI-1235/final_deliverables/1_vw_loan_debt_settlement_enhanced.sql`
+- **Production Template**: `tickets/kchalmers/DI-1235/final_deliverables/3_production_deploy_template.sql`
+
+---
+*Technical Context Updated: DI-1235 Enhancement (October 2025)*
