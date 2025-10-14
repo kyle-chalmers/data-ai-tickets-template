@@ -737,15 +737,20 @@ Target 200 words maximum with business-focused content:
 4. **Supporting Analysis** - Status, portfolio, placement breakdowns
 5. **Deliverables** - File locations and follow-up items
 
+**Formatting Requirements:**
+- **NO MARKDOWN FORMATTING** - Never use `**bold**`, `*italic*`, or other markdown syntax in Jira comments
+- Use plain text only for all Jira comments
+- Jira has its own formatting system that conflicts with markdown
+
 **Best Practices:**
 - **Business-first language** - Terms stakeholders understand, minimal technical jargon
 - **Specific numbers throughout** - Concrete counts, amounts, percentages
 - **Context in parentheses** - "(filtered by DEBT_SETTLEMENT_DATA_SOURCE_LIST = 'CUSTOM_FIELDS,')"
 - **Note exclusions** - "(Note: ARS excluded as we report payments for these)"
-- **Bold key findings** - Use **bold** for segment headers and critical insights
 - **Hierarchical bullets** - Indent sub-bullets for clear organization
 
 **Avoid:**
+- Markdown formatting (**, *, `, etc.)
 - Technical terms without context ("CTE", "LEFT JOIN")
 - Implementation details ("Used dual CTE pattern")
 - Long explanatory paragraphs

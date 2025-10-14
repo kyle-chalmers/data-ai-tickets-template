@@ -1,0 +1,34 @@
+TLDR: Q3 2025 collection activity delivered for all 15 Fortress loans from Attachment C. Total of 1,350 records across 5 data sources (Genesys phone/SMS/email, loan notes, SFMC emails).
+
+Deliverables Location:
+- Repository: tickets/kchalmers/DI-1300/final_deliverables/
+- 5 CSV files numbered for review order
+- Complete SQL query file with all extractions
+- QC validation scripts
+
+Collection Activity Summary:
+1. Genesys Phone Calls: 120 records (11 loans)
+2. Genesys SMS: 95 records (10 loans)
+3. Genesys Email: 13 records (9 loans)
+4. Loan Notes: 945 records (all 15 loans, all dates)
+5. SFMC Email Activity: 177 records (9 loans)
+
+Key Findings:
+- All 15 loans have loan note history (not restricted to Q3)
+- 11 loans had phone activity, 10 had SMS, 9 had email activity during Q3 2025
+- SFMC emails filtered to delinquent campaign sent events
+- Date range: July 1 - September 30, 2025
+
+Technical Notes:
+- Used DI-1064 helper table approach for PAYOFFUID matching
+- Queries handle email/phone matching with date ranges for correct loan identification
+- All data QC validated with record count checks
+- Talkdesk data excluded per confirmation
+
+QC Results:
+✓ All 5 CSV files generated successfully
+✓ Record counts validated
+✓ Date filters verified (Q3 2025)
+✓ File sizes 5.9K - 46K
+
+Ready for Ops QA ahead of Fortress deadline.

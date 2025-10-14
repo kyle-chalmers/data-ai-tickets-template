@@ -1,0 +1,19 @@
+TLDR: Q3 2025 payment history delivered with 344 transactions from 88 of 90 Fortress loans. Two Attachment C loans currently delinquent with no payment activity since origination.
+
+Population: 90 Fortress loans (75 Attachment B + 15 Attachment C) for Q3 2025 (May 14 - September 29).
+
+Transaction Summary:
+- 344 total transactions from 88 loans ($214,835 collected)
+- Attachment B: 295 transactions from all 75 loans (100% participation, $185,248)
+- Attachment C: 49 transactions from 13 of 15 loans (87% participation, $29,587)
+- 23 reversed transactions (6.7% reversal rate)
+
+Loans Without Q3 Activity (2 loans from Attachment C):
+1. HM68A034E3AF31 - Originated 6/13/25, Status: Seriously Delinquent 3+ Payments, 91 days past due, last payment: NONE
+2. HMF09EE0212540 - Originated 7/14/25, Status: Delinquent 1 Payment, 59 days past due, last payment: NONE
+
+Both loans never made first payment and went straight to delinquency.
+
+QC Results: All validation passed - zero duplicates, date filters verified, same logic as Q2.
+
+Deliverables: Payment history CSV and SQL in final_deliverables with comprehensive QC queries.
