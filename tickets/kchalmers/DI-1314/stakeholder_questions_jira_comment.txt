@@ -1,0 +1,24 @@
+Discovery Complete - Clarification Needed
+
+Good progress on DI-1314. Discovery phase complete with 3 of 6 deliverables ready for CRB submission.
+
+READY TO DELIVER:
+- Item 1.B: CAN-SPAM Email Opt-Outs (592 CRB customers)
+- Item 3: FCRA Negative Credit Reporting (7,081 CRB loans with first late payments)
+- Item 4.A: FCRA Indirect Disputes (0 ACDV disputes in timeframe - last activity Oct 2021)
+
+NEED CLARIFICATION:
+
+1. Item 1 - Date Last Email Sent Field
+Individual customer email send history not available in Snowflake. DSH_EMAIL_CAMPAIGN_SENT has campaign-level metrics only. Can this field be N/A or do you need SFMC API data retrieval?
+
+2. Item 2 - GLBA Privacy Opt-Outs
+No privacy opt-out tracking found (searched PRIVACY, GLBA, CONSENT tables). RPT_UNSUBSCRIBER_SFMC is marketing emails only. Does Happy Money track information-sharing opt-outs separately from marketing? If yes, where? If no, can we document as N/A?
+
+3. Item 4.B - Direct Disputes (AUD)
+Only indirect disputes from bureaus found (ACDV). No direct customer dispute tracking found. Does Happy Money receive direct disputes bypassing bureaus? If yes, where tracked? If no, can we document as N/A?
+
+4. Item 3 - Reported to CRA Field
+Using CREDIT_REPORT_HISTORY export dates to infer reporting (if late date before next export = Yes). Is this approach acceptable or is there a direct reporting flag?
+
+Queries and CSVs ready in final_deliverables folder. See README for full discovery findings and data source documentation.
