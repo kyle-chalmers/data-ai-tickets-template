@@ -1,44 +1,5 @@
--- DI-1314: Item 1.B - CAN-SPAM Marketing Email Opt-Outs
--- CRB Q3 2025 Compliance Testing
--- Scope: October 1, 2023 - August 31, 2025
---
--- Required Fields:
--- - Unique Customer Identifier
--- - Customer Name
--- - Customer Email Address
--- - Date Opt-out Requested
--- - Date Opt-out Processed
--- - Date Last Email Sent to customer
---
--- Data Sources:
--- - BUSINESS_INTELLIGENCE.PII.RPT_UNSUBSCRIBER_SFMC (email unsubscribes from SFMC)
--- - BUSINESS_INTELLIGENCE.ANALYTICS_PII.VW_MEMBER_PII (customer PII)
--- - BUSINESS_INTELLIGENCE.ANALYTICS.VW_LOAN (loan-member linkage)
--- - BUSINESS_INTELLIGENCE.DATA_STORE.MVW_LOAN_TAPE (CRB portfolio filter)
---
--- Business Logic:
--- - Include only customers with CRB loans (Portfolio IDs: 32, 34, 54, 56)
--- - Use DATEUNSUBSCRIBED from SFMC for both "requested" and "processed" dates
---   (SFMC does not distinguish between request and processing timestamp)
--- - "Date Last Email Sent" field is N/A - individual email send history not available in Snowflake
---   (would require SFMC API query or external log analysis)
---
--- Date: 2025-10-14
--- Author: Kyle Chalmers
-
--- ============================================================================
--- PARAMETERS
--- ============================================================================
-
--- Date range for CAN-SPAM opt-outs
-SET START_DATE = '2023-10-01';
-SET END_DATE = '2025-08-31';
-
--- ============================================================================
--- MAIN QUERY
--- ============================================================================
 USE WAREHOUSE BUSINESS_INTELLIGENCE_LARGE;
---canspam_sfmc_marketing_email_optouts
+--dev
 WITH crb_member_emails AS (
     -- Get CRB members with current email addresses
     SELECT
@@ -92,20 +53,29 @@ qualify row_number() over (partition by a.LOAN_ID order by a.CONTACT_RULE_START_
         DATEUNSUBSCRIBED,
         SOURCE as OPTOUT_SOURCE
     FROM BUSINESS_INTELLIGENCE.PII.RPT_UNSUBSCRIBER_SFMC A
-    WHERE DATEUNSUBSCRIBED BETWEEN $START_DATE AND $END_DATE
-)
-,FINAL_QUERY_BASE AS (SELECT
-       b.PAYOFFUID,
+    WHERE DATEUNSUBSCRIBED BETWEEN $START_DATE AND $END_DATE)
+SELECT
+       B.MEMBER_ID as UNIQUE_CUSTOMER_IDENTIFIER,
        B.FIRST_NAME || ' ' || B.LAST_NAME as CUSTOMER_NAME,
        B.EMAIL as CUSTOMER_EMAIL_ADDRESS,
-       COALESCE(A.CREATED_DATE, C.DATEUNSUBSCRIBED)::DATE AS DATE_OPTOUT_REQUESTED,
-       COALESCE(A.CREATED_DATE, C.DATEUNSUBSCRIBED)::DATE AS DATE_OPTOUT_PROCESSED,
-       --E.LAST_SENT_DATE::DATE AS DATE_LAST_EMAIL_SENT,
+       COALESCE(A.CREATED_DATE, C.DATEUNSUBSCRIBED) AS DATE_OPTOUT_REQUESTED,
+       COALESCE(A.CREATED_DATE, C.DATEUNSUBSCRIBED) AS DATE_OPTOUT_PROCESSED,
+       NULL AS DATE_LAST_EMAIL_SENT,
        COALESCE(C.OPTOUT_SOURCE, 'FIVETRAN_LIST_143') AS OPTOUT_SOURCE,
        B.LOAN_ID as SAMPLE_CRB_LOAN,
        B.PORTFOLIOID,
        B.PORTFOLIONAME,
-       A.SUBSCRIBER_KEY
+       CASE
+           WHEN A.DERIVED_PAYOFFUID IS NOT NULL AND B.PAYOFFUID IS NOT NULL AND A.DERIVED_PAYOFFUID = B.PAYOFFUID
+               THEN 'Tier 1: PAYOFFUID (Fivetran)'
+           WHEN A.APPLICATION_ID IS NOT NULL AND B.APPLICATION_ID IS NOT NULL AND A.APPLICATION_ID = B.APPLICATION_ID
+               THEN 'Tier 2: APPLICATION_ID (Fivetran)'
+           WHEN A.EMAIL_ADDRESS IS NOT NULL AND TRIM(LOWER(A.EMAIL_ADDRESS)) = TRIM(LOWER(B.EMAIL))
+               THEN 'Tier 3: EMAIL (Fivetran)'
+           WHEN C.EMAIL_NORMALIZED IS NOT NULL
+               THEN 'Tier 4: EMAIL (RPT_UNSUBSCRIBER)'
+           ELSE NULL
+       END AS MATCH_TIER
 FROM crb_member_emails B
 LEFT JOIN UNSUBSCRIBED_LIST A
     ON (
@@ -122,29 +92,7 @@ LEFT JOIN UNSUBSCRIBED_LIST A
          AND TRIM(LOWER(A.EMAIL_ADDRESS)) = TRIM(LOWER(B.EMAIL)))
     )
 LEFT JOIN UNSUBSCRIBED_RPT C
-    ON A.SUBSCRIBER_KEY IS NULL  -- Tier 4: Only join to RPT if Fivetran didn't match
+    ON A.EMAIL_ADDRESS IS NULL  -- Tier 4: Only join to RPT if Fivetran didn't match
     AND TRIM(LOWER(B.EMAIL)) = C.EMAIL_NORMALIZED
-/*LEFT JOIN LAST_EMAIL_SENT E
-    ON A.SUBSCRIBER_KEY = E.SUBSCRIBER_KEY*/
-WHERE (A.SUBSCRIBER_KEY IS NOT NULL OR C.EMAIL_NORMALIZED IS NOT NULL)  -- Only include rows with opt-out match
-QUALIFY ROW_NUMBER() OVER (PARTITION BY B.MEMBER_ID ORDER BY COALESCE(A.CREATED_DATE, C.DATEUNSUBSCRIBED) DESC) = 1)
-,LAST_EMAIL_SENT AS (
-    -- Get last email sent date per subscriber from SFMC
-    SELECT
-        B.SUBSCRIBER_KEY,
-        MAX(EVENT_DATE::DATE) as LAST_EMAIL_SENT_ON_OR_BEFORE_OPTOUT_DATE
-    FROM FINAL_QUERY_BASE A
-    INNER JOIN FIVETRAN.SALESFORCE_MARKETING_CLOUD.EVENT B
-    ON LOWER(COALESCE(A.SUBSCRIBER_KEY,A.CUSTOMER_EMAIL_ADDRESS)) = LOWER(B.SUBSCRIBER_KEY)
-    AND B.EVENT_DATE::DATE <= A.DATE_OPTOUT_PROCESSED
-    WHERE B.EVENT_TYPE = 'Sent'
-    GROUP BY B.SUBSCRIBER_KEY)
-SELECT A.PAYOFFUID AS LEAD_GUID,
-A.CUSTOMER_NAME,
-A.CUSTOMER_EMAIL_ADDRESS,
-A.DATE_OPTOUT_REQUESTED,
-A.DATE_OPTOUT_PROCESSED,
-B.LAST_EMAIL_SENT_ON_OR_BEFORE_OPTOUT_DATE
-FROM FINAL_QUERY_BASE A
-LEFT JOIN LAST_EMAIL_SENT B
-ON LOWER(COALESCE(A.SUBSCRIBER_KEY,A.CUSTOMER_EMAIL_ADDRESS)) = LOWER(B.SUBSCRIBER_KEY)
+WHERE (A.EMAIL_ADDRESS IS NOT NULL OR C.EMAIL_NORMALIZED IS NOT NULL)  -- Only include rows with opt-out match
+ORDER BY DATE_OPTOUT_REQUESTED DESC, B.MEMBER_ID;
