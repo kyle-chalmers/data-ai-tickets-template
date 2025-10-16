@@ -11,7 +11,7 @@
 
 CRB (Cross River Bank) Q3 2025 Compliance Testing and Monitoring data request covering two regulatory requirements. All data must be for **CRB ORIGINATIONS ONLY**.
 
-**IMPORTANT:** Requirements were updated on 2025-10-15 to focus on only two data pulls (CAN-SPAM and GLBA Privacy). All other items (negative credit reporting, disputes) have been removed from scope.
+**IMPORTANT:** Requirements were updated on 2025-10-16 to include FCRA Negative Credit Reporting (Item 3) back in scope with modified criteria: DAYSPASTDUE >= 30 (30-day delinquency threshold).
 
 ## CRB Originations Filter
 
@@ -97,12 +97,47 @@ Comprehensive database search conducted across all Snowflake schemas. No GLBA pr
 
 ---
 
+### ✅ Item 3: FCRA - Negative Credit Reporting
+**Scope:** October 1, 2024 - August 31, 2025 (1 year)
+**Due:** October 17, 2025
+
+**Required Fields:**
+- Loan Number
+- Borrower Name
+- Date of first late payment
+- How many days past due borrower became
+- If borrower was reported late to CRA
+
+**Status:** ✅ **COMPLETE**
+
+**Deliverables:**
+- ✅ SQL Query: `final_deliverables/3_item3_fcra_negative_credit_reporting.sql`
+- ✅ CSV Output: `final_deliverables/3_item3_fcra_negative_credit_reporting.csv`
+- **Record Count:** 1,426 CRB loans with first-ever 30-day delinquency
+- ✅ QC Validation: `qc_queries/3_item3_negative_reporting_qc_validation.sql`
+
+**Data Sources:**
+- `BUSINESS_INTELLIGENCE.DATA_STORE.MVW_LOAN_TAPE_DAILY_HISTORY` (daily snapshots)
+- `RAW_DATA_STORE.LOANPRO.CREDIT_REPORT_HISTORY` (bureau export tracking)
+
+**Key Business Logic:**
+- **Delinquency Definition:** DAYSPASTDUE >= 30 (30-day threshold)
+- **CRITICAL:** Only includes loans where their **first-ever** 30+ DPD date falls within scope period
+- Excludes loans that had already been 30+ DPD before October 1, 2024
+- Uses MIN(ASOFDATE) across all history (no date restriction) to find first-ever 30+ DPD date
+- "Reported to CRA" inferred from bureau export timing (not direct flag)
+
+**Note:** CRA reporting status is inferred based on credit bureau export dates. If first late date occurred before next bureau export completion, marked as "Yes" (reported). This is based on Metro2 export file metadata, not a direct loan-level reporting flag.
+
+**Logic Correction Applied (2025-10-16):** Initial version incorrectly found loans that reached 30+ DPD during the scope period, but didn't verify this was their first-ever occurrence. Corrected to ensure only loans with true "first late payment" in scope are included. This reduced population from 3,031 to 1,426 (53% reduction, eliminating 1,605 loans with prior delinquency).
+
+---
+
 ## Archived Items (Out of Scope)
 
 The following items were part of the original ticket but have been removed from the updated requirements:
 
 **Archived in `archive_versions/`:**
-- Item 3: FCRA Negative Credit Reporting (7,081 records - complete)
 - Item 4.A: FCRA Indirect Disputes ACDV (0 records - complete)
 - Related SQL queries and QC validation scripts
 
@@ -110,10 +145,11 @@ The following items were part of the original ticket but have been removed from 
 
 ## Current Status
 
-**Overall Status:** 1 of 2 deliverables complete, 1 blocked pending stakeholder clarification
+**Overall Status:** 2 of 3 deliverables complete, 1 blocked pending stakeholder clarification
 
-### ✅ Complete (1 item)
+### ✅ Complete (2 items)
 - **Item 1:** CAN-SPAM Email Opt-Outs (592 records, CSV delivered)
+- **Item 3:** FCRA Negative Credit Reporting (1,426 records, CSV delivered)
 
 ### ❌ Blocked (1 item)
 - **Item 2:** GLBA Privacy Opt-Outs (data not found in Snowflake)
@@ -121,6 +157,7 @@ The following items were part of the original ticket but have been removed from 
 ### 📊 Work Summary
 - **Item 1:** Query built, tested, CSV generated, QC validation created
 - **Item 2:** Comprehensive discovery completed, no data source identified
+- **Item 3:** Query modified for 30-day threshold, CSV generated, QC validation created
 - **Documentation:** Complete investigation documentation created
 
 ---
@@ -144,11 +181,14 @@ DI-1314/
 │   ├── 1_item1_canspam_email_optouts.sql ✅
 │   ├── 1_item1_canspam_email_optouts.csv (592 records) ✅
 │   ├── 2_item2_glba_privacy_optouts_NOT_AVAILABLE.md ⚠️
+│   ├── 3_item3_fcra_negative_credit_reporting.sql ✅
+│   ├── 3_item3_fcra_negative_credit_reporting.csv (1,426 records) ✅
 │   ├── optout_mechanisms_documentation.md
 │   └── NA_items_documentation.md
 │
 ├── qc_queries/
-│   └── 1_item1_optouts_qc_validation.sql
+│   ├── 1_item1_optouts_qc_validation.sql
+│   └── 3_item3_negative_reporting_qc_validation.sql
 │
 └── archive_versions/
     ├── 2_fcra_negative_reporting_prototype.sql (removed from scope)
@@ -211,6 +251,20 @@ RPT_UNSUBSCRIBER_SFMC.EMAIL (case-insensitive match)
 - GLBA = Financial information sharing with third parties
 - No evidence of separate GLBA tracking in data warehouse
 
+### FCRA Negative Credit Reporting (Item 3)
+- **Delinquency Definition:** DAYSPASTDUE >= 30 (30-day threshold, not 1-day late)
+- **CRITICAL LOGIC:** Only includes loans where first-ever 30+ DPD date falls within scope period
+- Excludes loans that had already been 30+ DPD before October 1, 2024 (not first late payment)
+- Uses MVW_LOAN_TAPE_DAILY_HISTORY for accurate historical tracking via ASOFDATE snapshots
+- MIN(ASOFDATE) with no date restriction captures exact first-ever date loan became 30+ days delinquent
+- Then filters to only include loans where this first-ever date is within Oct 1, 2024 - Aug 31, 2025
+- MIN_BY(DAYSPASTDUE, ASOFDATE) captures days past due on that specific first date
+- CRA reporting status inferred from Metro2 export timing (no direct loan-level flag available)
+- **Population Impact:**
+  - Original (>0 threshold): 7,081 loans
+  - 30-day threshold only: 3,031 loans
+  - Corrected (first-ever 30+ DPD in scope): 1,426 loans (53% reduction from uncorrected logic)
+
 ---
 
 ## Stakeholder Questions
@@ -271,6 +325,6 @@ RPT_UNSUBSCRIBER_SFMC.EMAIL (case-insensitive match)
 
 ---
 
-**Last Updated:** 2025-10-15
-**Status:** Awaiting stakeholder clarification on Item 2 (GLBA Privacy Opt-Outs)
-**Deliverables:** 1 of 2 complete (Item 1 ✅, Item 2 ⚠️ Blocked)
+**Last Updated:** 2025-10-16
+**Status:** 2 of 3 deliverables complete, awaiting stakeholder clarification on Item 2 (GLBA Privacy Opt-Outs)
+**Deliverables:** Item 1 ✅ (592 records), Item 2 ⚠️ Blocked, Item 3 ✅ (1,426 records - corrected logic applied)

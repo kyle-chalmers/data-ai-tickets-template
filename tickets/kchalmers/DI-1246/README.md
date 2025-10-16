@@ -55,23 +55,41 @@ Generate list of loans that were settled in full in 2025 for Collections team ma
 
 ## Key Findings
 
-### Population Summary
+### Latest Execution (October 15, 2025) - WITH ENHANCED SETTLEMENT DATA
+
+**Population Summary:**
+- **Total Loans:** 5,356 loans meeting criteria (+236 vs Oct 2, +4.6%)
+- **Charge-Off Population:** 5,069 loans (94.6%) [+178 loans, +3.6%]
+- **Settled in Full Population:** 287 loans (5.4%) [+58 loans, +25.3%]
+- **Date Range:** Last payment dates from 2025-01-01 to 2025-10-15
+- **Bankruptcy Exclusions:** 489 loans excluded due to active bankruptcy (+2 vs Oct 2)
+
+**Quality Control Results:**
+✅ **No Duplicate Loan IDs:** All 5,356 loans have unique identifiers
+✅ **Date Filter Applied:** Zero records with last payment date < 2025-01-01
+✅ **No Null Payment Dates:** All records have valid last payment dates
+✅ **Bankruptcy Exclusions:** Active bankruptcy accounts successfully excluded
+
+**Settlement Data Enhancement Impact:**
+Analysis rerun after `VW_LOAN_DEBT_SETTLEMENT` view enhancements. Settlement data changes added **58 new settled-in-full loans (+25.3%)** and 178 additional charge-off loans with 2025 recovery payments. Net change: +236 loans. See [COMPARISON_REPORT.md](COMPARISON_REPORT.md) for detailed comparison.
+
+### Original Execution (October 2, 2025)
+
+**Population Summary:**
 - **Total Loans:** 5,120 loans meeting criteria
 - **Charge-Off Population:** 4,891 loans (95.5%)
 - **Settled in Full Population:** 229 loans (4.5%)
 - **Date Range:** Last payment dates from 2025-01-01 to 2025-10-01
-- **Bankruptcy Exclusions:** 487 loans excluded due to active bankruptcy (422 Chapter 13, 58 Chapter 7, 7 unspecified)
+- **Bankruptcy Exclusions:** 487 loans excluded
 
-### Placement Status Breakdown
+**Placement Status Breakdown:**
 - **Placed - HM:** 3,623 loans (70.8%)
 - **Placed - Bounce:** 1,143 loans (22.3%)
 - **Other Placements:** 354 loans (6.9%)
 
-### Quality Control Results
-✅ **No Duplicate Loan IDs:** All 5,120 loans have unique identifiers
-✅ **Date Filter Applied:** Zero records with last payment date < 2025-01-01
-✅ **No Null Payment Dates:** All records have valid last payment dates
-✅ **Bankruptcy Exclusions:** Active bankruptcy accounts successfully excluded
+**Archived Results:**
+- `archive_versions/1099c_data_results_5120_loans_2025-10-02_original.csv`
+- `archive_versions/bankruptcy_excluded_loans_487_2025-10-02_original.csv`
 
 ## Assumptions Made
 
@@ -148,9 +166,9 @@ Generate list of loans that were settled in full in 2025 for Collections team ma
 ```
 final_deliverables/
 ├── 1_1099c_data_review_query.sql               # Production SQL query for qualifying loans
-├── 2_1099c_data_results_5120_loans.csv         # Final dataset (5,120 loans)
+├── 2_1099c_data_results_5356_loans.csv         # Final dataset (5,356 loans) - UPDATED Oct 15, 2025
 ├── 3_bankruptcy_excluded_loans_query.sql       # Query for bankruptcy exclusion analysis
-└── 4_bankruptcy_excluded_loans_487.csv         # Loans excluded due to bankruptcy (487 loans)
+└── 4_bankruptcy_excluded_loans_489.csv         # Loans excluded due to bankruptcy (489 loans) - UPDATED Oct 15, 2025
 ```
 
 ### Quality Control
@@ -198,18 +216,19 @@ All QC checks passed successfully:
 ## Business Impact
 
 This dataset enables the Collections team to:
-- Perform manual review of 5,120 loans for 1099-C tax form preparation
-- Identify loans with recent recovery payments in 2025
-- Exclude active bankruptcy accounts from 1099-C reporting
+- Perform manual review of **5,356 loans** for 1099-C tax form preparation (+236 vs original)
+- Identify loans with recent recovery payments in 2025 (through Oct 15)
+- Exclude active bankruptcy accounts from 1099-C reporting (489 exclusions)
 - Track settlement status and amounts for tax reporting purposes
-- Understand placement status for collection coordination
+- **Priority:** Review 58 additional settled-in-full loans (25% increase in this category)
 
 ## Next Steps
 
-1. **Collections Team Review:** Manual scrub of 5,120 loans in dataset
-2. **1099-C Form Preparation:** Use validated data for tax form generation
-3. **Stakeholder Communication:** Provide dataset to Collections team for processing
-4. **Documentation:** Archive analysis in repository and Google Drive
+1. **Collections Team Review:** Manual scrub of 5,356 loans in updated dataset
+2. **Priority Focus:** Review 58 new settled-in-full loans and 178 new charge-off loans
+3. **1099-C Form Preparation:** Use validated updated data for tax form generation
+4. **Stakeholder Communication:** Provide updated dataset to Collections team with comparison summary
+5. **Documentation:** Archive analysis in repository and Google Drive
 
 ## Technical Notes
 

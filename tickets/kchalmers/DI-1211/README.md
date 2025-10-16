@@ -38,10 +38,18 @@ Identifying these discrepancies allows the collections and servicing teams to:
    - Outputs data quality conflicts for business remediation
 
 ### QC Queries
-1. **`qc_queries/1_record_counts.sql`** - Record counts, placement distribution, settlement breakdown, date ranges
+1. **`qc_queries/1_comprehensive_qc.sql`** - DuckDB-based CSV analysis covering:
+   - Record counts and uniqueness validation
+   - Placement status distribution (Bounce vs Resurgent)
+   - Conflict type breakdown (all 4 indicators)
+   - Conflict count distribution (single vs multiple issues)
+   - Settlement status breakdown
+   - Charge-off date range
+   - Conflict overlap cross-tabulation
+   - Payment and scheduling statistics
 
 ### Output File
-- **`placement_data_quality_analysis.csv`** - 500 loans requiring placement status review
+- **`placement_data_quality_analysis.csv`** - 20,966 loans requiring placement status review with conflict indicators
 
 ## Data Fields
 
@@ -70,20 +78,20 @@ Identifying these discrepancies allows the collections and servicing teams to:
 ## Query Logic
 
 ### Inclusion Criteria
-- Loan status = 'Charge off'
+- Loan has chargeoff date (CHARGE_OFF_DATE IS NOT NULL)
 - Placement status = 'Bounce' OR 'Resurgent'
-- **AND** at least one of the following:
-  - Total post-chargeoff payments > $0
-  - Settlement status = 'Active' OR 'Complete'
-  - AutoPay enabled = TRUE
-  - Future scheduled payments exist
+- **AND** at least one of the following data quality conflicts:
+  1. **Settlement Conflict**: CURRENT_STATUS <> 'Closed - Settled in Full' in VW_LOAN_DEBT_SETTLEMENT
+  2. **Post-Chargeoff Payments**: Payments received after chargeoff date (IS_SETTLED = TRUE, not reversed/rejected)
+  3. **Active/Pending Autopay**: ACTIVE=1 and STATUS IN ('pending', 'processing') in LOAN_AUTOPAY_ENTITY
+  4. **Future Payment Transactions**: APPLY_DATE > CURRENT_DATE() in VW_LP_PAYMENT_TRANSACTION (actual scheduled payments)
 
 ### Data Sources
-- **BUSINESS_INTELLIGENCE.ANALYTICS.VW_LOAN** - Core loan data
+- **BUSINESS_INTELLIGENCE.BRIDGE.VW_LOAN** - Core loan data (numeric LOAN_ID for joins)
 - **BUSINESS_INTELLIGENCE.BRIDGE.VW_LMS_CUSTOM_LOAN_SETTINGS_CURRENT** - Placement status
-- **BUSINESS_INTELLIGENCE.ANALYTICS.VW_LOAN_DEBT_SETTLEMENT** - Settlement information
-- **BUSINESS_INTELLIGENCE.ANALYTICS.VW_LP_PAYMENT_TRANSACTION** - Payment history
-- **BUSINESS_INTELLIGENCE.BRIDGE.VW_PAYMENT_SCHEDULE_ENTITY_CURRENT** - Scheduled payments
+- **BUSINESS_INTELLIGENCE.ANALYTICS.VW_LOAN_DEBT_SETTLEMENT** - Settlement information (join on LEAD_GUID - LOAN_ID is TEXT)
+- **BUSINESS_INTELLIGENCE.ANALYTICS.VW_LP_PAYMENT_TRANSACTION** - Post-chargeoff payment history AND future payment transactions
+- **RAW_DATA_STORE.LOANPRO.LOAN_AUTOPAY_ENTITY** - Active/pending autopay transactions (actual pending/processing autopay)
 
 ## Assumptions Made
 
@@ -116,12 +124,22 @@ Identifying these discrepancies allows the collections and servicing teams to:
 
 ### 4. Settlement Status Categorization
 **Assumption:** Settlement conflicts exist when:
-- `SETTLEMENTSTATUS IN ('Active', 'Complete')` OR
-- `CURRENT_STATUS IN ('Active', 'Complete')`
+- `CURRENT_STATUS <> 'Closed - Settled in Full'` in VW_LOAN_DEBT_SETTLEMENT
+- Includes statuses like 'Closed - Charged-Off Collectible', 'Open - Repaying', 'Closed - Bankruptcy', etc.
 
-**Reasoning:** Active or completed settlements should prevent placement with debt buyers, as Happy Money is still actively servicing the debt through settlement arrangements.
+**Reasoning:** Any settlement record that is NOT fully settled represents a potential conflict with placement status, as it indicates ongoing settlement activity or incomplete settlement arrangements.
 
-**Impact:** Identifies the most critical conflicts where settlement arrangements exist alongside placement status.
+**Impact:** Identifies 3,901 loans with settlement conflicts, representing loans that should not be placed while settlement arrangements are active or incomplete.
+
+### 5. TEXT vs NUMBER LOAN_ID Join Strategy
+**Technical Solution:** Different views use different data types for LOAN_ID, requiring bridge joins:
+- **VW_LOAN_DEBT_SETTLEMENT.LOAN_ID** is TEXT → Join on LEAD_GUID instead
+- **VW_LOAN_PAYMENT_MODE.LOAN_ID** is TEXT → Bridge through VW_LOAN.LEGACY_LOAN_ID
+- **VW_LOAN_SCHED_FCST_PAYMENTS.LOAN_ID** is NUMBER → Direct join on VW_LOAN.LOAN_ID
+
+**Reasoning:** Prevents "Numeric value 'LAI-00XXXXXX' is not recognized" errors by using appropriate join columns for each view's data type.
+
+**Impact:** Enables comprehensive 4-indicator analysis across all data sources without type conversion errors.
 
 ## Execution Instructions
 
@@ -131,16 +149,14 @@ cd /Users/kchalmers/Development/data-intelligence-tickets
 snow sql -f tickets/kchalmers/DI-1211/final_deliverables/1_placement_data_quality_analysis.sql --format csv -o header=true -o timing=false > tickets/kchalmers/DI-1211/final_deliverables/placement_data_quality_analysis.csv
 ```
 
-### Step 2: Run QC Queries
+### Step 2: Run QC Queries (DuckDB)
 ```bash
-# Record count validation
-snow sql -f tickets/kchalmers/DI-1211/final_deliverables/qc_queries/1_record_count_validation.sql
+# Run all QC queries individually or execute the SQL file with DuckDB
+cd tickets/kchalmers/DI-1211/final_deliverables
+duckdb -c "SELECT * FROM read_csv_auto('placement_data_quality_analysis.csv', header=true) LIMIT 5"
 
-# Placement distribution
-snow sql -f tickets/kchalmers/DI-1211/final_deliverables/qc_queries/2_placement_distribution.sql
-
-# Settlement status breakdown
-snow sql -f tickets/kchalmers/DI-1211/final_deliverables/qc_queries/3_settlement_status_breakdown.sql
+# Or execute specific QC queries from the file
+# See qc_queries/1_comprehensive_qc.sql for all validation queries
 ```
 
 ### Step 3: Review Results
@@ -151,9 +167,14 @@ snow sql -f tickets/kchalmers/DI-1211/final_deliverables/qc_queries/3_settlement
 ## Quality Control
 
 ### Expected QC Results
-- **No duplicate LOAN_IDs** - Each loan should appear only once
-- **Placement status** - Only 'Bounce' and 'Resurgent' should appear
-- **All records have at least one indicator** - Post-chargeoff payments OR settlement OR AutoPay OR future payments
+- **No duplicate LOAN_IDs** - Each loan appears exactly once (20,966 unique)
+- **Placement status** - Only 'Bounce' (65.6%) and 'Resurgent' (34.4%) appear
+- **All records have at least one conflict** - TOTAL_CONFLICT_COUNT between 1-3
+- **Conflict distribution validates**:
+  - Future Scheduled Payments: ~99.8% (dominant indicator)
+  - Settlement Conflicts: ~18.6%
+  - Post-Chargeoff Payments: ~6.3%
+  - Active AutoPay: 0% (no current conflicts)
 
 ### QC Validation Steps
 1. Verify no duplicate loan records
@@ -164,7 +185,37 @@ snow sql -f tickets/kchalmers/DI-1211/final_deliverables/qc_queries/3_settlement
 
 ## Execution Results
 
-**Execution Date:** October 6, 2025
+### Latest Execution (October 16, 2025) - CORRECTED 3-INDICATOR ANALYSIS
+
+**Key Findings:**
+- **Total Loans Identified:** 4,411 charged-off loans with placement conflicts
+- **Bounce Placements:** 3,234 loans (73.3%)
+- **Resurgent Placements:** 1,177 loans (26.7%)
+
+**Conflict Type Breakdown:**
+- **Settlement Conflicts:** 3,901 loans (88.4%) - **PRIMARY ISSUE**
+- **Post-Chargeoff Payments:** 1,328 loans (30.1%)
+- **Active/Pending Autopay:** 59 loans (1.3%)
+- **Future Payment Transactions:** 0 loans (0.0%)
+
+**Conflict Count Distribution:**
+- **Single Conflict:** 3,553 loans (80.6%)
+- **Two Conflicts:** 839 loans (19.0%)
+- **Three Conflicts:** 19 loans (0.4%)
+
+**Post-Chargeoff Payment Statistics (for 1,328 loans):**
+- Total Payments Collected: $3,746,599
+- Average Per Loan: $2,821.23
+
+**Data Quality Impact:**
+This corrected analysis identified 4,411 loans marked as placed with debt buyers (Bounce/Resurgent) that have ACTUAL evidence of continued Happy Money servicing. The primary issue is settlement conflicts (88.4%), followed by post-chargeoff payments (30.1%), and active/pending autopay transactions (1.3%).
+
+**Correction Notes:**
+Previous analysis incorrectly used VW_LOAN_SCHED_FCST_PAYMENTS (amortization schedule projections) showing 99.8% false positives. Corrected analysis uses:
+- LOAN_AUTOPAY_ENTITY for actual pending/processing autopay (found 59 vs previous 0)
+- VW_LP_PAYMENT_TRANSACTION for future-dated payment transactions (found 0, confirming no actual scheduled payments)
+
+### Original Execution (October 6, 2025)
 
 **Key Findings:**
 - **Total Loans Identified:** 500 charged-off loans with placement conflicts
@@ -173,44 +224,56 @@ snow sql -f tickets/kchalmers/DI-1211/final_deliverables/qc_queries/3_settlement
 - **Settlement Status Breakdown:**
   - Active Settlements: 268 loans (53.6%)
   - Completed Settlements: 231 loans (46.2%)
-- **Charge-Off Date Range:** 2019-11-26 to 2024-12-02
 
-**Data Quality Impact:**
-This analysis identified 500 loans marked as placed with debt buyers (Bounce/Resurgent) that simultaneously have active or completed settlement arrangements with Happy Money. This represents a critical data quality issue requiring immediate remediation.
+**Archived Results:** `archive_versions/placement_data_quality_analysis_2025-10-06_original_500_loans.csv`
 
 ## Next Steps
 
 ### For Business/Operations Team
-1. Review output file for loans requiring placement status correction
-2. **Priority Focus:** 268 loans with Active settlements need immediate attention
-3. Coordinate with debt buyers (Bounce/Resurgent) on discrepancies
-4. Update LoanPro placement status for corrected loans
-5. Verify settlement payments are being applied correctly
+1. Review output file for 4,411 loans requiring placement status correction
+2. **Priority Focus - Settlement Conflicts:** 3,901 loans (88.4%) with active/incomplete settlements - PRIMARY ISSUE
+3. **Payment Collections:** 1,328 loans collecting post-chargeoff payments ($3.7M total)
+4. **Active Autopay:** 59 loans with pending/processing autopay transactions
+5. **Multi-Conflict Loans:** 858 loans with 2+ conflicts need immediate attention
+6. Coordinate with debt buyers (Bounce/Resurgent) on discrepancies
+7. Update LoanPro placement status for corrected loans
 
 ### For Data Engineering
-1. Investigate root cause of placement status mismatches
-2. Document any systematic data quality patterns
-3. Consider automated monitoring for future prevention
-4. Add settlement status checks to placement workflows
+1. Investigate root cause of settlement conflicts being primary issue
+2. Review placement workflow to prevent settlements on placed loans
+3. Consider automated monitoring for settlement/placement conflicts
+4. Add settlement status validation to placement workflows
 
 ## Technical Notes
 
-### Query Simplification
-The original query design included post-chargeoff payment analysis, AutoPay status, and scheduled payments. The final implementation was simplified to focus on the primary data quality issue: **settlement conflicts with placement status**.
+### Corrected 3-Indicator Implementation
+The corrected implementation includes three accurate data quality indicators:
+1. **Settlement Conflicts** - VW_LOAN_DEBT_SETTLEMENT (join on LEAD_GUID)
+2. **Post-Chargeoff Payments** - VW_LP_PAYMENT_TRANSACTION (filtered for settled, non-reversed)
+3. **Active/Pending Autopay** - LOAN_AUTOPAY_ENTITY (actual pending/processing autopay transactions)
+4. **Future Payment Transactions** - VW_LP_PAYMENT_TRANSACTION with APPLY_DATE > CURRENT_DATE() (actual scheduled payments)
 
-**Rationale for Simplification:**
-- Settlement conflicts represent the most critical business impact
-- Payment and AutoPay analysis would require additional views not readily available
-- Simplified approach delivers immediate actionable results
+**Evolution from Original Approach:**
+- Initial implementation (Oct 6): Only settlement conflicts (501 loans)
+- Comprehensive but incorrect (Oct 15): Added 4 indicators using VW_LOAN_SCHED_FCST_PAYMENTS (20,966 loans with 99.8% false positives)
+- **CORRECTED (Oct 16)**: Replaced amortization schedule projections with actual payment transactions and autopay records (4,411 loans - accurate)
 
-### View Usage
-- `BUSINESS_INTELLIGENCE.BRIDGE.VW_LOAN` - Core loan data
+**Key Correction:**
+VW_LOAN_SCHED_FCST_PAYMENTS contains amortization schedule projections that persist after chargeoff, not actual payment obligations. This caused 99.8% false positive rate. Corrected approach uses:
+- LOAN_AUTOPAY_ENTITY for actual pending/processing autopay (found 59 vs previous 0)
+- VW_LP_PAYMENT_TRANSACTION for future-dated payment transactions (found 0, correctly confirming no actual scheduled payments)
+
+### View Usage and Join Strategy
+- `BUSINESS_INTELLIGENCE.BRIDGE.VW_LOAN` - Core loan data with numeric LOAN_ID
 - `BUSINESS_INTELLIGENCE.BRIDGE.VW_LMS_CUSTOM_LOAN_SETTINGS_CURRENT` - Placement status
-- `BUSINESS_INTELLIGENCE.ANALYTICS.VW_LOAN_DEBT_SETTLEMENT` - Settlement data
+- `BUSINESS_INTELLIGENCE.ANALYTICS.VW_LOAN_DEBT_SETTLEMENT` - Settlement data (TEXT LOAN_ID, join on LEAD_GUID)
+- `BUSINESS_INTELLIGENCE.ANALYTICS.VW_LP_PAYMENT_TRANSACTION` - Payment history AND future payment transactions (numeric LOAN_ID)
+- `RAW_DATA_STORE.LOANPRO.LOAN_AUTOPAY_ENTITY` - Active/pending autopay transactions (numeric LOAN_ID, filtered by schema)
 
 ### Performance Considerations
 - Query uses `BUSINESS_INTELLIGENCE_LARGE` warehouse
-- Actual runtime: ~30 seconds
+- Estimated runtime: 30-60 seconds
+- Uses CTEs to pre-aggregate each indicator before final join
 - Direct CSV export (no intermediate table required)
 
 ## Related Tickets
