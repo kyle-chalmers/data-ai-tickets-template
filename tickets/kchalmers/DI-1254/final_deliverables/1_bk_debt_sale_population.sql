@@ -58,8 +58,6 @@ WITH cte_fraud_placeholder AS (
         CASE
             -- Portfolio-based fraud detection
             WHEN MAX(CASE WHEN lpsp.PORTFOLIO_CATEGORY = 'Fraud' THEN 1 ELSE 0 END) = 1 THEN TRUE
-            -- Sub-status fraud detection
-            WHEN MAX(CASE WHEN vl.LOAN_SUB_STATUS_TEXT LIKE '%Fraud%' THEN 1 ELSE 0 END) = 1 THEN TRUE
             -- CLS confirmed fraud tags (for legacy loans)
             WHEN MAX(CASE WHEN at.APPLICATION_TAG = 'Confirmed Fraud' THEN 1 ELSE 0 END) = 1 THEN TRUE
             ELSE FALSE
@@ -243,7 +241,7 @@ SELECT
     -- Portfolio and Status
     ltm.PORTFOLIONAME,
     ltm.STATUS,
-    vl.LOAN_SUB_STATUS_TEXT,
+    ltm.INTERNALSTATUS AS LOAN_SUB_STATUS_TEXT,
 
     -- Financial Details
     (ltm.PRINCIPALBALANCEATCHARGEOFF + ltm.INTERESTBALANCEATCHARGEOFF
@@ -310,7 +308,6 @@ LEFT JOIN BUSINESS_INTELLIGENCE.ANALYTICS_PII.VW_MEMBER_PII m_pii
 
 LEFT JOIN BUSINESS_INTELLIGENCE.BRIDGE.VW_LMS_CUSTOM_LOAN_SETTINGS_CURRENT lcs
     ON vl.LOAN_ID::TEXT = lcs.LOAN_ID::TEXT
-    AND lcs.SCHEMA_NAME = BUSINESS_INTELLIGENCE.CONFIG.LMS_SCHEMA()
 
 LEFT JOIN BUSINESS_INTELLIGENCE.ANALYTICS.VW_LOAN_CONTACT_RULES lcr
     ON vl.LOAN_ID::TEXT = lcr.LOAN_ID::TEXT

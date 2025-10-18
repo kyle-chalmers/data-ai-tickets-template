@@ -37,12 +37,29 @@ Avoid building functionality on speculation. Implement features only when they a
 - Running analysis and generating outputs locally
 
 **EXPLICIT Permission Required (External Operations):**
+- **ALL Database Modification Operations**: UPDATE, ALTER, DROP, DELETE, INSERT, CREATE OR REPLACE statements
 - Creating/altering Snowflake views, tables, or any DDL operations
 - Sending Slack messages to team members (**<100 words max**)
 - Posting comments to Jira tickets (**<100 words max**)
 - Git commits and pushes
 - Google Drive backup operations
 - Any operation that modifies systems outside the repository
+
+**CRITICAL DATABASE MODIFICATION PROTOCOL:**
+Before executing ANY of the following SQL operations, you MUST:
+1. Show the user the exact SQL statement(s) you plan to execute
+2. Explain what the operation will do and what data/structure will be modified
+3. Wait for explicit user approval with "yes", "proceed", "go ahead", or similar confirmation
+4. Only execute after receiving clear permission
+
+**Operations requiring explicit permission:**
+- UPDATE statements (modifying existing data)
+- ALTER statements (modifying table/view structure)
+- DROP statements (removing columns, tables, views, or other objects)
+- DELETE statements (removing rows)
+- INSERT statements (adding new rows)
+- CREATE OR REPLACE statements (overwriting existing objects)
+- TRUNCATE statements (removing all rows from a table)
 
 1. **Quality Control Everything**: Before delivering any script, query, or analysis, ALWAYS include QC in todo list:
    - Add explicit todo items for QC and optimization when finalizing queries
