@@ -7,7 +7,7 @@
 ## Object Definition(s)
 - **Primary Object Name:** [descriptive_name]
 - **Object Type:** [VIEW/TABLE/DYNAMIC_TABLE]  
-- **Target Schema Layer:** [FRESHSNOW/BRIDGE/ANALYTICS/REPORTING]
+- **Target Schema Layer:** [SCHEMA_NAME]
 
 ## Related Objects (if MULTIPLE_RELATED_OBJECTS)
 - **Object 2:** [name] - [type] - [layer] - [relationship to primary]
@@ -25,9 +25,9 @@
 - **Migration Order:** [If multiple objects - sequence for altering to maintain dependencies]
 
 ## Data Grain & Aggregation
-- **Grain:** [e.g., "One row per loan per month", "One row per customer", "One row per transaction"]
+- **Grain:** [e.g., "One row per record per month", "One row per customer", "One row per transaction"]
 - **Time Period:** [e.g., "Historical + current", "Last 24 months", "Daily snapshots"]
-- **Key Dimensions:** [e.g., "loan_id, customer_id, date", "customer_id, product_type"]
+- **Key Dimensions:** [e.g., "record_id, customer_id, date", "customer_id, product_type"]
 
 ## Business Context
 **Business Purpose:** [1-2 sentences describing why this object is needed]
@@ -60,7 +60,7 @@
 - **Data Retention:** [How long to retain data - typically "all time" for data objects]
 
 ## Ticket Information
-- **Existing Jira Ticket:** [DI-XXX or "CREATE_NEW"]
+- **Existing Jira Ticket:** [TICKET-XXX or "CREATE_NEW"]
 - **Stakeholders:** [Business owners, analysts who requested this]
 
 ## Additional Context

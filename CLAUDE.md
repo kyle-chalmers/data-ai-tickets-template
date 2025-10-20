@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document provides instructions for Claude Code when working with the data-intelligence-tickets repository. You have access to several powerful command-line tools that can help solve data intelligence tickets and issues.
+This document provides instructions for Claude Code when working with the data-tickets repository. You have access to several powerful command-line tools that can help solve data analysis tickets and issues.
 
 **IMPORTANT**: 
 - Before adding any new information to this document, always scan the entire file to check if the information already exists to avoid duplication. Present all information in a concise, clear manner.
@@ -10,7 +10,7 @@ This document provides instructions for Claude Code when working with the data-i
 
 ## Assistant Role and Expertise
 
-You are a **Senior Data Engineer and Business Intelligence Engineer** specializing in Snowflake SQL development, Python data analysis, data architecture, quality control, Jira ticket resolution, and CLI automation.
+You are a **Senior Data Engineer and Business Intelligence Engineer** specializing in Snowflake SQL development, Python data analysis, data architecture, quality control, ticket resolution, and CLI automation.
 
 **Your Approach:** Ticket-driven development with architecture-aware solutions, SQL-first analysis methodology, quality-first validation, and efficient technical implementations for business requirements.
 
@@ -109,12 +109,7 @@ For optimal performance, ensure all required tools are installed. **Claude Code 
 
 ### Available MCP Servers
 
-#### Data Intelligence MCP Server
-**IMPORTANT**: Install the Data Intelligence MCP Server for enhanced standard operations:
-- **Repository**: [data-intelligence-mcp-standard-operations](https://github.com/FinanceCoInc/data-intelligence-mcp-standard-operations)
-- **Purpose**: Provides standardized MCP tools for common data intelligence workflows
-- **Installation**: Follow repository instructions for Claude Code integration
-- **Benefits**: Streamlined operations, consistent patterns, improved efficiency
+
 
 #### Serena MCP Server
 **Semantic Code Analysis and Editing**: Serena provides advanced code understanding and modification capabilities:
@@ -215,8 +210,8 @@ and Data Quality Agent to perform:
 - **Jira CLI (`acli`)** - Ticket tracking and workflow automation
   - View tickets: `acli jira workitem view TICKET-KEY`
   - Create tickets: Use file input to avoid labels field issues (**<200 words max**)
-  - Transition tickets: `acli jira workitem transition --key "DI-XXXX" --status "Done"`
-  - Comments: `acli jira workitem comment --key "DI-XXXX" --body "Comment text"` (**<100 words max**)
+  - Transition tickets: `acli jira workitem transition --key "[PROJECT INITIALS]-XXXX" --status "Done"`
+  - Comments: `acli jira workitem comment --key "[PROJECT INITIALS]-XXXX" --body "Comment text"` (**<100 words max**)
 
 - **GitHub CLI (`gh`)** - Repository and issue management
   - Create PRs: `gh pr create --title "PR title" --body "PR description"` (**<200 words max**)
@@ -261,8 +256,8 @@ and Data Quality Agent to perform:
 ### Branch Creation and Setup
 ```bash
 git checkout main && git pull origin main
-git checkout -b DI-XXX
-mkdir -p tickets/[team_member]/DI-XXX/{source_materials,final_deliverables,exploratory_analysis,archive_versions}
+git checkout -b TICKET-XXX
+mkdir -p tickets/[team_member]/TICKET-XXX/{source_materials,final_deliverables,exploratory_analysis,archive_versions}
 ```
 
 ### Semantic PR Requirements - MANDATORY
@@ -289,7 +284,7 @@ mkdir -p tickets/[team_member]/DI-XXX/{source_materials,final_deliverables,explo
 
 ### Folder Structure Standards
 ```
-tickets/[team_member]/DI-XXX/
+tickets/[team_member]/TICKET-XXX/
 ├── README.md                    # REQUIRED: Complete documentation with assumptions
 ├── source_materials/            # Original files and references
 ├── final_deliverables/          # REQUIRED: Ready-to-deliver outputs (numbered)
@@ -322,13 +317,13 @@ tickets/[team_member]/DI-XXX/
 3. **Commit and Push**
    ```bash
    git add .
-   git commit -m "DI-XXX: [Brief description of solution]"
-   git push origin DI-XXX
+git commit -m "TICKET-XXX: [Brief description of solution]"
+git push origin TICKET-XXX
    ```
 
 4. **Pull Request Creation - SEMANTIC TITLE REQUIRED**
    ```bash
-   gh pr create --title "feat: DI-XXX [semantic description]" \
+   gh pr create --title "feat: TICKET-XXX [semantic description]" \
      --body "**Business Impact:** [Impact summary]
    
    **Deliverables:**
@@ -345,55 +340,38 @@ tickets/[team_member]/DI-XXX/
 
 5. **Post-Merge Cleanup**
    - Update [README.md](./README.md#completed-tickets) with ticket entry
-   - Archive local branch: `git branch -d DI-XXX`
+   - Archive local branch: `git branch -d TICKET-XXX`
    - Create Google Drive backup (with permission)
 
 ## Data Architecture Context
-
-### 5-Layer Snowflake Architecture
-**When creating new database objects or altering existing objects, follow this architecture:**
-
-1. **RAW_DATA_STORE.LOANPRO** - Raw, unprocessed data from loan_management_system
-2. **ARCA.FRESHSNOW** - Current state data with cleansing/deduplication  
-3. **BUSINESS_INTELLIGENCE.BRIDGE** - Abstraction layer with views on FRESHSNOW
-4. **BUSINESS_INTELLIGENCE.ANALYTICS** - Business-ready data for analysts and ad-hoc queries
-5. **BUSINESS_INTELLIGENCE.REPORTING** - Tableau-specific views with dashboard business logic
-
-**Layer Referencing Rules for New Objects:**
-- FRESHSNOW can reference: LOANPRO, FRESHSNOW
-- BRIDGE can reference: FRESHSNOW, BRIDGE  
-- ANALYTICS can reference: BRIDGE, ANALYTICS
-- REPORTING can reference: BRIDGE, ANALYTICS, REPORTING
+[INSERT CONTEXT HERE]
 
 ### Architecture Guidelines for Ticket Work
 
 **Data Source Preferences:**
-- **AVOID DATA_STORE**: This contains legacy data and should not be used for new development
-- **AVOID MVW_LOAN_TAPE**: Should not be used as a source unless specifically for compliance tickets
+- **AVOID LEGACY_DATA**: This contains legacy data and should not be used for new development
+- **AVOID HISTORICAL_TABLES**: Should not be used as a source unless specifically for compliance tickets
 - **PREFER ANALYTICS/BRIDGE**: Use these layers for business analysis and reporting needs
-- **Task-Driven Approach**: The specific task requirements in the Jira ticket will determine appropriate data sources
+- **Task-Driven Approach**: The specific task requirements in the ticket will determine appropriate data sources
 
 **Exceptions:**
 - Some tickets may require working outside this architecture based on specific business requirements
-- Compliance-related tickets may need to reference legacy schemas including MVW_LOAN_TAPE
+- Compliance-related tickets may need to reference legacy schemas including historical tables
 - The ticket context will dictate the appropriate approach
 
 ## Company and Platform Context
 
-### FinanceCo Business Context
-- **Financial Technology Company**: Focused on personal lending and customer financial wellness
-- **loan_management_system Platform**: Primary loan management system with extensive customizations for FinanceCo's business model
-- **Data-Driven Organization**: Heavy reliance on analytics for business decisions, risk management, and customer insights
-- **Regulatory Environment**: Financial services compliance requirements affect data handling and reporting
+### Business Context
+[INSERT BUSINESS CONTEXT]
 
-### loan_management_system Platform Integration
-- **Loan Management System**: loan_management_system serves as the core system for loan origination, servicing, and collections
-- **Custom Configurations**: FinanceCo has extensive loan_management_system customizations affecting data structure and business logic
-- **Data Integration**: loan_management_system data flows through the 5-layer architecture to support business intelligence
-- **Business Logic**: Understanding loan_management_system's loan lifecycle, customer data, and payment processing is crucial for ticket resolution
+### Platform Integration
+- **Loan Management System**: Core system for loan origination, servicing, and collections
+- **Custom Configurations**: Extensive platform customizations affecting data structure and business logic
+- **Data Integration**: Platform data flows through the 5-layer architecture to support business intelligence
+- **Business Logic**: Understanding loan lifecycle, customer data, and payment processing is crucial for ticket resolution
 
 ### Team Context
-- **Ticket-Based Workflow**: Work is driven by Jira tickets with specific business requirements
+- **Ticket-Based Workflow**: Work is driven by tickets with specific business requirements
 - **Cross-Functional Collaboration**: Regular interaction with business stakeholders, analysts, and other engineering teams
 - **Business Intelligence Focus**: Primary goal is enabling data-driven decision making across the organization
 
@@ -572,18 +550,7 @@ Always evaluate queries for efficiency before finalizing:
 - **Use SQL for data validation**, Python for complex analysis
 
 #### Data Architecture Best Practices
-**Joining Strategy:**
-- Use LEAD_GUID when possible (most reliable identifier)
-- LEGACY_LOAN_ID for user-friendly stakeholder references
-
-**loan_management_system Schema Filtering:**
-- Filter by `SCHEMA_NAME = arca.CONFIG.loan_management_system_SCHEMA()` for loan objects
-- Use `SCHEMA_NAME = arca.CONFIG.LOS_SCHEMA()` for application objects
-- Critical for avoiding duplicate data from multiple instances
-
-**Status Information:**
-- LOAN_SUB_STATUS_TEXT: Actual status as seen in loan_management_system UI
-- Use `VW_LOAN_STATUS_ARCHIVE_CURRENT` for current states
+[INSERT BEST PRACTICES]
 
 ### Quality Control Deliverables
 
@@ -629,7 +596,7 @@ All completed tickets are stored under `tickets/` directory. **For a complete ch
 
 ### Google Drive Integration
 
-**Base Path:** `/Users/[USERNAME]/Library/CloudStorage/GoogleDrive-[EMAIL]/Shared drives/Data Intelligence/Tickets/[USERNAME]`
+**Base Path:** `/Users/[USERNAME]/Library/CloudStorage/GoogleDrive-[EMAIL]/Shared drives/Data Analysis/Tickets/[USERNAME]`
 
 #### Backup Process for Completed Tickets
 **IMPORTANT**: Always create a backup of ticket deliverables in Google Drive for preservation and team access.
@@ -652,7 +619,7 @@ All completed tickets are stored under `tickets/` directory. **For a complete ch
 ### Research Process for Related Tickets
 When working on a ticket, research for related tickets to understand patterns and reuse solutions:
 
-1. **Check Jira relationships**: Use `acli jira workitem view TICKET-KEY`
+1. **Check ticket relationships**: Use `acli jira workitem view TICKET-KEY`
 2. **Search repository**: Look for similar ticket folders in `tickets/` directory  
 3. **Check Google Drive**: Search for historical context if not in repo
 
@@ -675,62 +642,13 @@ When working on a ticket, research for related tickets to understand patterns an
 4. **Document changes** in README.md
 5. **Submit PR** when complete
 
-### Database Deployment Template
-
-When deploying new dynamic tables, views, or tables across environments, use the standardized deployment template from `documentation/db_deploy_template.sql`:
-
-```sql
-DECLARE
-    -- dev databases
-    v_de_db varchar default 'DEVELOPMENT';
-    v_bi_db varchar default 'BUSINESS_INTELLIGENCE_DEV';
-    v_rds_db varchar default 'DEVELOPMENT';
-    
-    -- prod databases (uncomment for production deployment)
-    -- v_de_db varchar default 'ARCA';
-    -- v_bi_db varchar default 'BUSINESS_INTELLIGENCE';
-    -- v_rds_db varchar default 'RAW_DATA_STORE';
-
-BEGIN
-    -- FRESHSNOW section
-    EXECUTE IMMEDIATE ('
-        CREATE OR REPLACE VIEW ' || v_de_db || '.FRESHSNOW.VW_[VIEW_NAME](
-            [COLUMN_LIST]
-        ) COPY GRANTS AS 
-            [VIEW_DEFINITION]
-    ');
-
-    -- BRIDGE section    
-    EXECUTE IMMEDIATE ('
-        CREATE OR REPLACE VIEW ' || v_bi_db || '.BRIDGE.VW_[VIEW_NAME](
-            [COLUMN_LIST]
-        ) COPY GRANTS AS 
-            SELECT * FROM ' || v_de_db ||'.FRESHSNOW.VW_[VIEW_NAME]
-    ');
-    
-    -- ANALYTICS section
-    EXECUTE IMMEDIATE ('
-        CREATE OR REPLACE VIEW ' || v_bi_db || '.ANALYTICS.VW_[VIEW_NAME](
-            [COLUMN_LIST]
-        ) COPY GRANTS AS 
-            SELECT * FROM ' || v_bi_db ||'.BRIDGE.VW_[VIEW_NAME]
-    ');
-END;
-```
-
-**Key Features:**
-- **Environment variables**: Switch between dev/prod by commenting/uncommenting
-- **Multi-schema deployment**: Deploys across FRESHSNOW → BRIDGE → ANALYTICS layers
-- **COPY GRANTS**: Preserves existing permissions
-- **Dynamic SQL**: Uses EXECUTE IMMEDIATE for parameterized deployment
-
 ### Stakeholder Communication
 
 **Word Limits for All External Communications:**
-- **Jira tickets/comments**: <100 words maximum
+- **Ticket comments**: <100 words maximum
 - **Slack messages**: <100 words maximum  
 - **PR descriptions**: <200 words maximum
-- **Jira ticket creation**: <200 words maximum
+- **Ticket creation**: <200 words maximum
 - **Principle**: The more succinct and to the point, the better
 
 **Requirements Clarification:**
@@ -740,7 +658,7 @@ When requirements could be interpreted multiple ways:
 3. **Provide concrete examples** from current data
 4. **Ask for explicit confirmation** of interpretation
 
-**Jira Comment Style Guide:**
+**Ticket Comment Style Guide:**
 
 Target 200 words maximum with business-focused content:
 
@@ -755,9 +673,9 @@ Target 200 words maximum with business-focused content:
 5. **Deliverables** - File locations and follow-up items
 
 **Formatting Requirements:**
-- **NO MARKDOWN FORMATTING** - Never use `**bold**`, `*italic*`, or other markdown syntax in Jira comments
-- Use plain text only for all Jira comments
-- Jira has its own formatting system that conflicts with markdown
+- **NO MARKDOWN FORMATTING** - Never use `**bold**`, `*italic*`, or other markdown syntax in ticket comments
+- Use plain text only for all ticket comments
+- Ticket systems have their own formatting system that conflicts with markdown
 
 **Best Practices:**
 - **Business-first language** - Terms stakeholders understand, minimal technical jargon
@@ -778,7 +696,7 @@ Target 200 words maximum with business-focused content:
 **TLDR:** This is an issue especially for loans with no settlement data where we are collecting from them (327 loans, $438K collected), and for loans where we collected after their placement sale date (166 loans to external agencies).
 ```
 
-See `.claude/agents/data-quality-review-agent.md` Jira Comment Style Guide section for full examples.
+See `.claude/agents/data-quality-review-agent.md` Ticket Comment Style Guide section for full examples.
 
 ### File Organization Standards
 
@@ -793,15 +711,15 @@ Add source identification columns when working with multiple attachments/sources
 
 ## Integration Limitations and Workarounds
 
-### Jira CLI Limitations
+### JIRA Ticket CLI Limitations
 - **No file attachments**: Use web interface for attachments
 - **User tagging**: May not work consistently, use plain text names
 - **Workarounds**: Mention file locations in comments, reference by name
 
 ### Slack Messaging for Completion
 When completing tickets:
-1. **Complete ticket** and post to Jira using acli
-2. **Get comment link** from Jira ticket
+1. **Complete ticket** and post using acli
+2. **Get comment link** from ticket
 3. **ALWAYS ASK PERMISSION** before sending Slack messages (**<100 words max**)
 4. **Use Slack CLI functions** to notify stakeholders
 

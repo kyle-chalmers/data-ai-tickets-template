@@ -1,10 +1,10 @@
-# Data Intelligence Tickets
+# Data Analysis Tickets
 
-> 📊 **Comprehensive knowledge base for data intelligence ticket resolution and institutional knowledge management**
+> 📊 **Comprehensive knowledge base for data analysis ticket resolution and institutional knowledge management**
 
-[![Tickets Resolved](https://img.shields.io/badge/Tickets_Resolved-21-green.svg)](https://github.com/FinanceCoInc/data-intelligence-tickets)
-[![Team Members](https://img.shields.io/badge/Team_Members-1-blue.svg)](https://github.com/FinanceCoInc/data-intelligence-tickets/tree/main/tickets)
-[![Documentation](https://img.shields.io/badge/Documentation-Complete-brightgreen.svg)](https://github.com/FinanceCoInc/data-intelligence-tickets/blob/main/CLAUDE.md)
+[![Tickets Resolved](https://img.shields.io/badge/Tickets_Resolved-21-green.svg)](https://github.com/FinanceCoInc/data-analysis-tickets)
+[![Team Members](https://img.shields.io/badge/Team_Members-1-blue.svg)](https://github.com/FinanceCoInc/data-analysis-tickets/tree/main/tickets)
+[![Documentation](https://img.shields.io/badge/Documentation-Complete-brightgreen.svg)](https://github.com/FinanceCoInc/data-analysis-tickets/blob/main/CLAUDE.md)
 
 ## 📑 Table of Contents
 
@@ -19,12 +19,12 @@
 
 ## 🎯 Purpose & Overview
 
-This repository serves as a **continuous knowledge base** for solving data intelligence tickets and issues. It consolidates documentation, scripts, and solutions to help streamline ticket resolution and maintain institutional knowledge.
+This repository serves as a **continuous knowledge base** for solving data analysis tickets and issues. It consolidates documentation, scripts, and solutions to help streamline ticket resolution and maintain institutional knowledge.
 
 ### Key Objectives
 - 🎯 **Build comprehensive knowledge base** for recurring issues and solutions
 - 📚 **Document ticket resolutions** for future reference and learning
-- 🔧 **Provide reusable scripts and tools** for common data intelligence tasks
+- 🔧 **Provide reusable scripts and tools** for common data analysis tasks
 - 👥 **Enable efficient collaboration** on complex data analysis projects
 
 ### Business Impact
@@ -59,7 +59,7 @@ This repository serves as a **continuous knowledge base** for solving data intel
 ## 🏗️ Repository Structure
 
 ```
-data-intelligence-tickets/
+data-analysis-tickets/
 ├── README.md                    # This comprehensive guide
 ├── CLAUDE.md                   # AI assistance instructions and workflows
 ├── documentation/              # Core technical documentation
@@ -110,19 +110,19 @@ data-intelligence-tickets/
 ```bash
 # Branch creation and folder structure
 git checkout main && git pull origin main
-git checkout -b DI-XXX
-mkdir -p tickets/[team_member]/DI-XXX/{source_materials,final_deliverables,exploratory_analysis}
+git checkout -b TICKET-XXX
+mkdir -p tickets/[team_member]/TICKET-XXX/{source_materials,final_deliverables,exploratory_analysis}
 ```
 
 ### 🔍 Phase 2: Research & Investigation
-- **📊 Data Exploration**: Use `snow sql` with Duo authentication
-- **🔗 Identifier Strategy**: Leverage `LEAD_GUID` for cross-system reliability
+- **📊 Data Exploration**: Use `snow sql` with authentication
+- **🔗 Identifier Strategy**: Leverage appropriate identifiers for cross-system reliability
 - **📖 Reference Documentation**: Consult [`data_catalog.md`](documentation/data_catalog.md) for schema guidance
 - **🔄 Pattern Recognition**: Search existing tickets for similar patterns
 
 ### ⚙️ Phase 3: Development & Analysis
 - **🏗️ Incremental Development**: Build queries from simple to complex
-- **🎯 Schema Filtering**: Apply `arca.CONFIG.loan_management_system_SCHEMA()` and `LOS_SCHEMA()` patterns
+- **🎯 Schema Filtering**: Apply appropriate schema filtering patterns
 - **🧪 Testing Approach**: Use `LIMIT` clauses and date filters during exploration
 - **📋 Quality Control**: Create validation queries in dedicated QC folder
 
@@ -135,7 +135,7 @@ mkdir -p tickets/[team_member]/DI-XXX/{source_materials,final_deliverables,explo
 ### 📄 Phase 5: Documentation & Delivery
 - **🗂️ File Organization**: Clean structure with archived iterations
 - **📚 Knowledge Capture**: Document learnings in [`CLAUDE.md`](CLAUDE.md)
-- **💬 Stakeholder Communication**: Clear Jira comments with deliverable links
+- **💬 Stakeholder Communication**: Clear ticket comments with deliverable links
 - **💾 Backup Strategy**: Google Drive preservation for team access
 
 ### 🔄 Phase 6: Review & Integration
@@ -146,59 +146,12 @@ mkdir -p tickets/[team_member]/DI-XXX/{source_materials,final_deliverables,explo
 ## 💡 Technical Guidelines
 
 ### 🔒 Security & Authentication
-- **🔐 Snowflake**: Duo Security authentication with 15-minute lockout protection
+- **🔐 Snowflake**: Authentication with appropriate security measures
 - **🔑 Credentials**: Use environment variables, never hardcode secrets
 - **🛡️ Data Policies**: Ensure compliance with organizational data handling requirements
 
 ### 🗄️ Database Best Practices
-
-#### Schema Filtering Patterns
-```sql
--- Loan Management System (loan_management_system) data
-WHERE SCHEMA_NAME = arca.CONFIG.loan_management_system_SCHEMA()
-
--- Loan Origination System (LOS) data  
-WHERE SCHEMA_NAME = arca.CONFIG.LOS_SCHEMA()
-```
-
-#### Reliable Join Strategies
-```sql
--- Primary: Use LEAD_GUID when available (most reliable)
-JOIN table2 ON table1.LEAD_GUID = table2.LEAD_GUID
-
--- Secondary: LEGACY_LOAN_ID for stakeholder-friendly references
-LEFT JOIN table3 ON CAST(table1.LEGACY_LOAN_ID AS VARCHAR) = table3.EXTERNAL_LOAN_ID
-```
-
-#### Data Quality Handling
-```sql
--- Handle formatted CSV data with error protection
-TRY_TO_NUMBER(REPLACE(balance_field, ',', '')) as CLEAN_BALANCE,
-TRY_TO_DATE(date_field, 'MM/DD/YYYY') as CLEAN_DATE
-```
-
-### 📊 Specialized Analysis Patterns
-
-#### Fraud Detection Multi-Source
-```sql
--- Comprehensive fraud detection across multiple data sources
-SELECT loan_id,
-       MAX(CASE WHEN portfolio_name LIKE '%Fraud - Confirmed%' THEN 1 ELSE 0 END) as FRAUD_PORTFOLIO,
-       MAX(CASE WHEN loan_status LIKE '%fraud%' THEN 1 ELSE 0 END) as FRAUD_STATUS,
-       MAX(CASE WHEN investigation_result = 'FRAUD_CONFIRMED' THEN 1 ELSE 0 END) as FRAUD_INVESTIGATION
-FROM loan_data_comprehensive
-GROUP BY loan_id;
-```
-
-#### Partner Analysis for Repurchase
-```sql
--- Flatten partner relationships to avoid duplicates
-SELECT loan_id,
-       LISTAGG(DISTINCT partner_name, '; ') WITHIN GROUP (ORDER BY partner_name) as ALL_PARTNERS,
-       CASE WHEN COUNT(DISTINCT partner_name) > 1 THEN 1 ELSE 0 END as MULTIPLE_PARTNERS
-FROM partner_relationships
-GROUP BY loan_id;
-```
+[INSERT BEST PRACTICES]
 
 ### 🏗️ Deployment Standards
 - **📜 Templates**: Use [`db_deploy_template.sql`](documentation/db_deploy_template.sql) for cross-environment deployment
@@ -220,67 +173,8 @@ GROUP BY loan_id;
 | 🏗️ **Data Infrastructure** | 6 | View deployments, PII optimization, data structure alignment, enhanced custom fields |
 | 📈 **Performance Analytics** | 3 | Application analysis, device usage patterns |
 
-### 📅 2025 Chronological Log
-
-#### July 2025
-- **[DI-934](tickets/examples/DI-934/README.md)** - Fraud Loan Analysis with Repurchase Details  
-  *Data Analyst* | Complete fraud loan analysis across multiple data sources with binary classification patterns and partner ownership tracking
-
-- **[DI-1065](tickets/examples/DI-1065/README.md)** - InvestorPartner Quarterly Due Diligence Payment History  
-  *Data Analyst* | Payment history extraction for 80 InvestorPartner loans with quality control validation and attachment source tracking
-
-- **[DI-1099](tickets/examples/DI-1099/README.md)** - PortfolioInvestor Goodbye Letter List for Loan Sale to DebtBuyerB  
-  *Data Analyst* | Generated goodbye letter lists for 2,179 PortfolioInvestor loans being sold to DebtBuyerB with email_platform integration and portfolio breakdown
-
-- **[ticket-1](tickets/examples/ticket-1/README.md)** - PortfolioInvestor (PortfolioInvestor) Credit Reporting and Placement Upload List for Loan Sale  
-  *Data Analyst* | Credit reporting and loan_management_system placement upload files for 1,770 PortfolioInvestor portfolio loans with DebtBuyerB placement status
-
-#### August 2025
-- **[DI-974](tickets/examples/DI-974/README.md)** - Add SIMM Placement Flag to Intra-month Roll Rate Dashboard  
-  *Data Analyst* | Added dual SIMM placement flags (current and historical) to roll rate dashboards with **40-60% performance optimization**
-
-- **[DI-1131](tickets/examples/DI-1131/README.md)** - Optimize Email and Phone Lookup Views with Improved Performance  
-  *Data Analyst* | Fixed PayoffUID matching issue for **376,453 multi-loan customers** by updating PII lookup tables to use current ANALYTICS_PII schema sources
-
-- **[DI-1137](tickets/examples/DI-1137/README.md)** - Regulator Request: Massachusetts - Applications and Loans  
-  *Data Analyst* | Massachusetts regulator request for loan/application data supporting license application: **61 MA resident loans** ($1.03M), **3 small dollar high-rate qualifying loans**, comprehensive SQL documentation with 4-scenario analysis
-
-- **[DI-1140](tickets/examples/DI-1140/README.md)** - Identify Originated Loans Associated w/ Suspected Small Fraud Ring  
-  *Data Analyst* | Fraud ring investigation targeting BMO Bank accounts with recent account opening patterns and routing number analysis
-
-- **[DI-1141](tickets/examples/DI-1141/README.md)** - Sale Files for DebtBuyerA - Q2 2025 Sale  
-  *Data Analyst* | Q2 2025 debt sale population (1,591 loans, **$19.8M**) with enhanced settlement monitoring, optimized SQL queries (**50-70% performance improvement**), and comprehensive exclusion analysis
-
-- **[DI-1143](tickets/examples/DI-1143/README.md)** - Align Oscilar Plaid Data Structure With Historical Plaid DATA_STORE Structure  
-  *Data Analyst* | Created views to transform Oscilar Plaid data to match historical DATA_STORE structure for Prism vendor compatibility
-
-- **[DI-1146](tickets/examples/DI-1146/README.md)** - Mobile vs Desktop Application Analysis  
-  *Data Analyst* | Device usage pattern analysis showing **68.9% mobile-only** vs **26.9% desktop-only** applications with **99.96% data coverage** and 4.35% cross-device behavior
-
-- **[DI-1148](tickets/examples/DI-1148/README.md)** - Bank Account loan_management_system Views Deployment  
-  *Data Analyst* | Created views for bank account data alignment in loan management system
-
-- **[DI-1150](tickets/examples/DI-1150/README.md)** - Application Drop-off Analysis  
-  *Data Analyst* | Comprehensive analysis of application funnel drop-offs with API vs non-API channel comparison and fraud correlation patterns
-
-- **[DI-1151](tickets/examples/DI-1151/README.md)** - DebtBuyerA Q2 2025 Debt Sale Deliverables  
-  *Data Analyst* | Generated three required debt sale deliverable files (marketing goodbye letters, credit reporting, bulk upload) for **1,483 selected loans** with comprehensive workflow documentation ([**INSTRUCTIONS.md**](tickets/examples/DI-1151/INSTRUCTIONS.md))
-
-- **[DI-1176](tickets/examples/DI-1176/README.md)** - Fair Lending Audit - PortfolioInvestor Application Reconciliation Analysis  
-  *Data Analyst* | Resolved **1.5M application discrepancy** for Fair Lending audit by clarifying definitional differences - only **3.3% were true applications** vs pricing inquiries
-
-- **[DI-1179](tickets/examples/DI-1179/README.md)** - Fraud Analytics View Implementation
-  *Data Analyst* | Created centralized fraud-only analytics view consolidating 4 detection sources into single comprehensive view with standardized logic across FRESHSNOW → BRIDGE → ANALYTICS layers
-
-#### September 2025
-- **[ticket-3](tickets/examples/ticket-3/README.md)** - Enhanced VW_loan_management_system_CUSTOM_LOAN_SETTINGS_CURRENT with 185 Missing Fields
-  *Data Analyst* | Enhanced view from 278 to 463 fields (67% increase) by adding missing CUSTOM_FIELD_VALUES. Comprehensive null analysis on 127K loans identified active usage: **9.66% HAPPY_SCORE adoption**, **7.35% loan modifications**, **5.05% bankruptcy tracking**. Identified 226 unused fields (49%) for potential cleanup via SERV-755.
-
-### 🎯 High-Impact Deliverables
-- **💰 $19.8M Portfolio Management**: Comprehensive debt sale analysis and transfer workflows
-- **⚡ 40-70% Performance Improvements**: Optimized SQL queries and dashboard efficiency  
-- **📊 99.96% Data Coverage**: Near-complete application analysis with device usage insights
-- **📋 Comprehensive Workflows**: Standardized processes for debt sale deliverables ([INSTRUCTIONS.md](tickets/examples/DI-1151/INSTRUCTIONS.md))
+### 📅 Chronological Ticket Log
+[INSERT TICKET LOG]
 
 ## 🤝 Contributing
 
@@ -304,9 +198,3 @@ GROUP BY loan_id;
 - **📖 Technical Documentation**: [`CLAUDE.md`](CLAUDE.md) for detailed workflows
 - **🗄️ Database Reference**: [`data_catalog.md`](documentation/data_catalog.md) for schema guidance
 - **🛠️ Tool Setup**: [`prerequisite_installations.md`](documentation/prerequisite_installations.md) for environment configuration
-- **💬 Slack Integration**: [`resources/slack_user_functions.zsh`](resources/slack_user_functions.zsh) for team communication
-
----
-
-> 📈 **Repository Metrics**: 21 tickets resolved • 240+ files • Comprehensive workflow documentation
-> 🔧 **Last Updated**: September 2025 • Active development and knowledge capture ongoing

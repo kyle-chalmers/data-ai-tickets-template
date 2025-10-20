@@ -1,6 +1,6 @@
 # Prerequisite Installation Guide
 
-This guide outlines the recommended tools and CLI utilities for optimal data intelligence work with Claude Code assistant.
+This guide outlines the recommended tools and CLI utilities for optimal data analysis work with Claude Code assistant.
 
 ## Essential CLI Tools
 
@@ -256,7 +256,7 @@ fd README
 
 ## Existing Installations (Already Available)
 
-The following tools are already installed and have been essential for data intelligence work:
+The following tools are already installed and have been essential for data analysis work:
 
 ### Database and API Tools
 - **Snowflake CLI (`snow`)**: Primary database interface for querying data warehouses
@@ -266,7 +266,7 @@ The following tools are already installed and have been essential for data intel
 
 - **Atlassian CLI (`acli`)**: Jira and Confluence integration
   - Used for: Reading ticket details, updating tickets, workflow automation
-  - Example: `acli jira workitem view DI-974`
+  - Example: `acli jira workitem view TICKET-974`
 
 - **Tableau CLI (`tabcmd`)**: Tableau Server/Cloud management
   - Used for: Publishing workbooks, managing users, refreshing extracts
@@ -274,7 +274,7 @@ The following tools are already installed and have been essential for data intel
 
 - **GitHub CLI (`gh`)**: Git repository management
   - Used for: Creating pull requests, managing issues, repository operations
-  - Example: `gh pr create --title "DI-974: Add SIMM Flag"`
+  - Example: `gh pr create --title "TICKET-974: Add Feature Flag"`
 
 ### Development Tools
 - **Git**: Version control system
@@ -286,12 +286,6 @@ The following tools are already installed and have been essential for data intel
   - **Installed Libraries**: pandas, numpy, matplotlib, seaborn, plotly, requests, openpyxl, xlsxwriter, beautifulsoup4, scipy, scikit-learn, snowflake-connector-python, sqlalchemy
   - **JupyterLab**: Interactive notebook environment for data analysis
   - Essential for data analysis tasks (preferred over bash commands for complex analysis)
-
-### Custom Integrations
-- **Slack CLI Functions**: Custom shell functions for team communication
-  - Location: `~/.slack_user_functions.zsh` (reference: `resources/slack_user_functions.zsh`)
-  - Used for: User lookups, group messaging, ticket updates
-  - Functions: `slack_user_by_email()`, `slack_group_by_emails_dynamic()`, `slack_send_to_group()`
 
 ### System Tools
 - **curl**: HTTP client for API requests
@@ -318,4 +312,4 @@ The new tools (jq, bat, fd, ripgrep, fzf, htop) complement these existing instal
 - **fzf** provides interactive selection for git operations and file management
 - **htop** monitors system resources during heavy Snowflake operations
 
-This installation guide ensures you have all the tools needed for efficient data intelligence work with the Claude Code assistant.
+This installation guide ensures you have all the tools needed for efficient data analysis work with the Claude Code assistant.
