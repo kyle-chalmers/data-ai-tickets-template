@@ -39,7 +39,6 @@ Avoid building functionality on speculation. Implement features only when they a
 **EXPLICIT Permission Required (External Operations):**
 - **ALL Database Modification Operations**: UPDATE, ALTER, DROP, DELETE, INSERT, CREATE OR REPLACE statements
 - Creating/altering Snowflake views, tables, or any DDL operations
-- Sending Slack messages to team members (**<100 words max**)
 - Posting comments to Jira tickets (**<100 words max**)
 - Git commits and pushes
 - Google Drive backup operations

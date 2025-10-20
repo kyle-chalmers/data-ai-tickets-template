@@ -1,0 +1,12 @@
+Prompt #1
+You have access to the snow cli. 
+Use it to query the SNOWFLAKE_SAMPLE_DATA.INFORMATION_SCHEMA.COLUMNS. Do a simple select *.
+Put the query into a .sql file and the output in a .csv format in this folder. /Users/kylechalmers/Development/data-ai-tickets-template/videos/integrating_ai_and_snowflake/initial_test
+
+Prompt #2
+I need you to become an expert in the data in the SNOWFLAKE_SAMPLE_DATA.TPCDS_SF10TCL schema using the snow cli. 
+Use the /Users/kylechalmers/Development/data-ai-tickets-template/documentation/data_catalog.md as a template and create a data_catalog.md file for this
+schema in the integrating_ai_and_snowflake that details the joining criteria between the tables. See if there are any duplicate primary keys in any of the tables.
+
+Prompt #3
+Can you analyze how many customers are from Canada in from SNOWFLAKE_SAMPLE_DATA.TPCDS_SF10TCL.CUSTOMER and how many of them have bought something in the last month and what the average transaction price was, and then what the total amount was.
