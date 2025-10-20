@@ -4,7 +4,7 @@
 - **Operation Type**: ALTER_EXISTING
 - **Scope**: SINGLE_OBJECT
 - **Jira Ticket**: DI-1235 (Enhancement to VW_LOAN_DEBT_SETTLEMENT)
-- **Expected Ticket Folder**: `tickets/kchalmers/DI-1235/`
+- **Expected Ticket Folder**: `tickets/examples/DI-1235/`
 - **Related Tickets**: DI-1262 (original creation), DI-1246
 
 ## Business Context
@@ -435,7 +435,7 @@ snow sql -q "$(cat final_deliverables/qc_validation.sql)" --format csv
 
 ### Expected Deliverable Structure
 ```
-tickets/kchalmers/DI-1235/
+tickets/examples/DI-1235/
 ├── README.md                                    # Complete documentation with assumptions
 ├── final_deliverables/                          # Numbered for review order
 │   ├── 1_vw_loan_debt_settlement_enhanced.sql  # Enhanced view DDL
@@ -451,7 +451,7 @@ tickets/kchalmers/DI-1235/
 
 **1. Update DI-1262 Ticket Documentation**:
 ```
-tickets/kchalmers/DI-1262/
+tickets/examples/DI-1262/
 ├── README.md                                    # Update with ACTIONS and DOCUMENTS sources
 └── CLAUDE.md                                    # Update with current architecture (6 sources)
 ```

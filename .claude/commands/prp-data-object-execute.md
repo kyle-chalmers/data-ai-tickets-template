@@ -30,7 +30,7 @@ Execute a comprehensive Snowflake data object creation or modification following
    - Create objects in DEVELOPMENT and BUSINESS_INTELLIGENCE_DEV databases
    - Follow 5-layer architecture compliance (FRESHSNOW → BRIDGE → ANALYTICS → REPORTING)
    - Use production data for realistic testing
-   - Implement proper schema filtering (LMS_SCHEMA(), LOS_SCHEMA())
+   - Implement proper schema filtering (loan_management_system_SCHEMA(), LOS_SCHEMA())
    - **CRITICAL**: Verify all column values are business-ready and data structure matches expected grain
 
 2. **Quality Control Implementation - CRITICAL**
@@ -131,7 +131,7 @@ Execute a comprehensive Snowflake data object creation or modification following
 
 ### Architecture and Compliance
 - [ ] Objects follow proper layer referencing rules
-- [ ] Schema filtering implemented correctly (LMS_SCHEMA(), LOS_SCHEMA())
+- [ ] Schema filtering implemented correctly (loan_management_system_SCHEMA(), LOS_SCHEMA())
 - [ ] COPY GRANTS and environment variables used appropriately
 - [ ] Deployment strategy accounts for proper sequencing
 
@@ -180,7 +180,7 @@ tickets/[user]/DI-XXX/
 ## Security and Compliance
 
 - **PII Handling**: Ensure proper data masking and access controls
-- **Schema Filtering**: Validate multi-instance LoanPro filtering
+- **Schema Filtering**: Validate multi-instance loan_management_system filtering
 - **Regulatory Compliance**: Follow financial services data requirements
 - **Access Control**: Use COPY GRANTS to preserve existing permissions
 

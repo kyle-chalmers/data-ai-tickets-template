@@ -5,7 +5,7 @@
 **Operation Type:** ALTER_EXISTING
 **Scope:** SINGLE_OBJECT
 **Jira Ticket:** DI-1299
-**Expected Ticket Folder:** `tickets/kchalmers/DI-1299/`
+**Expected Ticket Folder:** `tickets/examples/DI-1299/`
 **Confidence Score:** 9/10
 
 **Objective:** Convert `BUSINESS_INTELLIGENCE.REPORTING.VW_DSH_OUTBOUND_GENESYS_OUTREACHES` from a standard view to a dynamic table to dramatically improve query performance while maintaining identical results and full historical data.
@@ -1198,12 +1198,12 @@ snow sql -q "SELECT scheduling_state, data_timestamp FROM INFORMATION_SCHEMA.DYN
    - Document dynamic table conversion pattern for future optimizations
 
 2. **Create Ticket Documentation:**
-   - `tickets/kchalmers/DI-1299/README.md`: Complete optimization summary
-   - `tickets/kchalmers/DI-1299/final_deliverables/1_email_campaign_lookup_creation.sql`
-   - `tickets/kchalmers/DI-1299/final_deliverables/2_dynamic_table_creation_dev.sql`
-   - `tickets/kchalmers/DI-1299/final_deliverables/3_production_deployment.sql`
-   - `tickets/kchalmers/DI-1299/qc_validation.sql`
-   - `tickets/kchalmers/DI-1299/original_code/original_view_ddl.sql`
+   - `tickets/examples/DI-1299/README.md`: Complete optimization summary
+   - `tickets/examples/DI-1299/final_deliverables/1_email_campaign_lookup_creation.sql`
+   - `tickets/examples/DI-1299/final_deliverables/2_dynamic_table_creation_dev.sql`
+   - `tickets/examples/DI-1299/final_deliverables/3_production_deployment.sql`
+   - `tickets/examples/DI-1299/qc_validation.sql`
+   - `tickets/examples/DI-1299/original_code/original_view_ddl.sql`
 
 3. **Update Data Catalog:**
    - Document DT_DSH_OUTBOUND_GENESYS_OUTREACHES in `documentation/data_catalog.md`

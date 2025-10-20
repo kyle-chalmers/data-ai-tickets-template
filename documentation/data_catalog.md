@@ -2,7 +2,7 @@
 
 ## Overview
 
-Comprehensive catalog of Happy Money's data architecture, including databases, schemas, tables, views, and their relationships. Essential reference for data analysis, reporting, and ticket resolution.
+Comprehensive catalog of FinanceCo's data architecture, including databases, schemas, tables, views, and their relationships. Essential reference for data analysis, reporting, and ticket resolution.
 
 ## Navigation
 
@@ -31,7 +31,7 @@ Comprehensive catalog of Happy Money's data architecture, including databases, s
 | Table/View | Database.Schema | Purpose | Primary Key |
 |------------|----------------|---------|-------------|
 | `VW_LOAN` | BI.ANALYTICS | Master loan table | LOAN_ID |
-| `VW_LP_PAYMENT_TRANSACTION` | BI.ANALYTICS | Payment history | PAYMENT_ID |
+| `VW_SYSTEM_PAYMENT_TRANSACTION` | BI.ANALYTICS | Payment history | PAYMENT_ID |
 | `VW_LOAN_PORTFOLIOS_AND_SUB_PORTFOLIOS` | BI.ANALYTICS | Portfolio assignments | LOAN_ID, PORTFOLIO_ID |
 | `DSH_GR_DAILY_ROLL_TRANSITION` | BI.CRON_STORE | Daily roll rates | PAYOFFUID, ASOFDATE |
 | `RPT_OUTBOUND_LISTS_HIST` | BI.CRON_STORE | SIMM placements | PAYOFFUID, SET_NAME, DATE |
@@ -51,7 +51,7 @@ Comprehensive catalog of Happy Money's data architecture, including databases, s
 -- ALWAYS apply these filters to avoid duplicates:
 
 -- Originated Loans
-WHERE SCHEMA_NAME = ARCA.CONFIG.LMS_SCHEMA()
+WHERE SCHEMA_NAME = ARCA.CONFIG.loan_management_system_SCHEMA()
 
 -- Applications  
 WHERE SCHEMA_NAME = ARCA.CONFIG.LOS_SCHEMA()
@@ -59,7 +59,7 @@ WHERE SCHEMA_NAME = ARCA.CONFIG.LOS_SCHEMA()
 -- SIMM Placements
 WHERE SET_NAME = 'SIMM' AND SUPPRESSION_FLAG = FALSE
 
--- Native LoanPro Payments
+-- Native loan_management_system Payments
 WHERE IS_MIGRATED = 0
 ```
 
@@ -71,7 +71,7 @@ WHERE IS_MIGRATED = 0
 ```sql
 SELECT l.*, p.TRANSACTION_DATE, p.TRANSACTION_AMOUNT
 FROM BUSINESS_INTELLIGENCE.ANALYTICS.VW_LOAN l
-JOIN BUSINESS_INTELLIGENCE.ANALYTICS.VW_LP_PAYMENT_TRANSACTION p
+JOIN BUSINESS_INTELLIGENCE.ANALYTICS.VW_SYSTEM_PAYMENT_TRANSACTION p
     ON UPPER(p.loan_id::TEXT) = UPPER(l.loan_id::TEXT)
 WHERE p.IS_MIGRATED = 0
 ```
@@ -96,10 +96,10 @@ WITH portfolio_summary AS (
 ```sql
 JOIN VW_LOAN_SETTINGS_ENTITY_CURRENT ls
     ON l.loan_id = ls.loan_id 
-    AND ls.SCHEMA_NAME = BUSINESS_INTELLIGENCE.CONFIG.LMS_SCHEMA()
+    AND ls.SCHEMA_NAME = BUSINESS_INTELLIGENCE.CONFIG.loan_management_system_SCHEMA()
 JOIN VW_LOAN_SUB_STATUS_ENTITY_CURRENT s
     ON ls.loan_sub_status_id = s.id
-    AND s.SCHEMA_NAME = BUSINESS_INTELLIGENCE.CONFIG.LMS_SCHEMA()
+    AND s.SCHEMA_NAME = BUSINESS_INTELLIGENCE.CONFIG.loan_management_system_SCHEMA()
 ```
 </details>
 
@@ -152,7 +152,7 @@ JOIN VW_LOAN l ON UPPER(source.lead_guid) = UPPER(l.lead_guid)
 </details>
 
 <details>
-<summary><b>VW_LP_PAYMENT_TRANSACTION</b> - Payment history</summary>
+<summary><b>VW_SYSTEM_PAYMENT_TRANSACTION</b> - Payment history</summary>
 
 | Field | Type | Description |
 |-------|------|-------------|
@@ -164,7 +164,7 @@ JOIN VW_LOAN l ON UPPER(source.lead_guid) = UPPER(l.lead_guid)
 
 ```sql
 -- Join with type casting
-JOIN VW_LP_PAYMENT_TRANSACTION lp 
+JOIN VW_SYSTEM_PAYMENT_TRANSACTION lp 
     ON UPPER(lp.loan_id::TEXT) = UPPER(vl.loan_id::TEXT)
 WHERE lp.IS_MIGRATED = 0  -- Native transactions only
 ```
@@ -183,7 +183,7 @@ WHERE lp.IS_MIGRATED = 0  -- Native transactions only
 **Common Portfolios:**
 - `First Party Fraud - Confirmed`
 - `Settlement Setup` / `Settlement Successful`
-- `Theorem Main Master Fund LP`
+- `PortfolioInvestor Main Master Fund LP`
 
 ```sql
 -- Flatten multiple portfolios
@@ -224,7 +224,7 @@ GROUP BY LOAN_ID
 | BANK_NAME | String | ⚠️ Always "placeholder name" |
 
 ```sql
--- For LMS loans, use CTE workaround:
+-- For loan_management_system loans, use CTE workaround:
 WITH lms_bank_info AS (
     SELECT le.id AS LOAN_ID, cae.ROUTING_NUMBER
     FROM ARCA.FRESHSNOW.loan_entity_current le
@@ -246,7 +246,7 @@ WITH lms_bank_info AS (
 
 ⚠️ **Always filter by SCHEMA_NAME:**
 - `ARCA.CONFIG.LOS_SCHEMA()` = Applications
-- `ARCA.CONFIG.LMS_SCHEMA()` = Originated loans
+- `ARCA.CONFIG.loan_management_system_SCHEMA()` = Originated loans
 </details>
 
 <details>
@@ -263,7 +263,7 @@ WITH lms_bank_info AS (
 -- ⚠️ CORRECT: Use LOAN_ID field for joins
 JOIN VW_LOAN_SETTINGS_ENTITY_CURRENT lsec
     ON table.LOAN_ID = lsec.LOAN_ID  -- NOT lsec.ID!
-    AND lsec.SCHEMA_NAME = ARCA.CONFIG.LMS_SCHEMA()
+    AND lsec.SCHEMA_NAME = ARCA.CONFIG.loan_management_system_SCHEMA()
 ```
 </details>
 
@@ -344,7 +344,7 @@ GROUP BY APPLICATION_ID
 
 
 <details>
-<summary><b>VW_LMS_CUSTOM_LOAN_SETTINGS_CURRENT</b> - Loan custom fields</summary>
+<summary><b>VW_loan_management_system_CUSTOM_LOAN_SETTINGS_CURRENT</b> - Loan custom fields</summary>
 
 | Field | Type | Description |
 |-------|------|-------------|
@@ -353,7 +353,7 @@ GROUP BY APPLICATION_ID
 | FRAUD_CONFIRMED_DATE | Date | Fraud confirmation |
 | PLACEMENT_STATUS | String | Collection agency |
 
-**Placement Values:** HM, Bounce, Resurgent, First Tech Credit Union, ACU, ARS, Remitter, Jefferson Capital
+**Placement Values:** HM, DebtBuyerA, DebtBuyerB, First Tech Credit Union, ACU, ARS, Remitter, Jefferson Capital
 </details>
 
 ### CRON_STORE Schema
@@ -698,9 +698,9 @@ WHERE le.ACTIVE = 1 AND le.DELETED = 0
 ```sql
 SELECT l.LOAN_ID, l.LEAD_GUID, p.TRANSACTION_DATE, p.TRANSACTION_AMOUNT
 FROM BUSINESS_INTELLIGENCE.ANALYTICS.VW_LOAN l
-JOIN BUSINESS_INTELLIGENCE.ANALYTICS.VW_LP_PAYMENT_TRANSACTION p
+JOIN BUSINESS_INTELLIGENCE.ANALYTICS.VW_SYSTEM_PAYMENT_TRANSACTION p
     ON UPPER(p.loan_id::TEXT) = UPPER(l.loan_id::TEXT)
-WHERE p.IS_MIGRATED = 0  -- Native LoanPro only
+WHERE p.IS_MIGRATED = 0  -- Native loan_management_system only
 ```
 </details>
 
@@ -726,11 +726,11 @@ JOIN BUSINESS_INTELLIGENCE.DATA_STORE.MVW_LOAN_TAPE_MONTHLY mlt
 | System | Filter | Usage |
 |--------|--------|-------|
 | Applications | `SCHEMA_NAME = ARCA.CONFIG.LOS_SCHEMA()` | Pre-funding |
-| Originated Loans | `SCHEMA_NAME = ARCA.CONFIG.LMS_SCHEMA()` | Post-funding |
+| Originated Loans | `SCHEMA_NAME = ARCA.CONFIG.loan_management_system_SCHEMA()` | Post-funding |
 
-**Pre-filtered Tables:** Views with LOS/LMS in name don't need schema filters
+**Pre-filtered Tables:** Views with LOS/loan_management_system in name don't need schema filters
 - ✅ `VW_LOS_CUSTOM_LOAN_SETTINGS_CURRENT` = Applications only
-- ✅ `VW_LMS_CUSTOM_LOAN_SETTINGS_CURRENT` = Loans only
+- ✅ `VW_loan_management_system_CUSTOM_LOAN_SETTINGS_CURRENT` = Loans only
 
 ### Query Patterns
 

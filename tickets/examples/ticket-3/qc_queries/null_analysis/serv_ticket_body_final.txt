@@ -1,0 +1,23 @@
+During our ticket-3 analysis of VW_loan_management_system_CUSTOM_LOAN_SETTINGS_CURRENT, we discovered that 199 of 463 loan_management_system custom fields (43%) are completely unused - 100% NULL across all 127,023 loan_management_system records as of September 2025. An additional 27 fields show minimal usage (<1% population).
+
+This creates significant clutter in the loan_management_system UI and admin interfaces. We'd like to work with your team to remove as many of these unused fields as possible to streamline the system.
+
+Some notable findings:
+
+- The entire Repossession module (13 fields) is completely unused
+- 14 of 15 Investor tracking fields (INVESTOR1-14) contain no data
+- All 9 CLS system integration fields are empty
+- Extended fraud ticket slots 15-20 are unused (though slots 1-8 are active)
+- Multiple bankruptcy, SCRA, settlement, and debt sale workflow fields are empty
+
+We've attached two SQL validation queries that demonstrate the NULL status of these fields. The first query validates the 199 completely unused fields, and the second shows the 27 near-NULL fields for consideration.
+
+Complete field breakdown:
+
+100% NULL Fields (199 total):
+Repossession (13), Investor slots 1-14 (14), CLS Integration (9), Fraud slots 15-20 (12), Bankruptcy (16), SCRA/Military (8), Skip-A-Pay (2), Loan Modifications (7), DCA/Collections (8), Settlement (5), Debt Sale (6), Attorney (7), Trustage Insurance (4), Credit Bureau/Reporting (8), Servicer/Third-Party (6), Recall/Objection (5), Funding/Origination (5), Portfolio/Channel (3), Miscellaneous/Legacy (44)
+
+Near-NULL Fields (27 total - <1% population):
+Fraud slots 9-14 (13), Bankruptcy court orders (4), SCRA dates (4), Skip-A-Pay variants (5), and one field each for: PAYMENT_AMOUNT_BEFORE_MODIFICATION, UNPAID_SETTLEMENT_BALANCE, DEBT_REPURCHASE_STATUS, DEBT_SALE_STATUS, SOLD_DATE, INVESTOR15, TRUSTAGE_CLAIM_NUMBER, FUNDING_CANCELLATION_REASON, HARDSHIP_ENROLLMENT_END_DATE, INCOME_TYPE5, STATE_RATE, TENANT_ID, TEN_DAY_PAYOFF
+
+Full field inventory and analysis available in the ticket-3 ticket README.

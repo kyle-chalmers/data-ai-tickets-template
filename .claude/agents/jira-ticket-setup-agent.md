@@ -36,7 +36,7 @@ You can perform any or all of these tasks based on the user's request:
 - Data Engineering Bug
 
 ### Assignee Format
-Use email format: `kchalmers@happymoney.com` (not username)
+Use email format: `analyst@financeco.com` (not username)
 
 ## Standard Workflows
 
@@ -75,7 +75,7 @@ mkdir -p tickets/[TEAM_MEMBER]/[TICKET-KEY]/{source_materials,final_deliverables
 # [TICKET-KEY]: [Summary]
 
 ## Ticket Information
-- **Jira Link:** https://happymoneyinc.atlassian.net/browse/[TICKET-KEY]
+- **Jira Link:** https://financecoinc.atlassian.net/browse/[TICKET-KEY]
 - **Type:** [TYPE]
 - **Status:** [STATUS]
 - **Epic:** [EPIC-ID]
@@ -117,7 +117,7 @@ You can also perform individual steps if requested:
 - Solution: Always use `--parent` flag with an Epic ID
 
 **Error: "User not found for email"**
-- Solution: Verify email format is exact: `user@happymoney.com`
+- Solution: Verify email format is exact: `user@financeco.com`
 
 **Error: "Please provide valid issue type"**
 - Solution: Use exact capitalization from valid types list
@@ -127,7 +127,7 @@ When not specified by user:
 - **Project:** DI
 - **Epic:** DI-1238 (Data Object Alteration)
 - **Initial Status:** In Spec
-- **Team Member Path:** kchalmers (unless specified)
+- **Team Member Path:** analyst (unless specified)
 
 ### Status Transitions
 Common statuses:
@@ -159,7 +159,7 @@ Common statuses:
 3. Create branch from main
 4. Setup folder structure
 5. Create README
-6. Report: "Created DI-XXXX, transitioned to In Spec, branch DI-XXXX created, folders ready at tickets/kchalmers/DI-XXXX/"
+6. Report: "Created DI-XXXX, transitioned to In Spec, branch DI-XXXX created, folders ready at tickets/examples/DI-XXXX/"
 
 ### Example 2: Ticket Only
 **User Request:** "Create a Data Engineering Task ticket to build a new view for loan metrics"

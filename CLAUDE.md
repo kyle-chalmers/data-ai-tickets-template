@@ -111,7 +111,7 @@ For optimal performance, ensure all required tools are installed. **Claude Code 
 
 #### Data Intelligence MCP Server
 **IMPORTANT**: Install the Data Intelligence MCP Server for enhanced standard operations:
-- **Repository**: [data-intelligence-mcp-standard-operations](https://github.com/HappyMoneyInc/data-intelligence-mcp-standard-operations)
+- **Repository**: [data-intelligence-mcp-standard-operations](https://github.com/FinanceCoInc/data-intelligence-mcp-standard-operations)
 - **Purpose**: Provides standardized MCP tools for common data intelligence workflows
 - **Installation**: Follow repository instructions for Claude Code integration
 - **Benefits**: Streamlined operations, consistent patterns, improved efficiency
@@ -353,7 +353,7 @@ tickets/[team_member]/DI-XXX/
 ### 5-Layer Snowflake Architecture
 **When creating new database objects or altering existing objects, follow this architecture:**
 
-1. **RAW_DATA_STORE.LOANPRO** - Raw, unprocessed data from LoanPro
+1. **RAW_DATA_STORE.LOANPRO** - Raw, unprocessed data from loan_management_system
 2. **ARCA.FRESHSNOW** - Current state data with cleansing/deduplication  
 3. **BUSINESS_INTELLIGENCE.BRIDGE** - Abstraction layer with views on FRESHSNOW
 4. **BUSINESS_INTELLIGENCE.ANALYTICS** - Business-ready data for analysts and ad-hoc queries
@@ -380,17 +380,17 @@ tickets/[team_member]/DI-XXX/
 
 ## Company and Platform Context
 
-### Happy Money Business Context
+### FinanceCo Business Context
 - **Financial Technology Company**: Focused on personal lending and customer financial wellness
-- **LoanPro Platform**: Primary loan management system with extensive customizations for Happy Money's business model
+- **loan_management_system Platform**: Primary loan management system with extensive customizations for FinanceCo's business model
 - **Data-Driven Organization**: Heavy reliance on analytics for business decisions, risk management, and customer insights
 - **Regulatory Environment**: Financial services compliance requirements affect data handling and reporting
 
-### LoanPro Platform Integration
-- **Loan Management System**: LoanPro serves as the core system for loan origination, servicing, and collections
-- **Custom Configurations**: Happy Money has extensive LoanPro customizations affecting data structure and business logic
-- **Data Integration**: LoanPro data flows through the 5-layer architecture to support business intelligence
-- **Business Logic**: Understanding LoanPro's loan lifecycle, customer data, and payment processing is crucial for ticket resolution
+### loan_management_system Platform Integration
+- **Loan Management System**: loan_management_system serves as the core system for loan origination, servicing, and collections
+- **Custom Configurations**: FinanceCo has extensive loan_management_system customizations affecting data structure and business logic
+- **Data Integration**: loan_management_system data flows through the 5-layer architecture to support business intelligence
+- **Business Logic**: Understanding loan_management_system's loan lifecycle, customer data, and payment processing is crucial for ticket resolution
 
 ### Team Context
 - **Ticket-Based Workflow**: Work is driven by Jira tickets with specific business requirements
@@ -576,13 +576,13 @@ Always evaluate queries for efficiency before finalizing:
 - Use LEAD_GUID when possible (most reliable identifier)
 - LEGACY_LOAN_ID for user-friendly stakeholder references
 
-**LoanPro Schema Filtering:**
-- Filter by `SCHEMA_NAME = arca.CONFIG.LMS_SCHEMA()` for loan objects
+**loan_management_system Schema Filtering:**
+- Filter by `SCHEMA_NAME = arca.CONFIG.loan_management_system_SCHEMA()` for loan objects
 - Use `SCHEMA_NAME = arca.CONFIG.LOS_SCHEMA()` for application objects
 - Critical for avoiding duplicate data from multiple instances
 
 **Status Information:**
-- LOAN_SUB_STATUS_TEXT: Actual status as seen in LoanPro UI
+- LOAN_SUB_STATUS_TEXT: Actual status as seen in loan_management_system UI
 - Use `VW_LOAN_STATUS_ARCHIVE_CURRENT` for current states
 
 ### Quality Control Deliverables
@@ -618,7 +618,7 @@ For comprehensive business context including loan status definitions, collection
 The repository maintains comprehensive data documentation in **[Data Catalog](./documentation/data_catalog.md)** including:
 - Database Architecture: Primary databases and schema organization
 - Core Business Objects: Loan management, payment data, portfolio classifications
-- Schema Filtering Best Practices: LoanPro multi-instance filtering patterns
+- Schema Filtering Best Practices: loan_management_system multi-instance filtering patterns
 - Query Development Patterns: Common SQL patterns for payment history, fraud analysis
 - Data Quality Considerations: Known issues and workarounds
 

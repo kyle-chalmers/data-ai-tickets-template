@@ -490,7 +490,7 @@ snow sql -q "EXPLAIN SELECT * FROM BUSINESS_INTELLIGENCE_DEV.ANALYTICS.VW_LOAN_B
 - Single `qc_validation.sql` file with all tests
 - Simplified final deliverables structure  
 - README.md and CLAUDE.md for documentation
-- Results in `tickets/kchalmers/DI-1239/` folder structure
+- Results in `tickets/examples/DI-1239/` folder structure
 
 ## Jira Ticket Information
 
@@ -499,7 +499,7 @@ snow sql -q "EXPLAIN SELECT * FROM BUSINESS_INTELLIGENCE_DEV.ANALYTICS.VW_LOAN_B
 **Stakeholder**: Kyle Chalmers (kchalmers@happymoney.com)
 **Priority**: High (impacts critical outbound list generation process)
 **Status**: Open and ready for implementation
-**Expected Ticket Folder**: `tickets/kchalmers/DI-1239/` (for use with prp-data-object-execute command)
+**Expected Ticket Folder**: `tickets/examples/DI-1239/` (for use with prp-data-object-execute command)
 
 ## Confidence Assessment
 

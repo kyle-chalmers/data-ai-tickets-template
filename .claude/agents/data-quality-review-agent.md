@@ -80,7 +80,7 @@ This agent has access to:
 - [ ] **Case Sensitivity**: UPPER() used for case-insensitive string matching
 - [ ] **Boolean Logic**: AND/OR precedence correct (parentheses where needed)
 - [ ] **Parameter References**: Variables referenced with $ prefix
-- [ ] **Schema Filtering**: Multi-instance filtering (e.g., arca.CONFIG.LMS_SCHEMA())
+- [ ] **Schema Filtering**: Multi-instance filtering (e.g., arca.CONFIG.loan_management_system_SCHEMA())
 
 ### 6. Performance and Optimization Review
 - [ ] **SELECT ***: Avoid SELECT *, list specific columns needed
@@ -348,18 +348,18 @@ When creating Jira comments for completed tickets, follow this business-focused 
 
 **High Priority Segments:**
 
-**1. 827 loans (9.17%) - Payments collected in LoanPro:**
+**1. 827 loans (9.17%) - Payments collected in loan_management_system:**
 - 327 loans have NO settlement data - $438,490 collected from them
 - 500 loans have debt settlement info, with only 29 lacking settled status, status field value, or settlement portfolio
 
-**2. 689 loans (7.64%) - Failed payment attempts in LoanPro:**
+**2. 689 loans (7.64%) - Failed payment attempts in loan_management_system:**
 - 648 loans have NO settlement data - $938,014 in failed attempts
 - 41 loans have debt settlement info (18 with actual settlement state/portfolio, 23 without values)
 
 **3. 13 loans (0.14%) - Active payments not yet settled:**
 - None have debt settlements associated
 
-**Remaining 7,486 loans (83.04%):** No LoanPro payment attempts (no payments at all, CLS-only payments, or pre-LoanPro payments)
+**Remaining 7,486 loans (83.04%):** No loan_management_system payment attempts (no payments at all, CLS-only payments, or pre-loan_management_system payments)
 
 **Settlement Data Concerns:**
 - 7,310 loans have NO debt settlement data
@@ -370,12 +370,12 @@ When creating Jira comments for completed tickets, follow this business-focused 
 
 **Critical Finding - Collections After Placement:**
 166 loans with external placements have active, settled payments AFTER their placement dates:
-- 133 loans: Bounce
-- 26 loans: Resurgent
+- 133 loans: DebtBuyerA
+- 26 loans: DebtBuyerB
 - 8 loans: FTFCU
 (Note: ARS, Remitter, HM/ACU excluded as we report payments for these)
 
-**Deliverables:** SQL queries, CSV data, and analysis in tickets/kchalmers/DI-1320/
+**Deliverables:** SQL queries, CSV data, and analysis in tickets/examples/DI-1320/
 ```
 
 ### Anti-Patterns to Avoid
@@ -445,7 +445,7 @@ Agent should request changes when:
 5. **Implicit type conversions in joins**: Missing CAST causing performance issues
 6. **Division by zero**: Unguarded division operations
 7. **Hardcoded dates/values**: Use parameters instead
-8. **Missing schema filters**: LoanPro multi-instance data without arca.CONFIG filters
+8. **Missing schema filters**: loan_management_system multi-instance data without arca.CONFIG filters
 9. **Unclosed quotes/comments**: Syntax errors in SQL
 10. **SQL injection risks**: Dynamic SQL without proper parameterization
 

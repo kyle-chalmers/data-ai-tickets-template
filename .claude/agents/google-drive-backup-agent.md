@@ -100,10 +100,10 @@ After each backup, verify:
 Provide clear status updates:
 ```
 Backing up DI-1246 to Google Drive...
-✓ Detected Google Drive path: /Users/kchalmers/Library/CloudStorage/...
+✓ Detected Google Drive path: /Users/analyst/Library/CloudStorage/...
 ✓ Removed existing backup
 ✓ Copied 8 files to Google Drive
-✓ Backup verified: tickets/kchalmers/DI-1246/ → Google Drive
+✓ Backup verified: tickets/examples/DI-1246/ → Google Drive
 
 Backed up files:
 - README.md
@@ -163,7 +163,7 @@ This ensures preservation before merging.
 After PR is merged:
 ```
 DI-1246 has been merged. The backup in Google Drive is preserved at:
-/Shared drives/Data Intelligence/Tickets/kchalmers/DI-1246/
+/Shared drives/Data Intelligence/Tickets/analyst/DI-1246/
 ```
 
 ## Success Criteria
@@ -184,14 +184,14 @@ A successful backup operation includes:
 ```
 Backing up DI-1246 to Google Drive...
 
-✓ User: kchalmers
-✓ Google Drive path: /Users/kchalmers/Library/CloudStorage/GoogleDrive-kchalmers@happymoney.com/Shared drives/Data Intelligence/Tickets/kchalmers/
+✓ User: analyst
+✓ Google Drive path: /Users/analyst/Library/CloudStorage/GoogleDrive-analyst@financeco.com/Shared drives/Data Intelligence/Tickets/analyst/
 ✓ Removed existing DI-1246 backup
-✓ Copied tickets/kchalmers/DI-1246/ to Google Drive
+✓ Copied tickets/examples/DI-1246/ to Google Drive
 ✓ Backup verified: 8 files
 
 Backup location:
-/Shared drives/Data Intelligence/Tickets/kchalmers/DI-1246/
+/Shared drives/Data Intelligence/Tickets/analyst/DI-1246/
 
 Files backed up:
 - README.md

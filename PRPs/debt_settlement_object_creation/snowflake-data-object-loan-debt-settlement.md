@@ -4,7 +4,7 @@
 - **Operation Type**: CREATE_NEW
 - **Scope**: SINGLE_OBJECT
 - **Jira Ticket**: DI-1262 (linked to Epic DI-1238)
-- **Expected Ticket Folder**: `tickets/kchalmers/DI-1262/`
+- **Expected Ticket Folder**: `tickets/examples/DI-1262/`
 
 ## Business Context
 
@@ -252,7 +252,7 @@ snow sql -q "SELECT COUNT(*) FROM BUSINESS_INTELLIGENCE_DEV.ANALYTICS.VW_LOAN_DE
 
 ### Expected Deliverable Structure
 ```
-tickets/kchalmers/DI-1262/
+tickets/examples/DI-1262/
 ├── README.md                                    # Complete documentation with assumptions
 ├── final_deliverables/                          # Numbered for review order
 │   ├── 1_loan_debt_settlement_creation.sql     # Dynamic table creation SQL

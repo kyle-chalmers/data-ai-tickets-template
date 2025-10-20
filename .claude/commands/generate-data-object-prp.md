@@ -17,7 +17,7 @@ The AI agent only gets the context you provide in the PRP and training data. Inc
    - Identify source tables and views: `snow sql -q "DESCRIBE TABLE schema.table_name"`
    - Map data relationships and dependencies: `snow sql -q "SELECT GET_DDL('VIEW', 'schema.view_name')"`
    - Check existing patterns in similar objects within the 5-layer architecture
-   - Validate schema filtering patterns (LMS_SCHEMA(), LOS_SCHEMA())
+   - Validate schema filtering patterns (loan_management_system_SCHEMA(), LOS_SCHEMA())
    - **CRITICAL**: Review sample column values to identify any that need business-friendly transformation
 
 2. **Architecture Compliance**
@@ -157,7 +157,7 @@ Save as: `PRPs/snowflake-data-object-{object-name}.md` **in the same folder as I
 **CRITICAL**: Include explicit ticket folder reference in PRP for execute command compatibility:
 - **Expected Ticket Folder**: `tickets/[username]/DI-XXX/` 
 - This ensures seamless integration with prp-data-object-execute command
-- Use actual username (e.g., kchalmers) and ticket number from created ticket
+- Use actual username (e.g., analyst) and ticket number from created ticket
 
 ## Quality Checklist
 - [ ] Operation type clearly identified (CREATE_NEW/ALTER_EXISTING) with appropriate strategy

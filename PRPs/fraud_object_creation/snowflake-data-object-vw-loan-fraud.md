@@ -4,7 +4,7 @@
 - **PRP Created**: 2025-10-02
 - **Operation Type**: CREATE_NEW
 - **Scope**: SINGLE_OBJECT
-- **Expected Ticket Folder**: `tickets/kchalmers/DI-[NEW]/`
+- **Expected Ticket Folder**: `tickets/examples/DI-[NEW]/`
 - **Confidence Score**: 9/10
 
 ## Business Context
@@ -1048,7 +1048,7 @@ After successful production deployment:
 
 ### Expected Ticket Folder Structure
 ```
-tickets/kchalmers/DI-[NEW]/
+tickets/examples/DI-[NEW]/
 ├── README.md                                    # Complete documentation with assumptions
 ├── source_materials/
 │   └── INITIAL.md                              # Original requirements (copy from PRP folder)

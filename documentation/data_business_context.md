@@ -74,7 +74,7 @@ Use inclusive OR conditions across multiple fraud indicators for comprehensive d
 
 **Data Objects**:
 1. **Portfolio Assignment**: `VW_LOAN_PORTFOLIOS_AND_SUB_PORTFOLIOS` where `CATEGORY = 'Fraud'`
-2. **Investigation Results**: `VW_LMS_CUSTOM_LOAN_SETTINGS_CURRENT.FRAUD_INVESTIGATION_RESULTS`
+2. **Investigation Results**: `VW_loan_management_system_CUSTOM_LOAN_SETTINGS_CURRENT.FRAUD_INVESTIGATION_RESULTS`
 3. **Status Text**: `VW_LOAN_SUB_STATUS_ENTITY_CURRENT.LOAN_SUB_STATUS_TEXT LIKE '%fraud%'`
 4. **Application Tags**: `VW_APPL_TAGS` where `TAG_NAME = 'Confirmed Fraud'`
 5. **Centralized View**: `BUSINESS_INTELLIGENCE.ANALYTICS.VW_FRAUD_COMPREHENSIVE_ANALYTICS`
@@ -103,7 +103,7 @@ WHERE portfolio_category = 'Fraud'
 ### Required Deliverables
 1. **Marketing Goodbye Letters**: Customer notification requirements
 2. **Credit Reporting Files**: Bureau reporting updates
-3. **Bulk Upload Files**: LoanPro placement updates
+3. **Bulk Upload Files**: loan_management_system placement updates
 
 **Data Objects**:
 - Customer PII views for contact information
@@ -136,19 +136,19 @@ Not all application starts are considered formal applications.
 - `BUSINESS_INTELLIGENCE.DATA_STORE.MVW_APPL_STATUS_TRANSITION`
 - Application funnel transition tables
 
-## LoanPro Platform Specifics
+## loan_management_system Platform Specifics
 
 ### Schema Filtering
-Critical for avoiding duplicate data from multiple LoanPro instances.
+Critical for avoiding duplicate data from multiple loan_management_system instances.
 
 **Functions**:
-- `arca.CONFIG.LMS_SCHEMA()`: Returns current loan management schema
+- `arca.CONFIG.loan_management_system_SCHEMA()`: Returns current loan management schema
 - `arca.CONFIG.LOS_SCHEMA()`: Returns current loan origination schema
 
 **SQL Pattern**:
 ```sql
 -- Always filter by appropriate schema
-WHERE SCHEMA_NAME = arca.CONFIG.LMS_SCHEMA()
+WHERE SCHEMA_NAME = arca.CONFIG.loan_management_system_SCHEMA()
 ```
 
 ### Identifier Strategy

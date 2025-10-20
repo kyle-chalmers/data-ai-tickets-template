@@ -39,7 +39,7 @@ acli jira workitem create \
   --type "Dashboard" \
   --summary "Brief ticket summary" \
   --description "Detailed description of the work needed" \
-  --assignee "user@happymoney.com" \
+  --assignee "user@financeco.com" \
   --parent "DI-XXXX"
 ```
 
@@ -60,7 +60,7 @@ Investigation needed:
 - [Step 1]
 - [Step 2]
 - [Step 3]" \
-  --assignee "kchalmers@happymoney.com" \
+  --assignee "analyst@financeco.com" \
   --parent "DI-1238"
 ```
 
@@ -76,7 +76,7 @@ Data sources: [List of tables/views]
 Acceptance criteria:
 - [Criterion 1]
 - [Criterion 2]" \
-  --assignee "kchalmers@happymoney.com" \
+  --assignee "analyst@financeco.com" \
   --parent "DI-1238"
 ```
 
@@ -91,7 +91,7 @@ Questions to answer:
 - [Question 1]
 - [Question 2]
 Expected deliverable: [What format/output is needed]" \
-  --assignee "kchalmers@happymoney.com" \
+  --assignee "analyst@financeco.com" \
   --parent "DI-1238"
 ```
 
@@ -123,7 +123,7 @@ acli jira workitem comment --key "DI-XXXX" --body "Comment text here"
 ## Assigning Tickets
 
 ```bash
-acli jira workitem assign --key "DI-XXXX" --assignee "user@happymoney.com"
+acli jira workitem assign --key "DI-XXXX" --assignee "user@financeco.com"
 
 # Self-assign
 acli jira workitem assign --key "DI-XXXX" --assignee "@me"
@@ -141,7 +141,7 @@ TICKET_KEY=$(acli jira workitem create \
   --type "Dashboard" \
   --summary "Investigate data gap in reporting view" \
   --description "Dashboard showing no data since specific date" \
-  --assignee "kchalmers@happymoney.com" \
+  --assignee "analyst@financeco.com" \
   --parent "DI-1238" | grep -oE 'DI-[0-9]+')
 
 echo "Created ticket: $TICKET_KEY"
@@ -154,17 +154,17 @@ git checkout main && git pull origin main
 git checkout -b "$TICKET_KEY"
 
 # 5. Create folder structure
-mkdir -p "tickets/kchalmers/$TICKET_KEY/{source_materials,final_deliverables,exploratory_analysis,archive_versions}"
+mkdir -p "tickets/examples/$TICKET_KEY/{source_materials,final_deliverables,exploratory_analysis,archive_versions}"
 
 # 6. Create README
-cat > "tickets/kchalmers/$TICKET_KEY/README.md" << EOF
+cat > "tickets/examples/$TICKET_KEY/README.md" << EOF
 # $TICKET_KEY: [Ticket Summary]
 
 ## Ticket Information
-- **Jira Link:** https://happymoneyinc.atlassian.net/browse/$TICKET_KEY
+- **Jira Link:** https://financecoinc.atlassian.net/browse/$TICKET_KEY
 - **Type:** Dashboard
 - **Status:** In Spec
-- **Assignee:** Kyle Chalmers
+- **Assignee:** Data Analyst
 
 ## Business Context
 
@@ -195,7 +195,7 @@ EOF
 **Solution:** Use the `--parent` flag with an Epic key (e.g., `--parent "DI-1238"`)
 
 ### Issue: "User not found for email"
-**Solution:** Use the exact email format: `user@happymoney.com` (without quotes in the command)
+**Solution:** Use the exact email format: `user@financeco.com` (without quotes in the command)
 
 ### Issue: "Please provide valid issue type"
 **Solution:** Use one of the valid issue types listed above, matching the exact capitalization

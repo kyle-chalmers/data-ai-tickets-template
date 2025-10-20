@@ -2,9 +2,9 @@
 
 > 📊 **Comprehensive knowledge base for data intelligence ticket resolution and institutional knowledge management**
 
-[![Tickets Resolved](https://img.shields.io/badge/Tickets_Resolved-21-green.svg)](https://github.com/HappyMoneyInc/data-intelligence-tickets)
-[![Team Members](https://img.shields.io/badge/Team_Members-1-blue.svg)](https://github.com/HappyMoneyInc/data-intelligence-tickets/tree/main/tickets)
-[![Documentation](https://img.shields.io/badge/Documentation-Complete-brightgreen.svg)](https://github.com/HappyMoneyInc/data-intelligence-tickets/blob/main/CLAUDE.md)
+[![Tickets Resolved](https://img.shields.io/badge/Tickets_Resolved-21-green.svg)](https://github.com/FinanceCoInc/data-intelligence-tickets)
+[![Team Members](https://img.shields.io/badge/Team_Members-1-blue.svg)](https://github.com/FinanceCoInc/data-intelligence-tickets/tree/main/tickets)
+[![Documentation](https://img.shields.io/badge/Documentation-Complete-brightgreen.svg)](https://github.com/FinanceCoInc/data-intelligence-tickets/blob/main/CLAUDE.md)
 
 ## 📑 Table of Contents
 
@@ -122,7 +122,7 @@ mkdir -p tickets/[team_member]/DI-XXX/{source_materials,final_deliverables,explo
 
 ### ⚙️ Phase 3: Development & Analysis
 - **🏗️ Incremental Development**: Build queries from simple to complex
-- **🎯 Schema Filtering**: Apply `arca.CONFIG.LMS_SCHEMA()` and `LOS_SCHEMA()` patterns
+- **🎯 Schema Filtering**: Apply `arca.CONFIG.loan_management_system_SCHEMA()` and `LOS_SCHEMA()` patterns
 - **🧪 Testing Approach**: Use `LIMIT` clauses and date filters during exploration
 - **📋 Quality Control**: Create validation queries in dedicated QC folder
 
@@ -154,8 +154,8 @@ mkdir -p tickets/[team_member]/DI-XXX/{source_materials,final_deliverables,explo
 
 #### Schema Filtering Patterns
 ```sql
--- Loan Management System (LMS) data
-WHERE SCHEMA_NAME = arca.CONFIG.LMS_SCHEMA()
+-- Loan Management System (loan_management_system) data
+WHERE SCHEMA_NAME = arca.CONFIG.loan_management_system_SCHEMA()
 
 -- Loan Origination System (LOS) data  
 WHERE SCHEMA_NAME = arca.CONFIG.LOS_SCHEMA()
@@ -223,64 +223,64 @@ GROUP BY loan_id;
 ### 📅 2025 Chronological Log
 
 #### July 2025
-- **[DI-934](tickets/kchalmers/DI-934/README.md)** - Fraud Loan Analysis with Repurchase Details  
-  *Kyle Chalmers* | Complete fraud loan analysis across multiple data sources with binary classification patterns and partner ownership tracking
+- **[DI-934](tickets/examples/DI-934/README.md)** - Fraud Loan Analysis with Repurchase Details  
+  *Data Analyst* | Complete fraud loan analysis across multiple data sources with binary classification patterns and partner ownership tracking
 
-- **[DI-1065](tickets/kchalmers/DI-1065/README.md)** - Fortress Quarterly Due Diligence Payment History  
-  *Kyle Chalmers* | Payment history extraction for 80 Fortress loans with quality control validation and attachment source tracking
+- **[DI-1065](tickets/examples/DI-1065/README.md)** - InvestorPartner Quarterly Due Diligence Payment History  
+  *Data Analyst* | Payment history extraction for 80 InvestorPartner loans with quality control validation and attachment source tracking
 
-- **[DI-1099](tickets/kchalmers/DI-1099/README.md)** - Theorem Goodbye Letter List for Loan Sale to Resurgent  
-  *Kyle Chalmers* | Generated goodbye letter lists for 2,179 Theorem loans being sold to Resurgent with SFMC integration and portfolio breakdown
+- **[DI-1099](tickets/examples/DI-1099/README.md)** - PortfolioInvestor Goodbye Letter List for Loan Sale to DebtBuyerB  
+  *Data Analyst* | Generated goodbye letter lists for 2,179 PortfolioInvestor loans being sold to DebtBuyerB with email_platform integration and portfolio breakdown
 
-- **[DI-1100](tickets/kchalmers/DI-1100/README.md)** - Theorem (Pagaya) Credit Reporting and Placement Upload List for Loan Sale  
-  *Kyle Chalmers* | Credit reporting and LoanPro placement upload files for 1,770 Theorem portfolio loans with Resurgent placement status
+- **[ticket-1](tickets/examples/ticket-1/README.md)** - PortfolioInvestor (PortfolioInvestor) Credit Reporting and Placement Upload List for Loan Sale  
+  *Data Analyst* | Credit reporting and loan_management_system placement upload files for 1,770 PortfolioInvestor portfolio loans with DebtBuyerB placement status
 
 #### August 2025
-- **[DI-974](tickets/kchalmers/DI-974/README.md)** - Add SIMM Placement Flag to Intra-month Roll Rate Dashboard  
-  *Kyle Chalmers* | Added dual SIMM placement flags (current and historical) to roll rate dashboards with **40-60% performance optimization**
+- **[DI-974](tickets/examples/DI-974/README.md)** - Add SIMM Placement Flag to Intra-month Roll Rate Dashboard  
+  *Data Analyst* | Added dual SIMM placement flags (current and historical) to roll rate dashboards with **40-60% performance optimization**
 
-- **[DI-1131](tickets/kchalmers/DI-1131/README.md)** - Optimize Email and Phone Lookup Views with Improved Performance  
-  *Kyle Chalmers* | Fixed PayoffUID matching issue for **376,453 multi-loan customers** by updating PII lookup tables to use current ANALYTICS_PII schema sources
+- **[DI-1131](tickets/examples/DI-1131/README.md)** - Optimize Email and Phone Lookup Views with Improved Performance  
+  *Data Analyst* | Fixed PayoffUID matching issue for **376,453 multi-loan customers** by updating PII lookup tables to use current ANALYTICS_PII schema sources
 
-- **[DI-1137](tickets/kchalmers/DI-1137/README.md)** - Regulator Request: Massachusetts - Applications and Loans  
-  *Kyle Chalmers* | Massachusetts regulator request for loan/application data supporting license application: **61 MA resident loans** ($1.03M), **3 small dollar high-rate qualifying loans**, comprehensive SQL documentation with 4-scenario analysis
+- **[DI-1137](tickets/examples/DI-1137/README.md)** - Regulator Request: Massachusetts - Applications and Loans  
+  *Data Analyst* | Massachusetts regulator request for loan/application data supporting license application: **61 MA resident loans** ($1.03M), **3 small dollar high-rate qualifying loans**, comprehensive SQL documentation with 4-scenario analysis
 
-- **[DI-1140](tickets/kchalmers/DI-1140/README.md)** - Identify Originated Loans Associated w/ Suspected Small Fraud Ring  
-  *Kyle Chalmers* | Fraud ring investigation targeting BMO Bank accounts with recent account opening patterns and routing number analysis
+- **[DI-1140](tickets/examples/DI-1140/README.md)** - Identify Originated Loans Associated w/ Suspected Small Fraud Ring  
+  *Data Analyst* | Fraud ring investigation targeting BMO Bank accounts with recent account opening patterns and routing number analysis
 
-- **[DI-1141](tickets/kchalmers/DI-1141/README.md)** - Sale Files for Bounce - Q2 2025 Sale  
-  *Kyle Chalmers* | Q2 2025 debt sale population (1,591 loans, **$19.8M**) with enhanced settlement monitoring, optimized SQL queries (**50-70% performance improvement**), and comprehensive exclusion analysis
+- **[DI-1141](tickets/examples/DI-1141/README.md)** - Sale Files for DebtBuyerA - Q2 2025 Sale  
+  *Data Analyst* | Q2 2025 debt sale population (1,591 loans, **$19.8M**) with enhanced settlement monitoring, optimized SQL queries (**50-70% performance improvement**), and comprehensive exclusion analysis
 
-- **[DI-1143](tickets/kchalmers/DI-1143/README.md)** - Align Oscilar Plaid Data Structure With Historical Plaid DATA_STORE Structure  
-  *Kyle Chalmers* | Created views to transform Oscilar Plaid data to match historical DATA_STORE structure for Prism vendor compatibility
+- **[DI-1143](tickets/examples/DI-1143/README.md)** - Align Oscilar Plaid Data Structure With Historical Plaid DATA_STORE Structure  
+  *Data Analyst* | Created views to transform Oscilar Plaid data to match historical DATA_STORE structure for Prism vendor compatibility
 
-- **[DI-1146](tickets/kchalmers/DI-1146/README.md)** - Mobile vs Desktop Application Analysis  
-  *Kyle Chalmers* | Device usage pattern analysis showing **68.9% mobile-only** vs **26.9% desktop-only** applications with **99.96% data coverage** and 4.35% cross-device behavior
+- **[DI-1146](tickets/examples/DI-1146/README.md)** - Mobile vs Desktop Application Analysis  
+  *Data Analyst* | Device usage pattern analysis showing **68.9% mobile-only** vs **26.9% desktop-only** applications with **99.96% data coverage** and 4.35% cross-device behavior
 
-- **[DI-1148](tickets/kchalmers/DI-1148/README.md)** - Bank Account LMS Views Deployment  
-  *Kyle Chalmers* | Created views for bank account data alignment in loan management system
+- **[DI-1148](tickets/examples/DI-1148/README.md)** - Bank Account loan_management_system Views Deployment  
+  *Data Analyst* | Created views for bank account data alignment in loan management system
 
-- **[DI-1150](tickets/kchalmers/DI-1150/README.md)** - Application Drop-off Analysis  
-  *Kyle Chalmers* | Comprehensive analysis of application funnel drop-offs with API vs non-API channel comparison and fraud correlation patterns
+- **[DI-1150](tickets/examples/DI-1150/README.md)** - Application Drop-off Analysis  
+  *Data Analyst* | Comprehensive analysis of application funnel drop-offs with API vs non-API channel comparison and fraud correlation patterns
 
-- **[DI-1151](tickets/kchalmers/DI-1151/README.md)** - Bounce Q2 2025 Debt Sale Deliverables  
-  *Kyle Chalmers* | Generated three required debt sale deliverable files (marketing goodbye letters, credit reporting, bulk upload) for **1,483 selected loans** with comprehensive workflow documentation ([**INSTRUCTIONS.md**](tickets/kchalmers/DI-1151/INSTRUCTIONS.md))
+- **[DI-1151](tickets/examples/DI-1151/README.md)** - DebtBuyerA Q2 2025 Debt Sale Deliverables  
+  *Data Analyst* | Generated three required debt sale deliverable files (marketing goodbye letters, credit reporting, bulk upload) for **1,483 selected loans** with comprehensive workflow documentation ([**INSTRUCTIONS.md**](tickets/examples/DI-1151/INSTRUCTIONS.md))
 
-- **[DI-1176](tickets/kchalmers/DI-1176/README.md)** - Fair Lending Audit - Theorem Application Reconciliation Analysis  
-  *Kyle Chalmers* | Resolved **1.5M application discrepancy** for Fair Lending audit by clarifying definitional differences - only **3.3% were true applications** vs pricing inquiries
+- **[DI-1176](tickets/examples/DI-1176/README.md)** - Fair Lending Audit - PortfolioInvestor Application Reconciliation Analysis  
+  *Data Analyst* | Resolved **1.5M application discrepancy** for Fair Lending audit by clarifying definitional differences - only **3.3% were true applications** vs pricing inquiries
 
-- **[DI-1179](tickets/kchalmers/DI-1179/README.md)** - Fraud Analytics View Implementation
-  *Kyle Chalmers* | Created centralized fraud-only analytics view consolidating 4 detection sources into single comprehensive view with standardized logic across FRESHSNOW → BRIDGE → ANALYTICS layers
+- **[DI-1179](tickets/examples/DI-1179/README.md)** - Fraud Analytics View Implementation
+  *Data Analyst* | Created centralized fraud-only analytics view consolidating 4 detection sources into single comprehensive view with standardized logic across FRESHSNOW → BRIDGE → ANALYTICS layers
 
 #### September 2025
-- **[DI-1272](tickets/kchalmers/DI-1272/README.md)** - Enhanced VW_LMS_CUSTOM_LOAN_SETTINGS_CURRENT with 185 Missing Fields
-  *Kyle Chalmers* | Enhanced view from 278 to 463 fields (67% increase) by adding missing CUSTOM_FIELD_VALUES. Comprehensive null analysis on 127K loans identified active usage: **9.66% HAPPY_SCORE adoption**, **7.35% loan modifications**, **5.05% bankruptcy tracking**. Identified 226 unused fields (49%) for potential cleanup via SERV-755.
+- **[ticket-3](tickets/examples/ticket-3/README.md)** - Enhanced VW_loan_management_system_CUSTOM_LOAN_SETTINGS_CURRENT with 185 Missing Fields
+  *Data Analyst* | Enhanced view from 278 to 463 fields (67% increase) by adding missing CUSTOM_FIELD_VALUES. Comprehensive null analysis on 127K loans identified active usage: **9.66% HAPPY_SCORE adoption**, **7.35% loan modifications**, **5.05% bankruptcy tracking**. Identified 226 unused fields (49%) for potential cleanup via SERV-755.
 
 ### 🎯 High-Impact Deliverables
 - **💰 $19.8M Portfolio Management**: Comprehensive debt sale analysis and transfer workflows
 - **⚡ 40-70% Performance Improvements**: Optimized SQL queries and dashboard efficiency  
 - **📊 99.96% Data Coverage**: Near-complete application analysis with device usage insights
-- **📋 Comprehensive Workflows**: Standardized processes for debt sale deliverables ([INSTRUCTIONS.md](tickets/kchalmers/DI-1151/INSTRUCTIONS.md))
+- **📋 Comprehensive Workflows**: Standardized processes for debt sale deliverables ([INSTRUCTIONS.md](tickets/examples/DI-1151/INSTRUCTIONS.md))
 
 ## 🤝 Contributing
 
