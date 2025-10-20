@@ -39,10 +39,10 @@ This repository serves as a **continuous knowledge base** for solving data analy
 1. **📖 Review Core Documentation**
    - [`CLAUDE.md`](CLAUDE.md) - AI assistance instructions and workflows
    - [`documentation/data_catalog.md`](documentation/data_catalog.md) - Database architecture and object reference
-   - [`documentation/prerequisite_installations.md`](documentation/prerequisite_installations.md) - Required tools setup
+   - [`documentation/helpful_mac_installations.md`](documentation/helpful_mac_installations.md) - Required tools setup
 
 2. **🛠️ Environment Setup**
-   - Install required [CLI tools](documentation/prerequisite_installations.md)
+   - Install required [CLI tools](documentation/helpful_mac_installations.md)
    - Configure database and API connections
    - Set up authentication for Snowflake (Duo), Jira, and GitHub
 
@@ -64,8 +64,8 @@ data-analysis-tickets/
 ├── CLAUDE.md                   # AI assistance instructions and workflows
 ├── documentation/              # Core technical documentation
 │   ├── data_catalog.md        # Database architecture and schema reference
-│   ├── db_deploy_template.sql # Standardized deployment scripts
-│   └── prerequisite_installations.md # Tool setup guide
+│   ├── data_business_context.md # Business context and definitions
+│   └── helpful_mac_installations.md # Tool setup guide
 ├── resources/                  # Shared utilities and integrations
 │   └── slack_user_functions.zsh # Slack CLI integration functions
 └── tickets/                    # Organized solutions by team member
@@ -102,7 +102,7 @@ data-analysis-tickets/
 - **Google Drive Integration**: Automated backup and file synchronization
 - **Database Deployment**: Standardized cross-environment deployment scripts
 
-> 📋 **Installation Guide**: See [`documentation/prerequisite_installations.md`](documentation/prerequisite_installations.md) for complete setup instructions.
+> 📋 **Installation Guide**: See [`documentation/helpful_mac_installations.md`](documentation/helpful_mac_installations.md) for complete setup instructions.
 
 ## 📋 Ticket Resolution Workflow
 
@@ -154,7 +154,6 @@ mkdir -p tickets/[team_member]/TICKET-XXX/{source_materials,final_deliverables,e
 [INSERT BEST PRACTICES]
 
 ### 🏗️ Deployment Standards
-- **📜 Templates**: Use [`db_deploy_template.sql`](documentation/db_deploy_template.sql) for cross-environment deployment
 - **🔄 Environment Variables**: Support dev/test/prod with parameter switching
 - **🔐 Permission Preservation**: Include `COPY GRANTS` in CREATE statements
 - **🔍 Validation**: Test deployment scripts before production execution
@@ -197,4 +196,4 @@ mkdir -p tickets/[team_member]/TICKET-XXX/{source_materials,final_deliverables,e
 ### 📞 Support & Resources
 - **📖 Technical Documentation**: [`CLAUDE.md`](CLAUDE.md) for detailed workflows
 - **🗄️ Database Reference**: [`data_catalog.md`](documentation/data_catalog.md) for schema guidance
-- **🛠️ Tool Setup**: [`prerequisite_installations.md`](documentation/prerequisite_installations.md) for environment configuration
+- **🛠️ Tool Setup**: [`helpful_mac_installations.md`](documentation/helpful_mac_installations.md) for environment configuration

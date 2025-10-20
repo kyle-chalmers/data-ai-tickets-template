@@ -119,84 +119,11 @@ For optimal performance, ensure all required tools are installed. **Claude Code 
 - **Benefits**: Enhanced code understanding, automated refactoring, semantic search and analysis
 - **Use Cases**: Complex code modifications, architectural analysis, intelligent code generation
 
-See the **[Prerequisite Installation Guide](./documentation/prerequisite_installations.md)** for detailed installation instructions including:
+See the **[Helpful Mac Installations Guide](./documentation/helpful_mac_installations.md)** for detailed installation instructions including:
 - Essential CLI tools (tree, jq, bat, ripgrep, fd, fzf, htop)
-- Database and API tools (already installed: Snowflake CLI, Atlassian CLI, GitHub CLI, Databricks CLI)
+- Database and API tools (Snowflake CLI, Atlassian CLI, GitHub CLI, Databricks CLI)
 - Custom integrations (Slack CLI functions)
-- Platform-specific installation instructions (macOS Homebrew, Windows options)
-
-### Custom Sub-Agents
-
-This repository includes specialized sub-agents stored in `.claude/agents/` that Claude Code will automatically discover and use for specific tasks:
-
-#### Jira Ticket Setup Agent
-**Location:** `.claude/agents/jira-ticket-setup-agent.md`
-
-**Purpose:** Automates the complete Jira ticket workflow including:
-- Creating DI project tickets with proper epic linking
-- Transitioning tickets to appropriate status
-- Creating git branches from main
-- Setting up standardized folder structure
-- Initializing ticket README files
-
-**When Used:** Claude Code will automatically invoke this agent when you request Jira ticket creation, branch setup, or ticket workflow initialization.
-
-**Usage Examples:**
-- "Create a ticket to investigate missing data in the payment dashboard"
-- "Setup a new ticket for building a loan metrics view, assign to kyle"
-- "Create branch and folders for DI-1234"
-
-**Features:**
-- Handles epic linking requirement (default: DI-1238)
-- Supports all DI issue types (Dashboard, Research, Data Engineering Task, etc.)
-- Can perform full workflow or individual steps
-- Includes error handling for common CLI issues
-
-#### SQL Code Review and Data Quality Agent
-**Location:** `.claude/agents/data-quality-review-agent.md`
-
-**Purpose:** Provides comprehensive independent review of SQL code and data quality for Snowflake deliverables, including:
-- Deep technical SQL code review
-- Snowflake best practices validation
-- Independent query re-execution and verification
-- Data quality validation and testing
-- Anti-pattern detection
-- Final approval for PR submission
-
-**When to Use:** Invoke this agent before creating pull requests when:
-- SQL queries are complete and ready for technical review
-- You need independent verification of query correctness
-- Data outputs require quality validation
-- QC validation queries need independent testing
-- You want to catch SQL anti-patterns and performance issues
-
-**Usage Example:**
-```markdown
-DI-XXXX is complete with all deliverables. Please invoke the SQL Code Review
-and Data Quality Agent to perform:
-1. Deep SQL code review of all queries
-2. Independent re-execution and verification
-3. Data quality validation
-4. Anti-pattern detection
-5. Final approval for PR submission
-```
-
-**Review Coverage:**
-- **SQL Structure**: Code organization, formatting, documentation
-- **Query Correctness**: Join logic, filters, aggregations, subqueries
-- **Snowflake-Specific**: Warehouse selection, table types, clustering, caching
-- **Data Types**: Type consistency, conversions, NULL handling
-- **Performance**: Query optimization, index usage, execution plans
-- **Data Quality**: Duplicates, NULLs, ranges, referential integrity
-- **Anti-Patterns**: 50+ common SQL issues categorized by severity
-
-**Key Benefits:**
-- Independent verification catches errors before PR submission
-- Standardized review checklist ensures consistency
-- Re-executes queries to validate results match original
-- Provides detailed review report with specific findings
-- Identifies performance issues and optimization opportunities
-- Flags critical issues, performance concerns, and data quality risks
+- Platform-specific installation instructions (macOS Homebrew)
 
 ## Available CLI Tools
 
@@ -695,8 +622,6 @@ Target 200 words maximum with business-focused content:
 ```
 **TLDR:** This is an issue especially for loans with no settlement data where we are collecting from them (327 loans, $438K collected), and for loans where we collected after their placement sale date (166 loans to external agencies).
 ```
-
-See `.claude/agents/data-quality-review-agent.md` Ticket Comment Style Guide section for full examples.
 
 ### File Organization Standards
 
