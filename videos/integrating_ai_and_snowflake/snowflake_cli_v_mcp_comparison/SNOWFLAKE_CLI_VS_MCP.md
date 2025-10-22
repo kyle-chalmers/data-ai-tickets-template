@@ -20,7 +20,7 @@ Both tools provide access to Snowflake data with significant overlap in capabili
 | **Permission Controls** | Not configurable | ✅ Configurable via YAML |
 | **Advanced Services** | Basic access | ✅ Better configured (Cortex, Analyst) |
 | **Claude Desktop** | ❌ Not compatible | ✅ Native integration |
-| **Token Usage** | ~100 tokens (output) | ~500-5,000+ tokens (data in context) |
+| **Token Usage** | Smaller token usage (output) | Much higher token usage (data in context) |
 
 ---
 
