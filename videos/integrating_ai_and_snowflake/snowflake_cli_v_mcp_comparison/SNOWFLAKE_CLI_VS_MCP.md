@@ -1,6 +1,6 @@
 # Snowflake CLI vs MCP: Comparison Guide
 
-Reference for understanding the differences between Snowflake CLI and MCP approaches.
+Reference for understanding the differences between Snowflake CLI and MCP approaches. I generally prefer using the Snowflake CLI, but I've heard of other individuals who like the MCP, so it is good to test them both!
 
 ---
 
