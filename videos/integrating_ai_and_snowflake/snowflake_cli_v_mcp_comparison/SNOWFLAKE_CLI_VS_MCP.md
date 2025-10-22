@@ -1,133 +1,110 @@
-# Snowflake CLI vs MCP: Quick Decision Guide
+# Snowflake CLI vs MCP: Comparison Guide
 
-Fast reference for choosing between Snowflake CLI and MCP.
-
----
-
-## TL;DR
-
-```
-Need CSV export? → Use CLI
-Dataset > 240 rows? → Use CLI (MCP hits limit)
-Automation/scripts? → Use CLI
-Interactive exploration (< 200 rows)? → Use MCP
-Quick schema questions? → Use MCP
-```
-
-**Reality Check:** CLI handles **41,666x more data** than MCP (10M vs 240 rows tested)
+Reference for understanding the differences between Snowflake CLI and MCP approaches.
 
 ---
 
-## Key Differences
+## Overview
+
+Both tools provide access to Snowflake data with significant overlap in capabilities. The CLI excels at data pulling and exporting, while MCP is optimized for querying and interactive analysis. However, they share many use cases and the choice often depends on context requirements, permissioning needs, and integration preferences.
+
+---
+
+## Key Distinguishing Factors
 
 | Feature | CLI | MCP |
 |---------|-----|-----|
-| **How it works** | Bash commands | Native MCP tools |
-| **CSV export** | ✅ Built-in `--format csv` | ⚠️ Needs conversion |
-| **Max rows tested** | ✅ 10,000,000 | ❌ 240 (hard limit) |
-| **Interactive** | ⚠️ One-off queries | ✅ Remembers context |
-| **Automation** | ✅ Scripts, cron jobs | ❌ Not for automation |
-| **Natural language** | ❌ SQL only | ✅ Plain English |
-| **Setup time** | 2 minutes | 5 minutes |
+| **Exporting Data** | ✅ Built-in formats | ⚠️ Requires conversion |
+| **Data Limits** | Large datasets | 1 MB response limit |
+| **Context Usage** | Minimal tokens | High token consumption |
+| **Permission Controls** | Not configurable | ✅ Configurable via YAML |
+| **Advanced Services** | Basic access | ✅ Better configured (Cortex, Analyst) |
+| **Claude Desktop** | ❌ Not compatible | ✅ Native integration |
+| **Token Usage** | ~100 tokens (output) | ~500-5,000+ tokens (data in context) |
 
 ---
 
-## When to Use Each
+## Primary Use Cases
 
-### Use CLI For:
+### CLI Strengths
 
-| Use Case | Why |
-|----------|-----|
-| **Any dataset > 240 rows** | MCP hits 25K token limit |
-| **CSV export** | Native support, any size |
-| **Production reports** | Reliable, reproducible |
-| **Automation** | Scripts, scheduled jobs |
-| **Large datasets** | Tested successfully to 10M rows |
+**Data Pulling & Export:**
+- Native CSV, JSON, and other format support
+- Handles large datasets efficiently
+- Production reports and scheduled jobs
+- Automation and scripting workflows
 
 **Example:**
 ```bash
 snow sql -q "SELECT * FROM customers WHERE country = 'US'" --format csv > data.csv
 ```
 
-### Use MCP For:
+### MCP Strengths
 
-| Use Case | Why |
-|----------|-----|
-| **Small datasets (< 200 rows)** | Interactive analysis |
-| **Schema exploration** | "What tables exist?" |
-| **Follow-up questions** | Remembers context |
-| **Ad-hoc queries** | No SQL required |
-| **Quick insights** | Automatic interpretation |
+**Interactive Analysis & Querying:**
+- Natural language queries
+- Conversational context across questions
+- Native Claude Desktop integration
+- Schema exploration and discovery
+- Configured access to Cortex AI services
 
 **Example:**
 ```
-"Show me top 50 customers by revenue and analyze their patterns"
+"Show me top customers by revenue and analyze their patterns"
 ```
 
 ---
 
-## Quick Decision Matrix
+## Configuration & Permissions
 
-```
-Dataset Size → Recommended Tool
+### Snowflake CLI
+- No built-in permission controls
+- Uses Snowflake role permissions only
+- Authentication via config.toml
 
-< 100 rows         → Either (both tested)
-100 - 200 rows     → MCP for interactive, CLI for export
-200 - 240 rows     → MCP at limit, CLI safer
-240+ rows          → CLI only (MCP fails)
-1,000+ rows        → CLI only
-10,000+ rows       → CLI only
-1M+ rows           → CLI only (tested ✅)
-```
-
----
-
-## Recommended Workflow
-
-Use **both** together:
-
-| Step | Tool | Action |
-|------|------|--------|
-| 1. Explore | MCP | "What data exists?" (< 200 rows) |
-| 2. Refine | MCP | "Show recent sales" (< 200 rows) |
-| 3. Export | CLI | `snow sql -f query.sql --format csv` |
-| 4. Analyze | Python/Excel | Work with full dataset |
-
-**Best Practice:** Explore with MCP → Export with CLI
+### Snowflake MCP
+- Configurable SQL statement permissions via YAML
+- Granular control over allowed operations (SELECT, CREATE, DROP, etc.)
+- Service-specific configurations
+- Advanced service integration (Cortex Agent, Analyst, Search)
+- Authentication via multiple methods
 
 ---
 
-## Real-World Example
+## Context & Token Considerations
 
-**Scenario:** Analyze 700K customer transactions
+### CLI
+- Minimal Claude context usage
+- Data stays external
+- ~100 tokens for command output
+- Suitable for large dataset operations
 
-**Wrong Approach:**
-- ❌ Try MCP → Hits 240 row limit immediately
-- ❌ Cannot complete analysis
-
-**Right Approach:**
-- ✅ Sample 100 rows with MCP (explore structure)
-- ✅ Export full 700K rows with CLI
-- ✅ Analyze complete dataset with Python/Excel
-- ✅ Success in minutes
+### MCP
+- Data loaded into Claude's context
+- 1 MB response limit
+- High token usage for large results (~500-5,000+ tokens)
+- Best for small to medium datasets
 
 ---
 
-## Cost Comparison
+## Workflow Integration
 
-| Aspect | CLI | MCP |
-|--------|-----|-----|
-| **Snowflake compute** | Same | Same |
-| **Claude tokens** | ~100 (output only) | ~500-5,000+ (data in context) |
+Use **both** together for optimal results:
 
-**Note:** Large MCP queries consume many tokens due to data being loaded into context.
+| Phase | Tool | Purpose |
+|-------|------|---------|
+| Explore | MCP | Schema discovery, small samples |
+| Refine | MCP | Interactive querying, context-aware analysis |
+| Extract | CLI | Export large datasets |
+| Analyze | Python/Excel | Work with complete data |
+
+**Common Pattern:** Explore with MCP → Export with CLI → Analyze locally
 
 ---
 
 ## Setup
 
-### CLI (2 minutes)
-
+### CLI Setup
 ```bash
 brew install snowflake-cli
 snow connection add --connection-name prod ...
@@ -136,39 +113,34 @@ snow connection test
 
 [Full CLI Setup Guide](../instructions/SNOWFLAKE_CLI_SETUP.md)
 
-### MCP (5 minutes)
-
+### MCP Setup
 ```bash
 pip install uv
-claude mcp add --transport stdio snowflake -- $(which uvx) snowflake-labs-mcp ...
-claude mcp list
+claude mcp add --scope user --transport stdio snowflake -- \
+  /Users/YOUR_USERNAME/Library/Python/3.9/bin/uvx snowflake-labs-mcp \
+  --service-config-file /Users/YOUR_USERNAME/.mcp/snowflake_config.yaml \
+  --account YOUR-ACCOUNT \
+  --user YOUR-USER \
+  --role YOUR-ROLE \
+  --private-key-file /Users/YOUR_USERNAME/.snowflake/keys/rsa_key.p8
 ```
 
 [Full MCP Setup Guide](../instructions/SNOWFLAKE_MCP_SETUP.md)
 
 ---
 
-## Bottom Line
+## Summary
 
-**CLI (Use 80%+ of the time):**
-- Production-ready
-- Unlimited scale (tested to 10M rows)
-- CSV export native
-- Automation-friendly
+**CLI:** Best for data extraction, large datasets, automation, and production workflows.
 
-**MCP (Use < 20% of the time):**
-- Exploration only
-- Hard limit: 240 rows
-- Great for discovery
-- No automation
+**MCP:** Best for interactive exploration, natural language queries, Claude Desktop integration, and configured access to advanced Snowflake services.
 
-**Together:** They complement each other perfectly for the complete workflow.
+**Together:** Complementary tools that enable the complete data workflow from exploration to production.
 
 ---
 
-**For complete test results:** See [Stress Test Plan and Results](./stress_test_plan_and_results.md)
+**For detailed test results:** See [Stress Test Plan and Results](./stress_test_plan_and_results.md)
 
 **Setup guides:**
 - [Snowflake CLI Setup](../instructions/SNOWFLAKE_CLI_SETUP.md)
 - [Snowflake MCP Setup](../instructions/SNOWFLAKE_MCP_SETUP.md)
-- [MCP Troubleshooting](../instructions/TROUBLESHOOTING_MCP.md)
