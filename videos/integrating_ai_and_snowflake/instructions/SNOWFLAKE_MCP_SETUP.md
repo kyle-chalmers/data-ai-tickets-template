@@ -65,9 +65,7 @@ claude mcp list
 
 The Snowflake MCP server supports all authentication methods from the [Snowflake Python Connector](https://docs.snowflake.com/en/developer-guide/python-connector/python-connector-connect). Choose the method that matches your organization's security requirements.
 
-### 1. Private Key Authentication (Recommended for Production)
-
-**Best for:** Production environments, automated workflows, no interactive login required
+### 1. Private Key Authentication
 
 ```bash
 # Ensure key is unencrypted
@@ -98,8 +96,6 @@ claude mcp add --scope user --transport stdio snowflake -- \
 ```
 
 ### 2. Multi-Factor Authentication (MFA/2FA)
-
-**Best for:** Enhanced security with time-based one-time passwords (TOTP)
 
 **Option A: Passcode in Password (Most Common)**
 
@@ -158,8 +154,6 @@ claude mcp add --scope user --transport stdio snowflake -- \
 
 ### 3. Single Sign-On (SSO)
 
-**Best for:** Organizations using Okta, ADFS, or other SSO providers
-
 ```bash
 # For externalbrowser SSO (opens browser for authentication)
 claude mcp add --scope user --transport stdio snowflake -- \
@@ -177,8 +171,6 @@ claude mcp add --scope user --transport stdio snowflake -- \
 
 ### 4. OAuth Authentication
 
-**Best for:** Applications using OAuth 2.0 tokens
-
 ```bash
 # Set OAuth token as environment variable
 export SNOWFLAKE_OAUTH_TOKEN="your-oauth-token-here"
@@ -191,9 +183,7 @@ claude mcp add --scope user --transport stdio snowflake -- \
   --role YOUR-ROLE
 ```
 
-### 5. Password Authentication (Testing Only)
-
-**Best for:** Local development and testing (NOT recommended for production)
+### 5. Password Authentication
 
 ```bash
 claude mcp add --scope user --transport stdio snowflake -- \
@@ -205,8 +195,6 @@ claude mcp add --scope user --transport stdio snowflake -- \
 ```
 
 ### 6. Programmatic Access Token (PAT)
-
-**Best for:** Service accounts and automated workflows
 
 ```bash
 # PATs use the password parameter
