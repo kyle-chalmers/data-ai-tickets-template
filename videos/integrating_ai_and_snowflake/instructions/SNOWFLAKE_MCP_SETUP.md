@@ -75,6 +75,7 @@ head -1 ~/.snowflake/keys/rsa_key.p8
 
 claude mcp add --scope user --transport stdio snowflake -- \
   /Users/YOUR_USERNAME/Library/Python/3.9/bin/uvx snowflake-labs-mcp \
+  --service-config-file /Users/YOUR_USERNAME/.mcp/snowflake_config.yaml \
   --account YOUR-ACCOUNT \
   --user YOUR-USER \
   --role YOUR-ROLE \
@@ -87,7 +88,8 @@ claude mcp add --scope user --transport stdio snowflake -- \
 export SNOWFLAKE_PRIVATE_KEY_FILE_PWD="your-key-password"
 
 claude mcp add --scope user --transport stdio snowflake -- \
-  $(which uvx) snowflake-labs-mcp \
+  /Users/YOUR_USERNAME/Library/Python/3.9/bin/uvx snowflake-labs-mcp \
+  --service-config-file /Users/YOUR_USERNAME/.mcp/snowflake_config.yaml \
   --account YOUR-ACCOUNT \
   --user YOUR-USER \
   --role YOUR-ROLE \
@@ -107,7 +109,8 @@ When your Snowflake account requires MFA, append the passcode to your password:
 # Combined value: "MyPass123987654"
 
 claude mcp add --scope user --transport stdio snowflake -- \
-  $(which uvx) snowflake-labs-mcp \
+  /Users/YOUR_USERNAME/Library/Python/3.9/bin/uvx snowflake-labs-mcp \
+  --service-config-file /Users/YOUR_USERNAME/.mcp/snowflake_config.yaml \
   --account YOUR-ACCOUNT \
   --user YOUR-USER \
   --password "YOUR-PASSWORD123456" \
@@ -122,7 +125,8 @@ claude mcp add --scope user --transport stdio snowflake -- \
 export SNOWFLAKE_PASSCODE="123456"
 
 claude mcp add --scope user --transport stdio snowflake -- \
-  $(which uvx) snowflake-labs-mcp \
+  /Users/YOUR_USERNAME/Library/Python/3.9/bin/uvx snowflake-labs-mcp \
+  --service-config-file /Users/YOUR_USERNAME/.mcp/snowflake_config.yaml \
   --account YOUR-ACCOUNT \
   --user YOUR-USER \
   --password YOUR-PASSWORD \
@@ -144,7 +148,8 @@ export SNOWFLAKE_ROLE="YOUR-ROLE"
 
 # Then add MCP server without exposing credentials
 claude mcp add --scope user --transport stdio snowflake -- \
-  $(which uvx) snowflake-labs-mcp
+  /Users/YOUR_USERNAME/Library/Python/3.9/bin/uvx snowflake-labs-mcp \
+  --service-config-file /Users/YOUR_USERNAME/.mcp/snowflake_config.yaml
 ```
 
 **MFA Important Notes:**
@@ -157,7 +162,8 @@ claude mcp add --scope user --transport stdio snowflake -- \
 ```bash
 # For externalbrowser SSO (opens browser for authentication)
 claude mcp add --scope user --transport stdio snowflake -- \
-  $(which uvx) snowflake-labs-mcp \
+  /Users/YOUR_USERNAME/Library/Python/3.9/bin/uvx snowflake-labs-mcp \
+  --service-config-file /Users/YOUR_USERNAME/.mcp/snowflake_config.yaml \
   --account YOUR-ACCOUNT \
   --user YOUR-USER \
   --authenticator externalbrowser \
@@ -176,7 +182,8 @@ claude mcp add --scope user --transport stdio snowflake -- \
 export SNOWFLAKE_OAUTH_TOKEN="your-oauth-token-here"
 
 claude mcp add --scope user --transport stdio snowflake -- \
-  $(which uvx) snowflake-labs-mcp \
+  /Users/YOUR_USERNAME/Library/Python/3.9/bin/uvx snowflake-labs-mcp \
+  --service-config-file /Users/YOUR_USERNAME/.mcp/snowflake_config.yaml \
   --account YOUR-ACCOUNT \
   --user YOUR-USER \
   --authenticator oauth \
@@ -187,7 +194,8 @@ claude mcp add --scope user --transport stdio snowflake -- \
 
 ```bash
 claude mcp add --scope user --transport stdio snowflake -- \
-  $(which uvx) snowflake-labs-mcp \
+  /Users/YOUR_USERNAME/Library/Python/3.9/bin/uvx snowflake-labs-mcp \
+  --service-config-file /Users/YOUR_USERNAME/.mcp/snowflake_config.yaml \
   --account YOUR-ACCOUNT \
   --user YOUR-USER \
   --password YOUR-PASSWORD \
@@ -201,7 +209,8 @@ claude mcp add --scope user --transport stdio snowflake -- \
 export SNOWFLAKE_PASSWORD="your-pat-token-here"
 
 claude mcp add --scope user --transport stdio snowflake -- \
-  $(which uvx) snowflake-labs-mcp \
+  /Users/YOUR_USERNAME/Library/Python/3.9/bin/uvx snowflake-labs-mcp \
+  --service-config-file /Users/YOUR_USERNAME/.mcp/snowflake_config.yaml \
   --account YOUR-ACCOUNT \
   --user YOUR-USER \
   --password "$SNOWFLAKE_PASSWORD" \
