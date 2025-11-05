@@ -12,7 +12,6 @@ FROM (
         table_name,
         COUNT(*) as column_count
     FROM SNOWFLAKE_SAMPLE_DATA.INFORMATION_SCHEMA.COLUMNS
-    WHERE table_schema != 'INFORMATION_SCHEMA'
     GROUP BY table_schema, table_name
 ) subquery
 GROUP BY table_schema

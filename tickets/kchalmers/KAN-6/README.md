@@ -9,22 +9,24 @@ This analysis provides metadata insights into the structure of Snowflake's sampl
 ## Key Findings
 
 ### Total Column Count
-**1,094 total columns** across all tables in SNOWFLAKE_SAMPLE_DATA (excluding INFORMATION_SCHEMA).
+**1,838 total columns** across all tables in SNOWFLAKE_SAMPLE_DATA (including INFORMATION_SCHEMA).
 
 ### Schema Breakdown
-The database contains 6 schemas with the following distribution:
+The database contains 7 schemas with the following distribution:
 
 | Schema | Tables | Columns |
 |--------|--------|---------|
+| INFORMATION_SCHEMA | 53 | 744 |
 | TPCDS_SF100TCL | 24 | 425 |
 | TPCDS_SF10TCL | 24 | 425 |
 | TPCH_SF1 | 8 | 61 |
 | TPCH_SF10 | 8 | 61 |
 | TPCH_SF100 | 8 | 61 |
 | TPCH_SF1000 | 8 | 61 |
-| **Total** | **80** | **1,094** |
+| **Total** | **133** | **1,838** |
 
 ### Dataset Types
+- **INFORMATION_SCHEMA**: System metadata views with 53 tables documenting database objects, permissions, and configuration
 - **TPC-DS (Transaction Processing Performance Council Decision Support)**: 2 schemas with 24 tables each, 425 columns per schema
 - **TPC-H (Transaction Processing Performance Council Benchmark H)**: 4 schemas with 8 tables each, 61 columns per schema
 
@@ -36,16 +38,16 @@ The database contains 6 schemas with the following distribution:
 3. **3_columns_by_schema.sql** - Summary by schema
 
 ### CSV Results
-1. **1_total_column_count.csv** - Single total (1,094 columns)
-2. **2_columns_by_table_80_tables.csv** - All 80 tables with column counts
-3. **3_columns_by_schema_6_schemas.csv** - Schema-level summary (6 schemas)
+1. **1_total_column_count.csv** - Single total (1,838 columns)
+2. **2_columns_by_table_133_tables.csv** - All 133 tables with column counts
+3. **3_columns_by_schema_7_schemas.csv** - Schema-level summary (7 schemas)
 
 ## Methodology
 
 ### Data Source
 - Database: `SNOWFLAKE_SAMPLE_DATA`
 - System View: `INFORMATION_SCHEMA.COLUMNS`
-- Filter: Excluded `INFORMATION_SCHEMA` schema from analysis
+- Scope: All schemas included (INFORMATION_SCHEMA + data schemas)
 
 ### Analysis Approach
 1. Queried INFORMATION_SCHEMA.COLUMNS for all table metadata
@@ -57,10 +59,10 @@ The database contains 6 schemas with the following distribution:
 
 ## Assumptions Made
 
-1. **Schema Exclusion**: INFORMATION_SCHEMA was excluded as it contains system metadata views, not user data tables
-   - **Reasoning**: The ticket requested analysis of sample data, not system catalog views
-   - **Context**: INFORMATION_SCHEMA is a standard Snowflake system schema present in all databases
-   - **Impact**: Focus remains on actual data tables (TPC-DS and TPC-H benchmarks)
+1. **Schema Inclusion**: INFORMATION_SCHEMA is included in the analysis as it is part of the SNOWFLAKE_SAMPLE_DATA database
+   - **Reasoning**: Complete metadata analysis should include all schemas, including system views
+   - **Context**: INFORMATION_SCHEMA provides valuable metadata about database structure and objects
+   - **Impact**: Total count includes both data tables (TPC-DS and TPC-H) and system metadata views
 
 2. **Column Count Definition**: Each column counted once per table, regardless of data type or constraints
    - **Reasoning**: Standard metadata analysis counts all columns equally
