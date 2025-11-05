@@ -101,7 +101,7 @@ acli jira workitem list --assignee "$(acli jira auth whoami --json | jq -r '.ema
 ## CLI vs. MCP: Which to Use?
 
 For a detailed comparison of when to use Atlassian CLI vs. Atlassian MCP, see:
-**[CLI vs. MCP Comparison Guide](./CLI_VS_MCP_COMPARISON.md)**
+**[CLI vs. MCP Comparison Guide](./README.md)**
 
 **Quick Summary:**
 - **Use CLI** for automation, scripting, CI/CD, and bulk operations
