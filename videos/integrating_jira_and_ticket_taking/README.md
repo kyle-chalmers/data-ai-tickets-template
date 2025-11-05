@@ -14,15 +14,13 @@ Both tools provide access to Jira and Confluence with significant overlap in cap
 
 | Feature | CLI (acli) | MCP |
 |---------|-----------|-----|
-| **Automation** | ✅ Full scripting support | ❌ Not available |
-| **CI/CD Integration** | ✅ Native support | ❌ Not available |
-| **Batch Operations** | ✅ Efficient loops | ⚠️ One at a time |
-| **Authentication** | API Token or OAuth | OAuth only (browser) |
-| **Learning Curve** | Moderate (commands) | Low (conversational) |
-| **Context Awareness** | None | ✅ Full conversation context |
-| **Natural Language** | ❌ Command syntax required | ✅ Plain English queries |
-| **Token Usage** | Minimal | Higher (LLM processing) |
-| **Documentation Creation** | Manual process | ✅ Integrated workflow |
+| **Ticket Analysis** | Manual command chaining | ✅ Context-aware queries |
+| **Context Retention** | None between commands | ✅ Full conversation history |
+| **Token Usage** | ~100 tokens (output) | ~500-2,000+ tokens (data in context) |
+| **Claude Desktop** | ❌ Not compatible | ✅ Native integration |
+| **Bulk Updates** | ✅ Scripting/loops | ⚠️ One at a time |
+| **Query Method** | Command syntax | Natural language |
+| **Documentation Creation** | ⚠️ Requires conversion | ✅ Direct Confluence integration |
 
 ---
 
@@ -129,31 +127,6 @@ claude mcp add --scope user --transport sse atlassian https://mcp.atlassian.com/
 
 [Full MCP Setup Guide](./ATLASSIAN_MCP_SETUP.md)
 
----
-
-## Real-World Scenarios
-
-### Scenario 1: View Single Ticket
-- **CLI:** `acli jira workitem view TICKET-123`
-- **MCP:** `"Show me TICKET-123"`
-- **Winner:** Tie - both equally simple
-
-### Scenario 2: Bulk Operations
-- **CLI:** Easy with loops/scripts
-- **MCP:** Not practical
-- **Winner:** CLI - only option
-
-### Scenario 3: Complex Analysis
-- **CLI:** Multiple commands, manual correlation
-- **MCP:** Single query with analysis
-- **Winner:** MCP - contextual understanding
-
-### Scenario 4: CI/CD Integration
-- **CLI:** Native support
-- **MCP:** Not available
-- **Winner:** CLI - only option
-
----
 
 ## Summary
 
@@ -172,4 +145,4 @@ claude mcp add --scope user --transport sse atlassian https://mcp.atlassian.com/
 
 ---
 
-**Last Updated:** November 2024
+**Last Updated:** November 2025
