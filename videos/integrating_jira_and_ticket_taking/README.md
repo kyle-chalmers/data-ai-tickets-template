@@ -345,7 +345,7 @@ acli jira workitem transition --key "TICKET-123" --status "Done"
 
 ---
 
-## Related Documentation
+## Setup Guides
 
 - [Atlassian CLI Setup](./ATLASSIAN_CLI_SETUP.md)
 - [Atlassian MCP Setup](./ATLASSIAN_MCP_SETUP.md)

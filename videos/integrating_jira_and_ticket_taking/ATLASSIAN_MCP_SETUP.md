@@ -200,7 +200,7 @@ Claude: [Should list your spaces]
 - MCP for interactive work in Claude Code
 - CLI for scripts, automation, and quick terminal commands
 
-**Detailed Comparison:** See [CLI vs. MCP Comparison Guide](./CLI_VS_MCP_COMPARISON.md)
+**Detailed Comparison:** See [CLI vs. MCP Comparison Guide](./README.md)
 
 ---
 
