@@ -1,0 +1,39 @@
+KAN-4: Snowflake INFORMATION_SCHEMA Metadata Analysis Results
+================================================================
+
+SUMMARY STATISTICS
+------------------
+Total Columns: 1,838
+Total Tables: 133
+
+
+TOP 10 TABLES BY COLUMN COUNT
+------------------------------
+1. INFORMATION_SCHEMA.COLUMNS - 44 columns
+2. INFORMATION_SCHEMA.FUNCTIONS - 37 columns
+3. TPCDS_SF100TCL.CATALOG_SALES - 34 columns
+4. TPCDS_SF100TCL.WEB_SALES - 34 columns
+5. TPCDS_SF10TCL.CATALOG_SALES - 34 columns
+6. TPCDS_SF10TCL.WEB_SALES - 34 columns
+7. TPCDS_SF100TCL.CALL_CENTER - 31 columns
+8. TPCDS_SF10TCL.CALL_CENTER - 31 columns
+9. INFORMATION_SCHEMA.FIELDS - 30 columns
+10. INFORMATION_SCHEMA.CLASS_INSTANCE_FUNCTIONS - 29 columns
+
+
+SCHEMA BREAKDOWN
+----------------
+- INFORMATION_SCHEMA: System metadata tables (44 tables)
+- TPCDS_SF10TCL: TPC-DS 10GB benchmark (24 tables)
+- TPCDS_SF100TCL: TPC-DS 100GB benchmark (24 tables)
+- TPCH_SF1: TPC-H 1GB benchmark (8 tables)
+- TPCH_SF10: TPC-H 10GB benchmark (8 tables)
+- TPCH_SF100: TPC-H 100GB benchmark (8 tables)
+- TPCH_SF1000: TPC-H 1TB benchmark (8 tables)
+
+
+NOTES
+-----
+- Full detailed results available via queries in final_deliverables/
+- All 133 tables analyzed from SNOWFLAKE_SAMPLE_DATA database
+- Analysis completed using Snowflake MCP integration
