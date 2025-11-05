@@ -24,7 +24,7 @@ acli --version
 
 ## Authentication Options
 
-### Option A: Web Browser (OAuth) - Recommended
+### Option A: Web Browser (OAuth)
 
 **Easiest method - uses browser for secure authentication:**
 
