@@ -17,7 +17,7 @@ Both tools provide access to Jira and Confluence with significant overlap in cap
 | **Ticket Analysis** | Manual command chaining | ✅ Context-aware queries |
 | **Context Retention** | None between commands | ✅ Full conversation history |
 | **Token Usage** | ~100 tokens (output) | ~500-2,000+ tokens (data in context) |
-| **Claude Desktop** | ❌ Not compatible | ✅ Native integration |
+| **Claude Desktop** | ❌ Not natively compatible | ✅ Native integration |
 | **Bulk Updates** | ✅ Scripting/loops | ⚠️ One at a time |
 | **Query Method** | Command syntax | Natural language |
 | **Documentation Creation** | ⚠️ Requires conversion | ✅ Direct Confluence integration |
