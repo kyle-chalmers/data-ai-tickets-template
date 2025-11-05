@@ -1,6 +1,6 @@
 # Ticket Structure Guide
 
-This folder contains completed tickets organized by ticket ID following a standardized structure.
+This folder contains a template to complete tickets organized by ticket ID following a standardized structure.
 
 ---
 
