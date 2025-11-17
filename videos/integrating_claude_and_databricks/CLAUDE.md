@@ -1,6 +1,6 @@
 # Databricks CLI Reference
 
-Quick reference for Databricks CLI syntax and common patterns.
+Quick reference for Databricks CLI syntax and common patterns. You have PAT access so use that.
 
 ---
 
