@@ -1,377 +1,371 @@
-# Example Workflow: Customer Analysis with Databricks + Claude
+# Databricks CLI Example Workflows
 
-Practical example demonstrating how to use Databricks CLI and MCP together with Claude Code for data analysis.
+Four practical workflows demonstrating Databricks CLI integration with Claude Code.
+
+## Workflows
+
+1. [Workflow 1: Explore Unity Catalog](#workflow-1-explore-unity-catalog) - List catalogs, schemas, and tables
+2. [Workflow 2: Create Databricks Notebook](#workflow-2-create-databricks-notebook) - Upload Python notebook to workspace
+3. [Workflow 3: Turn Notebook into Job](#workflow-3-turn-notebook-into-job) - Create scheduled job from notebook
+4. [Workflow 4: Run Job and Monitor Success](#workflow-4-run-job-and-monitor-success) - Execute and monitor job
 
 ---
 
-## Scenario
+## Workflow 1: Explore Unity Catalog
 
-Analyze e-commerce customer data in Databricks Unity Catalog to identify high-value segments and purchasing patterns.
+Explore the Unity Catalog structure including catalogs, schemas, and tables.
 
-**Business Questions:**
-1. What are our top customer segments by revenue?
-2. What are common purchasing patterns across regions?
-3. Which products drive the most repeat purchases?
+### Commands
+
+```bash
+# List all catalogs
+databricks catalogs list
+
+# List schemas in samples catalog
+databricks schemas list samples
+
+# List tables in a specific schema
+databricks tables list samples tpch
+
+# Get details about a specific table
+databricks tables get samples.tpch.orders --output json | jq '{
+  name: .name,
+  catalog_name: .catalog_name,
+  schema_name: .schema_name,
+  table_type: .table_type,
+  data_source_format: .data_source_format
+}'
+```
+
+### Verification
+
+```bash
+# Verify catalogs exist
+databricks catalogs list | grep -q "samples" && echo "✓ Found samples catalog"
+
+# Verify schemas exist
+databricks schemas list samples | grep -q "tpch" && echo "✓ Found tpch schema"
+
+# Verify tables exist
+databricks tables list samples tpch | grep -q "orders" && echo "✓ Found orders table"
+```
+
+---
+
+## Workflow 2: Create Databricks Notebook
+
+Create and upload a Python notebook to Databricks workspace.
+
+### Create Notebook File
+
+```python
+# File: customer_analysis.py
+
+# Databricks notebook source
+# MAGIC %md
+# MAGIC # Customer Analysis
+# MAGIC
+# MAGIC Analyze customer purchase patterns
+
+# COMMAND ----------
+
+# Import libraries
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import col, sum, count, avg
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Load Data
+
+# COMMAND ----------
+
+# Read customer orders
+df_orders = spark.table("samples.tpch.orders")
+df_customer = spark.table("samples.tpch.customer")
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## Analysis
+
+# COMMAND ----------
+
+# Join and aggregate
+# NOTE: Use explicit join condition when column names differ between tables
+customer_stats = (
+    df_orders
+    .join(df_customer, df_orders.o_custkey == df_customer.c_custkey)
+    .groupBy("c_custkey", "c_name", "c_mktsegment")
+    .agg(
+        count("o_orderkey").alias("total_orders"),
+        sum("o_totalprice").alias("total_spent"),
+        avg("o_totalprice").alias("avg_order_value")
+    )
+    .orderBy(col("total_spent").desc())
+)
+
+# Display results
+display(customer_stats.limit(20))
+```
+
+### Upload to Databricks
+
+```bash
+# Get current user
+CURRENT_USER=$(databricks current-user me --output json | jq -r '.userName')
+
+# Upload notebook to workspace
+databricks workspace import \
+  /Users/$CURRENT_USER/customer_analysis \
+  --file customer_analysis.py \
+  --language PYTHON \
+  --format SOURCE \
+  --overwrite
+```
+
+### Verification
+
+```bash
+# List workspace to confirm upload
+databricks workspace list /Users/$CURRENT_USER/ | grep customer_analysis && echo "✓ Notebook uploaded"
+
+# Export to verify content
+databricks workspace export /Users/$CURRENT_USER/customer_analysis --format SOURCE | head -10
+```
+
+### Run Notebook
+
+Once uploaded, you can run the notebook using one-time execution:
+
+```bash
+# Create one-time run configuration
+cat > run_notebook.json << EOF
+{
+  "run_name": "Customer Analysis Test",
+  "tasks": [{
+    "task_key": "run_notebook",
+    "notebook_task": {
+      "notebook_path": "/Users/$CURRENT_USER/customer_analysis",
+      "source": "WORKSPACE"
+    },
+    "timeout_seconds": 600
+  }]
+}
+EOF
+
+# Submit and run
+databricks jobs submit --json @run_notebook.json --output json
+```
+
+**To view results:**
+- Open the `run_page_url` from the output in your browser
+- Or create a scheduled job (see Workflow 3)
+
+---
+
+## Workflow 3: Turn Notebook into Job
+
+Create a Databricks job that runs the notebook on a schedule.
+
+**Best Practice:** Test notebooks with one-time runs before creating jobs. See [Databricks CLI Reference](../CLAUDE.md#test-notebooks-one-time-runs) for details.
+
+### Create Job Configuration
+
+**Note:** Trial workspaces only support serverless compute, so we don't need to specify cluster configuration.
+
+```json
+{
+  "name": "Customer Analysis Job",
+  "tasks": [
+    {
+      "task_key": "customer_analysis_task",
+      "notebook_task": {
+        "notebook_path": "/Users/YOUR_EMAIL/customer_analysis",
+        "source": "WORKSPACE"
+      },
+      "timeout_seconds": 3600
+    }
+  ],
+  "schedule": {
+    "quartz_cron_expression": "0 0 8 * * ?",
+    "timezone_id": "America/Los_Angeles"
+  },
+  "max_concurrent_runs": 1,
+  "email_notifications": {
+    "on_failure": ["your.email@company.com"]
+  }
+}
+```
+
+Update `job_config.json` with your email/notebook path, then create:
+
+```bash
+# Edit job_config.json to replace YOUR_EMAIL with your actual email
+# Then create the job
+JOB_ID=$(databricks jobs create --json @job_config.json --output json | jq -r '.job_id')
+
+echo "Created job with ID: $JOB_ID"
+```
+
+### Verification
+
+```bash
+# View job details
+databricks jobs get $JOB_ID
+
+# List all jobs to find it
+databricks jobs list --output json | jq '.jobs[] | select(.settings.name == "Customer Analysis Job")'
+```
+
+---
+
+## Workflow 4: Run Job and Monitor Success
+
+Execute the job and monitor its progress to completion.
+
+### Run Job
+
+```bash
+# Run job now (using job ID from Workflow 3)
+RUN_ID=$(databricks jobs run-now $JOB_ID --output json | jq -r '.run_id')
+
+echo "Started job run: $RUN_ID"
+```
+
+### Monitor Progress
+
+```bash
+# Check run status
+databricks runs get $RUN_ID --output json | jq '{
+  run_id: .run_id,
+  state: .state.life_cycle_state,
+  result: .state.result_state,
+  start_time: .start_time
+}'
+
+# Monitor in real-time (poll every 10 seconds)
+while true; do
+  STATE=$(databricks runs get $RUN_ID --output json | jq -r '.state.life_cycle_state')
+  RESULT=$(databricks runs get $RUN_ID --output json | jq -r '.state.result_state // "RUNNING"')
+
+  echo "Status: $STATE | Result: $RESULT"
+
+  if [[ "$STATE" == "TERMINATED" ]]; then
+    echo "Job completed with result: $RESULT"
+    break
+  fi
+
+  sleep 10
+done
+```
+
+### View Results and Logs
+
+```bash
+# Get run output (after completion)
+databricks runs get-output $RUN_ID
+
+# View run page URL
+echo "View run at: $(databricks runs get $RUN_ID --output json | jq -r '.run_page_url')"
+
+# List recent runs for this job
+databricks jobs list-runs $JOB_ID --limit 5 --output json | jq '.runs[] | {
+  run_id: .run_id,
+  start_time: .start_time,
+  state: .state.life_cycle_state,
+  result: .state.result_state
+}'
+```
+
+### Verification Checklist
+
+- [ ] Job run started successfully (RUN_ID obtained)
+- [ ] Job progressed through states: PENDING → RUNNING → TERMINATED
+- [ ] Final result state is SUCCESS
+- [ ] Run page URL accessible in Databricks UI
+- [ ] Job output available via get-output command
+
+---
+
+## Complete End-to-End Test
+
+Run all workflows in sequence:
+
+```bash
+# Workflow 1: Explore Unity Catalog
+echo "=== Workflow 1: Exploring Unity Catalog ==="
+databricks catalogs list
+databricks schemas list samples
+databricks tables list samples tpch
+
+# Workflow 2: Create Notebook
+echo "=== Workflow 2: Creating Notebook ==="
+CURRENT_USER=$(databricks current-user me --output json | jq -r '.userName')
+databricks workspace import \
+  /Users/$CURRENT_USER/customer_analysis \
+  --file customer_analysis.py \
+  --language PYTHON \
+  --format SOURCE \
+  --overwrite
+
+# Workflow 3: Create Job
+echo "=== Workflow 3: Creating Job ==="
+# (Update job_config.json with your email first)
+JOB_ID=$(databricks jobs create --json @job_config.json --output json | jq -r '.job_id')
+echo "Job ID: $JOB_ID"
+
+# Workflow 4: Run and Monitor
+echo "=== Workflow 4: Running Job ==="
+RUN_ID=$(databricks jobs run-now $JOB_ID --output json | jq -r '.run_id')
+echo "Run ID: $RUN_ID"
+
+# Monitor
+echo "Monitoring run (press Ctrl+C to stop monitoring)..."
+while true; do
+  STATE=$(databricks runs get $RUN_ID --output json | jq -r '.state.life_cycle_state')
+  RESULT=$(databricks runs get $RUN_ID --output json | jq -r '.state.result_state // "RUNNING"')
+  echo "$(date '+%H:%M:%S') - State: $STATE | Result: $RESULT"
+
+  if [[ "$STATE" == "TERMINATED" ]]; then
+    echo "✓ Job completed: $RESULT"
+    break
+  fi
+  sleep 10
+done
+
+echo "=== All Workflows Complete ==="
+```
+
+---
+
+## Cleanup
+
+Remove test resources after completing workflows:
+
+```bash
+# Delete job
+databricks jobs delete $JOB_ID
+
+# Delete notebook
+databricks workspace delete /Users/$CURRENT_USER/customer_analysis
+
+# Confirm deletion
+echo "Cleanup complete"
+```
 
 ---
 
 ## Prerequisites
 
 - Databricks CLI installed and configured
-- Access to Unity Catalog with sample data
-- (Optional) Databricks MCP configured for interactive exploration
-
----
-
-## Workflow Steps
-
-### Phase 1: Data Exploration (MCP)
-
-Use MCP for interactive schema discovery and initial exploration:
-
-**Prompts to use with Claude:**
-```
-"List all tables in the main catalog"
-"Show me the schema for the customers table"
-"What columns are in the orders table?"
-"Give me a sample of 5 rows from the customer_orders view"
-```
-
-**What this accomplishes:**
-- Understand available data sources
-- Discover column names and data types
-- Identify relationships between tables
-- Get quick data samples
-
----
-
-### Phase 2: Query Development (CLI + Files)
-
-Create SQL queries based on exploration findings.
-
-**Files created:**
-- `1_data_exploration.sql` - Initial data profiling
-- `2_customer_segmentation.sql` - Main analysis query
-- `3_export_results.sql` - Final results for export
-
-**Execute with CLI:**
-```bash
-# Run exploration query
-databricks sql execute -f final_deliverables/1_data_exploration.sql --profile biprod
-
-# Run main analysis
-databricks sql execute -f final_deliverables/2_customer_segmentation.sql --profile biprod
-
-# Export to CSV
-databricks sql execute -f final_deliverables/3_export_results.sql --profile biprod > results.csv
-```
-
----
-
-### Phase 3: Quality Control (CLI)
-
-Validate results with QC queries.
-
-**Files created:**
-- `qc_queries/1_record_count_validation.sql` - Verify row counts
-- `qc_queries/2_revenue_totals_check.sql` - Validate calculations
-
-**Execute QC:**
-```bash
-# Run all QC queries
-databricks sql execute -f qc_queries/1_record_count_validation.sql --profile biprod
-databricks sql execute -f qc_queries/2_revenue_totals_check.sql --profile biprod
-```
-
----
-
-## Example Queries
-
-### 1. Data Exploration
-
-```sql
--- File: final_deliverables/1_data_exploration.sql
--- Purpose: Understand data structure and quality
-
--- Check customer distribution by region
-SELECT
-    region,
-    COUNT(DISTINCT customer_id) as customer_count,
-    COUNT(DISTINCT order_id) as order_count
-FROM main.analytics.customer_orders
-GROUP BY region
-ORDER BY customer_count DESC;
-
--- Check date range of data
-SELECT
-    MIN(order_date) as earliest_order,
-    MAX(order_date) as latest_order,
-    DATEDIFF(MAX(order_date), MIN(order_date)) as days_of_data
-FROM main.analytics.customer_orders;
-
--- Sample data review
-SELECT *
-FROM main.analytics.customer_orders
-LIMIT 10;
-```
-
-### 2. Customer Segmentation Analysis
-
-```sql
--- File: final_deliverables/2_customer_segmentation.sql
--- Purpose: Identify high-value customer segments
-
-WITH customer_metrics AS (
-    SELECT
-        customer_id,
-        region,
-        COUNT(DISTINCT order_id) as total_orders,
-        SUM(order_amount) as total_revenue,
-        AVG(order_amount) as avg_order_value,
-        MAX(order_date) as last_order_date,
-        DATEDIFF(CURRENT_DATE(), MAX(order_date)) as days_since_last_order
-    FROM main.analytics.customer_orders
-    WHERE order_date >= DATE_SUB(CURRENT_DATE(), 365)
-    GROUP BY customer_id, region
-),
-customer_segments AS (
-    SELECT
-        *,
-        CASE
-            WHEN total_revenue >= 10000 THEN 'High Value'
-            WHEN total_revenue >= 5000 THEN 'Medium Value'
-            ELSE 'Low Value'
-        END as value_segment,
-        CASE
-            WHEN days_since_last_order <= 30 THEN 'Active'
-            WHEN days_since_last_order <= 90 THEN 'At Risk'
-            ELSE 'Churned'
-        END as activity_segment
-    FROM customer_metrics
-)
-SELECT
-    value_segment,
-    activity_segment,
-    region,
-    COUNT(*) as customer_count,
-    SUM(total_revenue) as segment_revenue,
-    AVG(total_orders) as avg_orders_per_customer,
-    AVG(avg_order_value) as avg_order_value
-FROM customer_segments
-GROUP BY value_segment, activity_segment, region
-ORDER BY segment_revenue DESC;
-```
-
-### 3. Export Results
-
-```sql
--- File: final_deliverables/3_export_results.sql
--- Purpose: Final query for CSV export
-
-SELECT
-    customer_id,
-    region,
-    total_orders,
-    total_revenue,
-    avg_order_value,
-    last_order_date,
-    value_segment,
-    activity_segment
-FROM (
-    -- Copy the CTE logic from 2_customer_segmentation.sql
-    WITH customer_metrics AS (
-        SELECT
-            customer_id,
-            region,
-            COUNT(DISTINCT order_id) as total_orders,
-            SUM(order_amount) as total_revenue,
-            AVG(order_amount) as avg_order_value,
-            MAX(order_date) as last_order_date,
-            DATEDIFF(CURRENT_DATE(), MAX(order_date)) as days_since_last_order
-        FROM main.analytics.customer_orders
-        WHERE order_date >= DATE_SUB(CURRENT_DATE(), 365)
-        GROUP BY customer_id, region
-    )
-    SELECT
-        *,
-        CASE
-            WHEN total_revenue >= 10000 THEN 'High Value'
-            WHEN total_revenue >= 5000 THEN 'Medium Value'
-            ELSE 'Low Value'
-        END as value_segment,
-        CASE
-            WHEN days_since_last_order <= 30 THEN 'Active'
-            WHEN days_since_last_order <= 90 THEN 'At Risk'
-            ELSE 'Churned'
-        END as activity_segment
-    FROM customer_metrics
-)
-ORDER BY total_revenue DESC;
-```
-
----
-
-## Quality Control Queries
-
-### 1. Record Count Validation
-
-```sql
--- File: qc_queries/1_record_count_validation.sql
--- Purpose: Ensure no data loss in transformations
-
--- Source data counts
-SELECT 'Source Customer Orders' as check_name, COUNT(*) as record_count
-FROM main.analytics.customer_orders
-WHERE order_date >= DATE_SUB(CURRENT_DATE(), 365)
-
-UNION ALL
-
--- Distinct customers in analysis
-SELECT 'Distinct Customers', COUNT(DISTINCT customer_id)
-FROM main.analytics.customer_orders
-WHERE order_date >= DATE_SUB(CURRENT_DATE(), 365)
-
-UNION ALL
-
--- Orders with valid amounts
-SELECT 'Valid Order Amounts', COUNT(*)
-FROM main.analytics.customer_orders
-WHERE order_date >= DATE_SUB(CURRENT_DATE(), 365)
-  AND order_amount > 0;
-```
-
-### 2. Revenue Totals Check
-
-```sql
--- File: qc_queries/2_revenue_totals_check.sql
--- Purpose: Verify revenue calculations match source
-
-WITH source_revenue AS (
-    SELECT
-        SUM(order_amount) as total_revenue,
-        COUNT(DISTINCT customer_id) as customer_count
-    FROM main.analytics.customer_orders
-    WHERE order_date >= DATE_SUB(CURRENT_DATE(), 365)
-),
-analysis_revenue AS (
-    SELECT
-        SUM(total_revenue) as total_revenue,
-        COUNT(DISTINCT customer_id) as customer_count
-    FROM (
-        SELECT
-            customer_id,
-            SUM(order_amount) as total_revenue
-        FROM main.analytics.customer_orders
-        WHERE order_date >= DATE_SUB(CURRENT_DATE(), 365)
-        GROUP BY customer_id
-    )
-)
-SELECT
-    'Source' as source_type,
-    s.total_revenue,
-    s.customer_count
-FROM source_revenue s
-
-UNION ALL
-
-SELECT
-    'Analysis',
-    a.total_revenue,
-    a.customer_count
-FROM analysis_revenue a;
-
--- Difference should be 0
-```
-
----
-
-## Combined CLI + MCP Workflow
-
-### Using Both Tools Together
-
-```bash
-# 1. Explore with MCP (via Claude)
-# Ask: "What tables exist in the main catalog?"
-# Ask: "Show schema for customer_orders table"
-
-# 2. Develop queries in files (using Claude Code)
-# Claude helps write SQL based on schema exploration
-
-# 3. Test queries with CLI
-databricks sql execute -f final_deliverables/1_data_exploration.sql
-
-# 4. Refine with Claude
-# Ask: "Optimize this query for large datasets"
-# Ask: "Add a filter for active customers only"
-
-# 5. Run QC validation
-databricks sql execute -f qc_queries/1_record_count_validation.sql
-
-# 6. Export final results
-databricks sql execute -f final_deliverables/3_export_results.sql > customer_segments.csv
-```
-
----
-
-## Expected Output
-
-### Sample Results
-
-**Customer Segmentation Summary:**
-```
-value_segment | activity_segment | region        | customer_count | segment_revenue | avg_orders
-High Value    | Active          | North America | 127            | 1,847,292       | 12.4
-High Value    | At Risk         | North America | 43             | 589,441         | 9.2
-Medium Value  | Active          | Europe        | 284            | 2,103,847       | 6.8
-...
-```
-
-**QC Results:**
-```
-check_name                  | record_count
-Source Customer Orders      | 145,293
-Distinct Customers          | 8,421
-Valid Order Amounts         | 145,293
-```
-
----
-
-## Key Learnings
-
-### What MCP Does Well
-- Quick schema discovery
-- Interactive data sampling
-- Conversational refinement of queries
-- Understanding table relationships
-
-### What CLI Does Well
-- Executing production queries
-- Exporting large result sets
-- Scheduled/automated workflows
-- Integration with CI/CD pipelines
-
-### Combined Benefits
-- **Faster development:** Explore with MCP, execute with CLI
-- **Better quality:** Iterate quickly with conversational queries
-- **Production ready:** CLI ensures reliable, repeatable execution
-
----
-
-## Next Steps
-
-1. **Modify for your data:** Replace table names with your Unity Catalog tables
-2. **Add your credentials:** Configure CLI with your workspace details
-3. **Run the workflow:** Execute each phase and review results
-4. **Iterate:** Use Claude to refine queries based on findings
-
----
-
-## Resources
-
-- [Databricks CLI Setup](../instructions/DATABRICKS_CLI_SETUP.md) (includes troubleshooting)
-- [Databricks MCP Setup](../instructions/DATABRICKS_MCP_SETUP.md) (includes troubleshooting)
-- [CLI vs MCP Comparison](../databricks_cli_v_mcp_comparison/DATABRICKS_CLI_VS_MCP.md)
-
----
-
-**Note:** This example assumes Unity Catalog tables exist. Adapt table names and schemas to match your actual Databricks environment.
+- Access to `samples.tpch` database (default in Databricks workspaces)
+- `jq` installed for JSON processing: `brew install jq`
+
+## Notes
+
+- **Trial workspaces use serverless compute** - No need to specify cluster configuration
+- Update email addresses in job_config.json for notifications
+- Schedule can be modified in job_config.json (cron format)
+- All commands use default profile; add `--profile <name>` as needed
+- For production workspaces with cluster creation permissions, you can add `new_cluster` configuration to the job config
