@@ -1,0 +1,13 @@
+{
+  "run_name": "Product Sales Analysis Test Run",
+  "tasks": [
+    {
+      "task_key": "product_sales_test",
+      "notebook_task": {
+        "notebook_path": "/Users/[INSERT_USERNAME]/product_sales_analysis",
+        "source": "WORKSPACE"
+      },
+      "timeout_seconds": 3600
+    }
+  ]
+}

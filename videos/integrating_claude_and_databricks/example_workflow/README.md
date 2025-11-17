@@ -1,6 +1,24 @@
 # Databricks CLI Example Workflows
 
-Four practical workflows demonstrating Databricks CLI integration with Claude Code.
+Four practical workflows demonstrating Databricks CLI integration with Claude Code, plus an advanced troubleshooting workflow.
+
+## Repository Structure
+
+```
+example_workflow/
+├── README.md                           # This file - workflow documentation
+├── customer_analysis/                  # Original customer analysis example
+│   ├── customer_analysis.py           # PySpark notebook
+│   └── job_config.json                # Job configuration
+└── product_sales/                      # Product sales analysis with troubleshooting
+    ├── README.md                      # Step-by-step troubleshooting guide
+    ├── product_sales_analysis.py      # Working PySpark notebook
+    ├── product_sales_job_config.json  # Working job configuration
+    ├── test_product_sales_config.json # One-time test run config
+    ├── failing_job_config.json        # Intentionally failing configuration
+    ├── fixed_job_config.json          # Corrected configuration
+    └── update_job_config.json         # Job update payload
+```
 
 ## Workflows
 
@@ -8,6 +26,7 @@ Four practical workflows demonstrating Databricks CLI integration with Claude Co
 2. [Workflow 2: Create Databricks Notebook](#workflow-2-create-databricks-notebook) - Upload Python notebook to workspace
 3. [Workflow 3: Turn Notebook into Job](#workflow-3-turn-notebook-into-job) - Create scheduled job from notebook
 4. [Workflow 4: Run Job and Monitor Success](#workflow-4-run-job-and-monitor-success) - Execute and monitor job
+5. [Workflow 5: Troubleshooting Failed Jobs](#workflow-5-troubleshooting-failed-jobs) - Debug and fix job failures
 
 ---
 
@@ -59,7 +78,7 @@ Create and upload a Python notebook to Databricks workspace.
 ### Create Notebook File
 
 ```python
-# File: customer_analysis.py
+# File: customer_analysis/customer_analysis.py
 
 # Databricks notebook source
 # MAGIC %md
@@ -198,12 +217,12 @@ Create a Databricks job that runs the notebook on a schedule.
 }
 ```
 
-Update `job_config.json` with your email/notebook path, then create:
+Update `customer_analysis/job_config.json` with your email/notebook path, then create:
 
 ```bash
-# Edit job_config.json to replace YOUR_EMAIL with your actual email
+# Edit customer_analysis/job_config.json to replace YOUR_EMAIL with your actual email
 # Then create the job
-JOB_ID=$(databricks jobs create --json @job_config.json --output json | jq -r '.job_id')
+JOB_ID=$(databricks jobs create --json @customer_analysis/job_config.json --output json | jq -r '.job_id')
 
 echo "Created job with ID: $JOB_ID"
 ```
@@ -288,6 +307,76 @@ databricks jobs list-runs $JOB_ID --limit 5 --output json | jq '.runs[] | {
 
 ---
 
+## Workflow 5: Troubleshooting Failed Jobs
+
+Learn how to debug and fix Databricks job failures through a practical example.
+
+**See detailed step-by-step guide:** [`product_sales/README.md`](./product_sales/README.md)
+
+### Overview
+
+This workflow demonstrates:
+1. Creating a job with an intentional configuration error
+2. Running the job and capturing the failure
+3. Investigating error details using CLI commands
+4. Diagnosing the root cause
+5. Fixing the configuration
+6. Verifying successful execution
+
+### Quick Example
+
+```bash
+# Navigate to product_sales folder
+cd product_sales/
+
+# 1. Create job with intentional error (references non-existent notebook)
+JOB_ID=$(databricks jobs create --json @failing_job_config.json --output json | jq -r '.job_id')
+echo "Created job: $JOB_ID"
+
+# 2. Run job and observe failure
+databricks jobs run-now $JOB_ID --output json
+# Error: RESOURCE_NOT_FOUND - notebook doesn't exist
+
+# 3. Investigate error
+databricks jobs list-runs --job-id $JOB_ID --limit 1 --output json | \
+  jq '.[] | {state, error: .status.termination_details}'
+
+# 4. List available notebooks to find correct path
+databricks workspace list /Users/$(databricks current-user me --output json | jq -r '.userName')/ | \
+  grep product_sales
+
+# 5. Fix configuration (update notebook path)
+databricks jobs update --json @update_job_config.json
+
+# 6. Verify fix
+databricks jobs get $JOB_ID --output json | \
+  jq '{job_id, name: .settings.name, notebook_path: .settings.tasks[0].notebook_task.notebook_path}'
+
+# 7. Run successfully
+databricks jobs run-now $JOB_ID --output json
+# Result: SUCCESS ✅
+```
+
+### Key Troubleshooting Commands
+
+| Command | Purpose |
+|---------|---------|
+| `databricks jobs list-runs --job-id <ID>` | Get run history and error details |
+| `databricks jobs get-run <RUN_ID>` | Get detailed run information |
+| `databricks workspace list <PATH>` | Verify resource existence |
+| `databricks jobs get <JOB_ID>` | Inspect current job configuration |
+| `databricks jobs update --json @config.json` | Fix job configuration |
+
+### Error Types Covered
+
+- **RESOURCE_NOT_FOUND** - Invalid notebook/file paths
+- **CLIENT_ERROR** - Configuration issues
+- **INTERNAL_ERROR** - Execution failures
+
+For complete troubleshooting methodology and detailed examples, see the [full troubleshooting guide](./product_sales/README.md).
+
+---
+
 ## Complete End-to-End Test
 
 Run all workflows in sequence:
@@ -304,15 +393,15 @@ echo "=== Workflow 2: Creating Notebook ==="
 CURRENT_USER=$(databricks current-user me --output json | jq -r '.userName')
 databricks workspace import \
   /Users/$CURRENT_USER/customer_analysis \
-  --file customer_analysis.py \
+  --file customer_analysis/customer_analysis.py \
   --language PYTHON \
   --format SOURCE \
   --overwrite
 
 # Workflow 3: Create Job
 echo "=== Workflow 3: Creating Job ==="
-# (Update job_config.json with your email first)
-JOB_ID=$(databricks jobs create --json @job_config.json --output json | jq -r '.job_id')
+# (Update customer_analysis/job_config.json with your email first)
+JOB_ID=$(databricks jobs create --json @customer_analysis/job_config.json --output json | jq -r '.job_id')
 echo "Job ID: $JOB_ID"
 
 # Workflow 4: Run and Monitor

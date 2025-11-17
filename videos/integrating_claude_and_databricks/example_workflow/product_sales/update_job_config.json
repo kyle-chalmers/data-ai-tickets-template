@@ -1,0 +1,24 @@
+{
+  "job_id": 395741627466738,
+  "new_settings": {
+    "name": "Product Sales Analysis Job - Fixed Version",
+    "tasks": [
+      {
+        "task_key": "product_sales_analysis_task",
+        "notebook_task": {
+          "notebook_path": "/Users/[INSERT_USERNAME]/product_sales_analysis",
+          "source": "WORKSPACE"
+        },
+        "timeout_seconds": 3600
+      }
+    ],
+    "schedule": {
+      "quartz_cron_expression": "0 0 9 * * ?",
+      "timezone_id": "America/Los_Angeles"
+    },
+    "max_concurrent_runs": 1,
+    "email_notifications": {
+      "on_failure": ["[INSERT_EMAIL]"]
+    }
+  }
+}
