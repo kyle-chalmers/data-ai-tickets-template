@@ -13,11 +13,19 @@ brew install databricks
 databricks --version
 # Output: Databricks CLI v0.277.0
 
-# Configure (OAuth - recommended)
-databricks configure
+# Configure - Option 1: OAuth
+databricks auth login --host https://your-workspace.cloud.databricks.com
+
+# Configure - Option 2: Personal Access Token (PAT)
+cat > ~/.databrickscfg << 'EOF'
+[DEFAULT]
+host = https://your-workspace.cloud.databricks.com
+token = dapi_your_token_here
+EOF
+chmod 600 ~/.databrickscfg
 
 # Test connection
-databricks auth profiles
+databricks current-user me
 databricks workspace list
 
 # Use it
@@ -34,23 +42,35 @@ databricks clusters list
 
 **Choose one:**
 
-| Method | Setup Command | Best For |
-|--------|---------------|----------|
-| **OAuth** (recommended) | `databricks configure` | Interactive workflows, modern auth |
-| **Personal Access Token (PAT)** | Manual `~/.databrickscfg` edit | Automation, CI/CD pipelines |
+| Method | Setup Command | Best For | Session Start |
+|--------|---------------|----------|---------------|
+| **OAuth** | `databricks auth login` | Interactive workflows, more secure | Required each session |
+| **Personal Access Token (PAT)** | Manual `~/.databrickscfg` edit | Automation, CI/CD pipelines | Not required |
 
-### OAuth Setup (Recommended)
+### OAuth Setup
 
+**Initial Setup:**
 ```bash
-# Interactive configuration
-databricks configure
+# Login with OAuth (opens browser)
+databricks auth login --host https://your-workspace.cloud.databricks.com
 
-# Follow prompts:
-# 1. Enter workspace URL: https://your-workspace.cloud.databricks.com
-# 2. Choose "OAuth" for auth type
-# 3. Browser window opens for authentication
-# 4. Configuration saved to ~/.databrickscfg
+# Verify authentication
+databricks current-user me
 ```
+
+**Config File Created:**
+```ini
+[DEFAULT]
+host = https://your-workspace.cloud.databricks.com
+```
+
+**Important:** Run `databricks auth login --host <YOUR_HOST>` at the start of each session.
+
+**Benefits:**
+- ✅ More secure - no tokens stored in config file
+- ✅ Browser-based authentication
+- ✅ Credentials managed by CLI
+- ⚠️  Requires re-authentication each session
 
 ### Personal Access Token Setup
 
@@ -59,15 +79,15 @@ databricks configure
 cat > ~/.databrickscfg << 'EOF'
 [DEFAULT]
 host = https://your-workspace.cloud.databricks.com
-token = dapi1234567890abcdef
+token = [INSERT_TOKEN]
 
-[biprod]
+[prod]
 host = https://prod-workspace.cloud.databricks.com
-token = dapi_prod_token_here
+token = [INSERT_PROD_TOKEN]
 
-[bidev]
+[dev]
 host = https://dev-workspace.cloud.databricks.com
-token = dapi_dev_token_here
+token = [INSERT_DEV_TOKEN]
 EOF
 
 # Secure the config file
@@ -79,6 +99,13 @@ chmod 600 ~/.databrickscfg
 2. Click "Generate New Token"
 3. Set expiration and comment
 4. Copy token (only shown once!)
+
+**Benefits:**
+- ✅ No re-authentication needed each session
+- ✅ Simple setup
+- ✅ Works well for automation and scripts
+- ⚠️  Token stored in plain text in config file
+- ⚠️  Must rotate tokens periodically (security best practice)
 
 ---
 
@@ -221,11 +248,10 @@ cat ~/.databrickscfg
 databricks --version
 
 # Test authentication
-databricks auth profiles
-databricks auth env --profile biprod
+databricks current-user me
 
-# Solution 1: Regenerate OAuth token
-databricks configure
+# Solution 1: Re-authenticate with OAuth
+databricks auth login --host https://your-workspace.cloud.databricks.com
 
 # Solution 2: Verify workspace URL (no trailing slash)
 # ✓ Correct: https://workspace.cloud.databricks.com
@@ -234,6 +260,9 @@ databricks configure
 # Solution 3: Check config file permissions
 chmod 600 ~/.databrickscfg
 ls -l ~/.databrickscfg  # Should show: -rw-------
+
+# Solution 4: View current auth method
+databricks auth describe
 ```
 
 ### Token Expired
@@ -241,8 +270,8 @@ ls -l ~/.databrickscfg  # Should show: -rw-------
 **Error: "Token is invalid or expired"**
 
 ```bash
-# For OAuth (recommended):
-databricks configure
+# For OAuth - re-authenticate:
+databricks auth login --host https://your-workspace.cloud.databricks.com
 
 # For PAT - generate new token:
 # 1. Databricks UI → User Settings → Developer → Access Tokens
@@ -300,36 +329,6 @@ databricks workspace list --profile biprod
 # Contact workspace admin to grant necessary permissions
 ```
 
-### Network Issues
-
-**Error: "Connection timeout" or "Unable to reach"**
-
-```bash
-# Test basic connectivity
-ping your-workspace.cloud.databricks.com
-
-# Test HTTPS access
-curl -I https://your-workspace.cloud.databricks.com
-
-# If behind corporate proxy:
-export HTTPS_PROXY=http://proxy.company.com:8080
-```
-
-### SSL Certificate Errors
-
-**Error: "SSL certificate verify failed"**
-
-```bash
-# Update certificates (macOS)
-/Applications/Python\ 3.x/Install\ Certificates.command
-
-# Or update system certificates
-brew install ca-certificates
-
-# Temporary workaround (NOT recommended for production):
-export DATABRICKS_INSECURE=true
-```
-
 ### Finding Your Workspace URL
 
 1. Log into Databricks web UI
@@ -353,17 +352,6 @@ databricks auth env --profile biprod
 databricks workspace ls /
 ```
 
-### Debug Mode
-
-```bash
-# Enable verbose output
-export DATABRICKS_DEBUG_TRUNCATE_BYTES=100000
-export DATABRICKS_DEBUG_HEADERS=true
-
-# Re-run failing command with verbose flag
-databricks workspace list -v
-```
-
 ### Regular Maintenance
 
 ```bash
@@ -383,26 +371,6 @@ cp ~/.databrickscfg ~/.databrickscfg.backup
 
 ---
 
-## Advanced: Databricks SQL CLI
-
-For dedicated SQL operations, consider the `databricks-sql-cli` tool:
-
-```bash
-# Install (separate tool)
-pip install databricks-sql-cli
-
-# Execute SQL with OAuth
-dbsqlcli \
-  -e "SELECT * FROM default.diamonds LIMIT 10" \
-  --hostname "your-workspace.cloud.databricks.com" \
-  --http-path "/sql/1.0/warehouses/abc123" \
-  --oauth
-
-# Get http-path from: SQL → Warehouses → Connection Details
-```
-
----
-
 ## Important Notes
 
 ### Current vs Legacy CLI
@@ -414,11 +382,19 @@ dbsqlcli \
 | **Current** | v0.277.0+ | `brew install databricks` | ✓ Supported |
 | **Legacy** | v0.18.x | `pip install databricks-cli` | ✗ Deprecated |
 
-### Token Expiration
+### Authentication Methods
 
-- OAuth tokens: Expire after 1 hour, auto-refresh with CLI
-- Personal Access Tokens: Set expiration when creating (max 90 days for some orgs)
-- CLI handles OAuth refresh automatically for interactive commands
+**OAuth (databricks-cli):**
+- Requires `databricks auth login` at start of each session
+- No tokens stored in config file (more secure)
+- Browser-based authentication
+- Session expires when terminal closes
+
+**Personal Access Tokens:**
+- Set expiration when creating (max 90 days for some orgs)
+- Token persists until expiration
+- Token stored in `~/.databrickscfg` (less secure)
+- No session re-authentication needed
 
 ### Profile Safety
 
