@@ -368,10 +368,9 @@ Valid Order Amounts         | 145,293
 
 ## Resources
 
-- [Databricks CLI Setup](../instructions/DATABRICKS_CLI_SETUP.md)
-- [Databricks MCP Setup](../instructions/DATABRICKS_MCP_SETUP.md)
+- [Databricks CLI Setup](../instructions/DATABRICKS_CLI_SETUP.md) (includes troubleshooting)
+- [Databricks MCP Setup](../instructions/DATABRICKS_MCP_SETUP.md) (includes troubleshooting)
 - [CLI vs MCP Comparison](../databricks_cli_v_mcp_comparison/DATABRICKS_CLI_VS_MCP.md)
-- [Troubleshooting Guide](../instructions/TROUBLESHOOTING.md)
 
 ---
 

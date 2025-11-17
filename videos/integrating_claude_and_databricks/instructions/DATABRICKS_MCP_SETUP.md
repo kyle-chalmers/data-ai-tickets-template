@@ -299,6 +299,241 @@ databricks sql execute --sql "SHOW GRANT ON SCHEMA your_catalog.your_schema"
 
 ---
 
+## Troubleshooting
+
+### Managed MCP Issues
+
+#### Unity Catalog Not Enabled
+
+**Error: "Unity Catalog is not enabled for this workspace"**
+
+**Solution:**
+- Managed MCP requires Unity Catalog
+- Check with workspace administrator
+- Verify: Workspace Settings → Catalog → Unity Catalog status
+- Consider using CLI or databrickslabs MCP as alternative
+
+#### Insufficient Permissions
+
+**Error: "Access denied to catalog/schema/table"**
+
+**Required Permissions:**
+```sql
+-- Request these permissions from admin:
+GRANT USE CATALOG ON CATALOG catalog_name TO user@email.com;
+GRANT USE SCHEMA ON SCHEMA catalog_name.schema_name TO user@email.com;
+GRANT SELECT ON SCHEMA catalog_name.schema_name TO user@email.com;
+```
+
+**Verify Current Permissions:**
+```sql
+SHOW GRANTS ON CATALOG catalog_name;
+SHOW GRANTS ON SCHEMA catalog_name.schema_name;
+```
+
+#### Server URL Configuration
+
+**Error: "Failed to connect to MCP server"**
+
+**Verify URL format:**
+```
+# Correct format:
+https://workspace-url.cloud.databricks.com/api/2.0/mcp/uc-functions/catalog/schema
+
+# Common mistakes:
+# ✗ Missing /api/2.0/mcp/ path
+# ✗ Incorrect catalog or schema name
+# ✗ Trailing slash at end
+```
+
+### databrickslabs MCP Issues
+
+#### Connection Failure
+
+If you see "Failed to connect" when using databrickslabs MCP:
+
+**1. Restart Claude Code**
+- Simplest fix - close and reopen Claude Code terminal
+
+**2. Test MCP Manually**
+
+```bash
+# Navigate to mcp repository
+cd ~/Development/databricks-mcp
+
+# Test manually
+uv run unitycatalog-mcp \
+  --host https://your-workspace.cloud.databricks.com \
+  --token dapi_your_token_here \
+  -s your_catalog.your_schema
+```
+
+If this hangs or errors, the issue is with MCP itself, not Claude Code.
+
+**3. Verify Dependencies**
+
+```bash
+# Check uv is installed
+which uv
+# Should show: /Users/YOUR_USERNAME/.local/bin/uv
+
+# If not found, install:
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Reload shell
+source ~/.zshrc  # or ~/.bashrc
+
+# Verify Python 3.12
+uv python list
+# Should include python-3.12.x
+```
+
+**4. Check MCP Configuration**
+
+```bash
+# View Claude Code MCP config
+cat ~/.claude.json | jq '.mcpServers'
+
+# Or list MCP servers
+claude mcp list
+# Should show: databricks-uc - ✓ Connected (or error message)
+```
+
+**5. Verify Token**
+
+```bash
+# Test token works
+curl -H "Authorization: Bearer dapi_your_token_here" \
+  https://your-workspace.cloud.databricks.com/api/2.0/clusters/list
+
+# Should return JSON (not 401 error)
+```
+
+**6. Remove and Re-add MCP**
+
+```bash
+# Remove existing configuration
+claude mcp remove databricks-uc --scope user
+
+# Re-add with correct configuration
+claude mcp add --scope user --transport stdio databricks-uc -- \
+  uv run unitycatalog-mcp \
+  --host https://your-workspace.cloud.databricks.com \
+  --token dapi_your_token_here \
+  -s your_catalog.your_schema
+```
+
+#### Python Version Issues
+
+**Error: "Python 3.12 not found"**
+
+```bash
+# Install Python 3.12 via uv
+uv python install 3.12
+
+# Verify installation
+uv python list
+# Should show: cpython-3.12.x-...
+
+# Set as default for project
+uv python pin 3.12
+```
+
+#### Repository Issues
+
+**Error: "unitycatalog-mcp not found"**
+
+```bash
+# Clone or update repository
+cd ~/Development
+git clone https://github.com/databrickslabs/mcp.git databricks-mcp
+cd databricks-mcp
+
+# Or update existing
+cd ~/Development/databricks-mcp
+git pull origin main
+
+# Verify you're in correct directory when running
+pwd
+# Should show: /Users/YOUR_USERNAME/Development/databricks-mcp
+```
+
+#### Schema Access Issues
+
+**Error: "Schema not found" or "Access denied"**
+
+```bash
+# Verify schema exists (using CLI)
+databricks sql execute --sql "SHOW SCHEMAS IN your_catalog"
+
+# Check your permissions
+databricks sql execute --sql "SHOW GRANT ON SCHEMA your_catalog.your_schema"
+
+# Ensure schema name is correct in MCP config:
+-s catalog_name.schema_name  # Not catalog_name/schema_name
+```
+
+#### Multiple Schema Configuration
+
+**Error: "Only one schema accessible"**
+
+```bash
+# Add multiple schemas with multiple -s flags:
+claude mcp add --scope user --transport stdio databricks-uc -- \
+  uv run unitycatalog-mcp \
+  --host https://workspace.cloud.databricks.com \
+  --token dapi_token \
+  -s catalog1.schema1 \
+  -s catalog1.schema2 \
+  -s catalog2.schema1
+```
+
+### Health Check Commands
+
+```bash
+# List configured MCP servers
+claude mcp list
+
+# Test manual execution
+cd ~/Development/databricks-mcp
+uv run unitycatalog-mcp --help
+
+# Verify repository is up to date
+git pull origin main
+```
+
+### Fallback Options
+
+**If MCP Fails: Use CLI Instead**
+
+CLI is more reliable and works for most use cases:
+
+```bash
+# List Unity Catalog objects
+databricks catalogs list
+databricks schemas list --catalog-name your_catalog
+
+# Use CLI for data access
+databricks workspace list /
+databricks jobs list
+```
+
+**If databrickslabs MCP Fails: Use Managed MCP**
+
+If you have Unity Catalog:
+1. Check if workspace supports Managed MCP
+2. Configure server URL instead of manual setup
+3. No local dependencies required
+
+### Getting Help
+
+- **Managed MCP Documentation:** https://docs.databricks.com/mcp/
+- **Managed MCP Support:** Contact Databricks support (covered by SLA)
+- **databrickslabs MCP Issues:** https://github.com/databrickslabs/mcp/issues
+- **Community support only** (no SLA for databrickslabs)
+
+---
+
 ## Advanced: Multiple Workspaces
 
 ### Managed MCP (Multiple Catalogs)

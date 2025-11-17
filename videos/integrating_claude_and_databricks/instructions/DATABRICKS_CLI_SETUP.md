@@ -212,44 +212,122 @@ cat ~/.databrickscfg
 
 ## Troubleshooting
 
-### Connection Issues
+### Authentication Errors
+
+**Error: "Authentication failed"**
 
 ```bash
-# Test authentication
-databricks auth profiles
-
-# Verify profile works
-databricks auth env --profile biprod
-
-# Check version (must be v0.205+)
+# Verify CLI version (must be v0.205+)
 databricks --version
 
-# Common issue: Using old pip-based CLI
-# Solution: Uninstall old version, use Homebrew version
-pip uninstall databricks-cli
-brew install databricks
-```
+# Test authentication
+databricks auth profiles
+databricks auth env --profile biprod
 
-### OAuth Token Expired
-
-```bash
-# OAuth tokens expire after 1 hour
-# Re-run configure to refresh
+# Solution 1: Regenerate OAuth token
 databricks configure
 
-# Or delete profile and reconfigure
-# Edit ~/.databrickscfg and remove expired profile
+# Solution 2: Verify workspace URL (no trailing slash)
+# ✓ Correct: https://workspace.cloud.databricks.com
+# ✗ Incorrect: https://workspace.cloud.databricks.com/
+
+# Solution 3: Check config file permissions
+chmod 600 ~/.databrickscfg
+ls -l ~/.databrickscfg  # Should show: -rw-------
 ```
 
-### Permission Errors
+### Token Expired
+
+**Error: "Token is invalid or expired"**
 
 ```bash
-# Ensure config file has correct permissions
-chmod 600 ~/.databrickscfg
+# For OAuth (recommended):
+databricks configure
 
-# Verify workspace URL is correct (no trailing slash)
-# ✓ https://workspace.cloud.databricks.com
-# ✗ https://workspace.cloud.databricks.com/
+# For PAT - generate new token:
+# 1. Databricks UI → User Settings → Developer → Access Tokens
+# 2. Generate New Token
+# 3. Update ~/.databrickscfg with new token
+```
+
+### Wrong CLI Version
+
+**Error: "Command not found" or outdated version**
+
+```bash
+# Check current version
+databricks --version
+
+# Uninstall old pip-based CLI (if installed)
+pip uninstall databricks-cli
+
+# Install correct version via Homebrew
+brew tap databricks/tap
+brew install databricks
+
+# Update existing installation
+brew upgrade databricks
+```
+
+### Profile Not Found
+
+**Error: "Profile not found"**
+
+```bash
+# List all profiles
+databricks auth profiles
+
+# Set default profile
+export DATABRICKS_CONFIG_PROFILE=biprod
+
+# Or always use --profile flag
+databricks workspace list --profile biprod
+```
+
+### Permission Denied
+
+**Error: "User does not have permission"**
+
+```bash
+# Verify your permissions in Databricks UI
+# Workspace Settings → Users & Groups → Your User
+
+# Common missing permissions:
+# - Workspace access
+# - SQL warehouse access
+# - Cluster permissions
+
+# Contact workspace admin to grant necessary permissions
+```
+
+### Network Issues
+
+**Error: "Connection timeout" or "Unable to reach"**
+
+```bash
+# Test basic connectivity
+ping your-workspace.cloud.databricks.com
+
+# Test HTTPS access
+curl -I https://your-workspace.cloud.databricks.com
+
+# If behind corporate proxy:
+export HTTPS_PROXY=http://proxy.company.com:8080
+```
+
+### SSL Certificate Errors
+
+**Error: "SSL certificate verify failed"**
+
+```bash
+# Update certificates (macOS)
+/Applications/Python\ 3.x/Install\ Certificates.command
+
+# Or update system certificates
+brew install ca-certificates
+
+# Temporary workaround (NOT recommended for production):
+export DATABRICKS_INSECURE=true
 ```
 
 ### Finding Your Workspace URL
@@ -258,6 +336,50 @@ chmod 600 ~/.databrickscfg
 2. Copy URL from browser (e.g., `https://adb-1234567890.12.azuredatabricks.net`)
 3. Remove any path after `.net` or `.com`
 4. Use this as your `host` value
+
+### Health Check Commands
+
+```bash
+# Version check
+databricks --version  # Expected: v0.277.0 or newer
+
+# List profiles
+databricks auth profiles
+
+# Test authentication
+databricks auth env --profile biprod
+
+# Test simple command
+databricks workspace ls /
+```
+
+### Debug Mode
+
+```bash
+# Enable verbose output
+export DATABRICKS_DEBUG_TRUNCATE_BYTES=100000
+export DATABRICKS_DEBUG_HEADERS=true
+
+# Re-run failing command with verbose flag
+databricks workspace list -v
+```
+
+### Regular Maintenance
+
+```bash
+# Update CLI monthly
+brew upgrade databricks
+
+# Verify updated version
+databricks --version
+
+# Rotate tokens every 90 days
+# 1. Generate new PAT in Databricks UI
+# 2. Update ~/.databrickscfg
+
+# Backup configuration
+cp ~/.databrickscfg ~/.databrickscfg.backup
+```
 
 ---
 

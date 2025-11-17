@@ -81,9 +81,8 @@ See full setup instructions in the [instructions folder](./instructions/).
 ### Setup Guides
 
 - **[Instructions Overview](./instructions/README.md)** - Quick navigation and decision guide
-- **[CLI Setup Guide](./instructions/DATABRICKS_CLI_SETUP.md)** - Complete CLI installation and configuration
-- **[MCP Setup Guide](./instructions/DATABRICKS_MCP_SETUP.md)** - All three MCP options explained
-- **[Troubleshooting Guide](./instructions/TROUBLESHOOTING.md)** - Common issues and solutions
+- **[CLI Setup Guide](./instructions/DATABRICKS_CLI_SETUP.md)** - Complete CLI installation, configuration, and troubleshooting
+- **[MCP Setup Guide](./instructions/DATABRICKS_MCP_SETUP.md)** - All three MCP options with troubleshooting
 
 ### Comparison & Examples
 
@@ -236,7 +235,7 @@ ls -l ~/.databrickscfg
 
 ### Getting Help
 
-- Check [Troubleshooting Guide](./instructions/TROUBLESHOOTING.md)
+- Check troubleshooting sections in [CLI Setup](./instructions/DATABRICKS_CLI_SETUP.md#troubleshooting) or [MCP Setup](./instructions/DATABRICKS_MCP_SETUP.md#troubleshooting)
 - Review [CLI vs MCP Comparison](./databricks_cli_v_mcp_comparison/DATABRICKS_CLI_VS_MCP.md)
 - Consult Databricks documentation
 - Ask in Databricks community forums

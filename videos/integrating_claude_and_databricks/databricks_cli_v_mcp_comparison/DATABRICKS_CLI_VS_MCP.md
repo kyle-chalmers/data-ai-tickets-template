@@ -416,9 +416,8 @@ Use **both** together for optimal results:
 
 ## Setup Guides
 
-- **[Databricks CLI Setup](../instructions/DATABRICKS_CLI_SETUP.md)** - Complete installation guide
-- **[Databricks MCP Setup](../instructions/DATABRICKS_MCP_SETUP.md)** - All three MCP options
-- **[Troubleshooting](../instructions/TROUBLESHOOTING.md)** - Common issues and solutions
+- **[Databricks CLI Setup](../instructions/DATABRICKS_CLI_SETUP.md)** - Complete installation guide with troubleshooting
+- **[Databricks MCP Setup](../instructions/DATABRICKS_MCP_SETUP.md)** - All three MCP options with troubleshooting
 
 ---
 
