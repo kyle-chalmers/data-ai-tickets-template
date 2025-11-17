@@ -4,6 +4,50 @@ Quick reference for Databricks CLI syntax and common patterns.
 
 ---
 
+## Authentication Setup
+
+### OAuth
+
+**Initial Setup:**
+```bash
+databricks auth login --host https://your-workspace.cloud.databricks.com
+```
+
+**Start of Every Session:**
+```bash
+databricks auth login --host https://your-workspace.cloud.databricks.com
+```
+
+**Config File (`~/.databrickscfg`):**
+```ini
+[DEFAULT]
+host = https://your-workspace.cloud.databricks.com
+```
+
+**Benefits:**
+- No tokens stored in config file
+- Credentials managed securely by CLI
+- Browser-based authentication
+
+### Personal Access Token (PAT)
+
+**Setup:**
+```bash
+cat > ~/.databrickscfg << 'EOF'
+[DEFAULT]
+host = https://your-workspace.cloud.databricks.com
+token = dapi_your_token_here
+EOF
+
+chmod 600 ~/.databrickscfg
+```
+
+**No Session Start Required** - Token persists until expiration
+
+**Generate PAT:** User Settings → Developer → Access Tokens
+
+---
+
 ## Critical Syntax Rules
 
 ### Positional Arguments (NOT Flags)
