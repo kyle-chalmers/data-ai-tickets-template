@@ -1,0 +1,21 @@
+{
+  "name": "Customer Analysis Job",
+  "tasks": [
+    {
+      "task_key": "customer_analysis_task",
+      "notebook_task": {
+        "notebook_path": "/Users/YOUR_EMAIL/customer_analysis",
+        "source": "WORKSPACE"
+      },
+      "timeout_seconds": 3600
+    }
+  ],
+  "schedule": {
+    "quartz_cron_expression": "0 0 8 * * ?",
+    "timezone_id": "America/Los_Angeles"
+  },
+  "max_concurrent_runs": 1,
+  "email_notifications": {
+    "on_failure": ["your.email@company.com"]
+  }
+}
