@@ -124,6 +124,47 @@ See the **[Helpful Mac Installations Guide](./documentation/helpful_mac_installa
 - Custom integrations (Slack CLI functions)
 - Platform-specific installation instructions (macOS Homebrew)
 
+## Custom Agents Available
+
+Specialized agents in `.claude/agents/` handle complex, autonomous tasks. **Use proactively** when appropriate.
+
+### Available Agents
+
+| Agent | Purpose | When to Use |
+|-------|---------|-------------|
+| **code-review-agent** | Reviews SQL, Python, notebooks for best practices | Before PR, after significant code changes |
+| **sql-quality-agent** | SQL performance optimization and query efficiency | Large datasets, production queries, slow performance |
+| **qc-validator-agent** | Validates all QC requirements met | Before PR, after finalizing deliverables |
+
+### How to Invoke
+
+```
+"Use code-review-agent to review my SQL queries"
+"Launch sql-quality-agent to optimize this query"
+"Use qc-validator-agent to check if all QC is complete"
+```
+
+### Agent Responsibilities
+
+**code-review-agent checks:**
+- SQL optimization and best practices
+- Python code quality (pandas, error handling)
+- Notebook documentation
+- QC query completeness
+
+**sql-quality-agent checks:**
+- Query performance and optimization
+- Efficient indexes and filters
+- Platform-specific best practices
+- SQL anti-patterns
+
+**qc-validator-agent checks:**
+- QC query coverage (counts, duplicates, completeness, logic, dates)
+- QC execution evidence
+- Assumptions documented
+- Deliverable organization
+- Project sign-off readiness
+
 ## Available CLI Tools
 
 ### Core Platform Tools
