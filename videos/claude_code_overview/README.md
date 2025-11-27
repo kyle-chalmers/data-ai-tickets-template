@@ -339,13 +339,9 @@ As conversations grow long, Claude Code automatically "compacts" old messages to
 
 **What it looks like:**
 
-![Compaction in action](images/compaction_in_progress.png)
-
-*When compaction happens, Claude Code shows you what's being summarized*
-
 ![After compaction](images/compaction_complete.png)
 
-*After compaction, the conversation continues with preserved context - notice the summary at the top of the conversation*
+*After compaction, the conversation continues with preserved context - notice the summary at the top showing what was compacted*
 
 ### Auto-Compaction Settings
 
