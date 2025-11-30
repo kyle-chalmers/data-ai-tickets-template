@@ -1,6 +1,6 @@
 # Save Work
 
-Saves your progress by adding, committing, and pushing changes with optional PR creation.
+Saves your progress by adding, committing, and pushing changes with optional PR creation. If this is run while being on the main branch, create a feature branch with an appropriate name based upon what has been completed in this session.
 
 ## Usage
 
