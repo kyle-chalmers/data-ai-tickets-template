@@ -55,7 +55,7 @@
 Claude Code is Anthropic's official CLI tool that brings AI-powered assistance directly into your terminal and development workflow.
 
 **Think of it as having a senior data engineer working alongside you who:**
-- Reads and understands your entire codebase
+- Reads and understands your codebase, previous tickets/projects, and your database
 - Executes database queries and analyzes data
 - Writes, reviews, and optimizes SQL
 - Manages git workflows and ensures quality standards
@@ -68,15 +68,7 @@ Claude Code is Anthropic's official CLI tool that brings AI-powered assistance d
 | **⚡ Speed** | Set up analysis projects in seconds, not hours |
 | **✨ Quality** | Automated QC checks prevent data quality issues |
 | **🎯 Consistency** | Standardized workflows across all team members |
-| **🛡️ Safety** | Prevents destructive SQL operations and git mistakes |
 | **📚 Knowledge** | References your documentation and business context automatically |
-
-### Real Impact
-
-Data teams using Claude Code report:
-- **60% reduction** in time-to-delivery for analysis projects
-- **90% fewer** workflow mistakes and data quality issues
-- **100% compliance** with git workflow and quality standards
 
 ---
 
