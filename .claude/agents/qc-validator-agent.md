@@ -2,6 +2,7 @@
 name: qc-validator-agent
 description: Validates that all quality control requirements are met before finalizing analysis work
 tools: Read, Bash, Glob, Grep
+color: pink
 ---
 
 # QC Validator Agent

@@ -2,6 +2,7 @@
 name: sql-quality-agent
 description: Specialized SQL review focusing on performance optimization, best practices, and data quality
 tools: Read, Bash, Glob, Grep
+color: blue
 ---
 
 # SQL Quality Agent

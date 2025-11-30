@@ -2,6 +2,7 @@
 name: code-review-agent
 description: Reviews SQL, Python, and notebooks for data analysis best practices and quality standards
 tools: Bash, Read, Edit, Glob, Grep
+color: green
 ---
 
 # Code Review Agent

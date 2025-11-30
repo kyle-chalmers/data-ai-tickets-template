@@ -24,13 +24,20 @@ This repository serves **two purposes**:
 
 ### Video Work Examples
 The `videos/` folder contains complete examples from YouTube videos:
+- **Claude Code Overview** - Complete guide to Claude Code for data teams including:
+  - Installation, setup, and modes
+  - Compaction and context management
+  - Custom commands and agents
+  - Settings and configuration
 - **Integrating AI and Snowflake** - Using Claude Code with Snowflake MCP server for data analysis
 - **Integrating Claude and Databricks** - Databricks CLI workflows including:
   - Unity Catalog exploration
   - Notebook creation and job scheduling
   - Job troubleshooting and error resolution
-- Real-world data exploration and analysis workflows
-- Quality control validation patterns
+- **Integrating Jira and Ticket Taking** - Atlassian integration including:
+  - Atlassian CLI setup and configuration
+  - Atlassian MCP server setup
+  - Ticket workflow automation
 
 ### Template Materials
 Core template files you can adapt for your own projects:
@@ -44,6 +51,7 @@ Core template files you can adapt for your own projects:
   - `code-review-agent.md` - SQL, Python, and notebook review
   - `sql-quality-agent.md` - Query optimization and best practices
   - `qc-validator-agent.md` - Quality control validation
+  - `docs-review-agent.md` - Video documentation review, URL validation, and indexing
 
 ### Folder Structure Template
 ```

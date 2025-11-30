@@ -94,13 +94,13 @@ Data teams using Claude Code report:
 **Quick Install:**
 ```bash
 # Direct download
-open https://claude.ai/download
+open https://claude.com/download
 
 # Or via Homebrew (macOS)
 brew install --cask claude-code
 ```
 
-> **📖 Full Installation Guide:** https://code.claude.com/docs/en/setup#native-install-recommended
+> **📖 Full Installation Guide:** https://code.claude.com/docs/en/setup
 >
 > **⏱️ Time required:** 5 minutes
 
@@ -218,6 +218,7 @@ CLAUDE.md is the instruction manual that teaches Claude about your team's specif
    ```markdown
    ## Tools Available
    - Snowflake CLI (`snow`) - Database queries
+   - Databricks CLI (`databricks`) - Job orchestration and data platform
    - GitHub CLI (`gh`) - Git operations
    - Python - Data analysis and visualization
    ```
@@ -225,8 +226,8 @@ CLAUDE.md is the instruction manual that teaches Claude about your team's specif
 4. **Business and Data Knowledge**
    ```markdown
    ## Data Sources
-   - ANALYTICS.REPORTING.* - Production reporting tables
-   - ANALYTICS.SANDBOX.* - Development and testing
+   - [INSERT PRODUCTION DATABASE].* - Production reporting tables
+   - [INSERT DEVELOPMENT DATABASE].* - Development and testing
 
    ## Quality Standards
    - All queries must have record count validation
@@ -257,52 +258,15 @@ Claude Code operates in different modes that control how it interacts with you a
 
 ### Comprehensive Modes Comparison
 
-| Mode | Type | How to Activate | What it Controls | When to Use |
-|------|------|----------------|------------------|-------------|
-| **Standard Mode** | Default | Automatic | Normal conversational interaction | General data analysis tasks |
-| **Plan Mode** | Operational | `Shift+Tab` or auto-triggered | Creates plan before execution (read-only) | Complex multi-step analyses |
-| **Auto-Accept Mode** | Permission | `Shift+Tab` or settings.json | Automatically accepts file edits | Rapid development, trusted operations |
-| **Extended Thinking** | Reasoning | Press `Tab` or say "think hard" | Deep reasoning and analysis | Complex problems, edge cases |
+| Mode | How to Activate | Terminal Indicator | Description | When to Use |
+|------|----------------|-------------------|-------------|-------------|
+| **Standard Mode** | Automatic | *(none)* | Normal conversational interaction. Claude prompts for approval on file edits and commands based on your permissions settings. | General data analysis tasks, regular development |
+| **Plan Mode** | `Shift+Tab` to toggle | `plan mode` | Claude creates a detailed plan and waits for approval before executing changes. Read-only until you approve. | Starting tickets, complex multi-step analyses, learning how Claude approaches problems |
+| **Auto-Accept Edits** | `Shift+Tab` to toggle | `⏵⏵ accept edits on` | Automatically accepts file edits without prompting. Bash commands still require approval. Review changes via `git diff` after. | Rapid development, batch file updates |
+| **Bypass Permissions** | `Shift+Tab` to toggle | `⏵⏵ bypass permissions on` | Skips all permission prompts (file edits + bash commands). Your settings.json `deny` rules still apply as a safety net. | When comfortable with your operating rules/tool access and want zero approval interruptions. Pairs well with Plan Mode. |
+| **Extended Thinking** | Press `Tab` or say "think hard" | *(shown in response)* | Claude shows its reasoning process explicitly and analyzes problems more deeply. Takes longer but provides thorough analysis. | Complex problems, edge cases, ambiguous requirements |
 
-### Understanding Each Mode
-
-#### Standard Mode (Default)
-Your everyday interaction mode. Claude responds conversationally and can execute read operations, write files, and run commands based on your permissions settings.
-
-**When to use:** Regular analysis work, SQL development, documentation
-
-#### Plan Mode
-Claude creates a detailed plan and waits for your approval before executing any changes.
-
-**How it works:**
-```
-You: "Reorganize the analysis project structure"
-Claude: [Creates detailed plan]
-        [Waits for approval]
-You: "Proceed"
-Claude: [Executes the plan]
-```
-
-**When to use:**
-- Complex multi-step data pipelines
-- Unfamiliar analysis approaches
-- Learning how Claude works
-- Architectural decisions
-
-#### Auto-Accept Mode
-Claude makes file changes automatically without prompting for each individual edit.
-
-**How to activate:** Press `Shift+Tab` and select "Auto-Accept Edits"
-
-**When to use:**
-- Rapid development
-- Batch file updates
-- When you trust Claude's changes
-- Review changes via `git diff` after
-
-**⚠️ Important:** You can always review all changes with git before committing
-
-#### Extended Thinking Mode
+### Extended Thinking Mode
 Claude shows its reasoning process explicitly and analyzes problems more deeply.
 
 | Aspect | Normal Mode | Extended Thinking Mode |
@@ -322,9 +286,22 @@ Claude shows its reasoning process explicitly and analyzes problems more deeply.
 
 ## Understanding Compaction and /clear
 
+### Recommended Compaction Workflow
+
+**Performance Note:** I notice a significant decrease in Claude's performance following compaction. I recommend avoiding auto-compaction when possible.
+
+**My Workflow:**
+1. Use `/clear` before hitting the auto-compaction threshold
+2. To continue the same work after clearing:
+   - Tell Claude to refamiliarize itself with the folder contents
+   - Update a CLAUDE.md file within the project folder before clearing to preserve key context
+3. This preserves better performance while maintaining work continuity
+
 ### What is Compaction?
 
-As conversations grow long, Claude Code automatically "compacts" old messages to save space while preserving important context. This happens automatically based on settings.
+As conversations grow long, Claude Code automatically "compacts" old messages to save space while preserving important context. This happens automatically when context reaches ~95% capacity.
+
+> **📖 Learn more:** [What is Claude Code Auto Compact?](https://claudelog.com/faqs/what-is-claude-code-auto-compact/)
 
 **What gets compacted:**
 - Older messages and responses
@@ -354,19 +331,6 @@ As conversations grow long, Claude Code automatically "compacts" old messages to
 ![After compaction](images/compaction_complete.png)
 
 *After compaction, the conversation continues with preserved context - notice the summary at the top showing what was compacted*
-
-### Auto-Compaction Settings
-
-Control compaction behavior in settings.json:
-
-```json
-{
-  "compaction": {
-    "enabled": true,
-    "threshold": 50000  // Compact after ~50k tokens
-  }
-}
-```
 
 ### Using /clear
 
@@ -453,12 +417,6 @@ Claude Code has three permission levels:
     ]
   },
 
-  "environment": {
-    "DATABASE": "ANALYTICS",
-    "WAREHOUSE": "DATA_ANALYSIS",
-    "SCHEMA": "REPORTING"
-  },
-
   "hooks": {
     "PreToolUse": [
       {
@@ -483,7 +441,7 @@ Claude Code has three permission levels:
 
 **Hooks** - Enforce workflows (prevent commits to main, run checks before operations)
 
-> **📖 Advanced Configuration:** https://code.claude.com/docs/en/features/settings
+> **📖 Advanced Configuration:** https://code.claude.com/docs/en/settings
 
 ---
 
@@ -935,10 +893,6 @@ git push
     "allow": ["Read", "Glob", "Grep"],
     "ask": ["Bash(snow*)", "Bash(git push*)"],
     "deny": ["Bash(snow * UPDATE *)", "Delete"]
-  },
-  "environment": {
-    "DATABASE": "${USER_DATABASE}",     // Each user sets this
-    "WAREHOUSE": "${USER_WAREHOUSE}"
   }
 }
 ```
@@ -1032,10 +986,10 @@ claude --resume
 
 ## Additional Resources
 
-- **Official Docs:** https://code.claude.com/docs
-- **Settings Reference:** https://code.claude.com/docs/en/features/settings
-- **Commands Guide:** https://code.claude.com/docs/en/features/commands
-- **Agents Guide:** https://code.claude.com/docs/en/features/agents
+- **Official Docs:** https://code.claude.com/docs/en/overview
+- **Settings Reference:** https://code.claude.com/docs/en/settings
+- **Commands Guide:** https://code.claude.com/docs/en/slash-commands
+- **Agents Guide:** https://code.claude.com/docs/en/sub-agents
 
 ---
 

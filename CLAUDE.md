@@ -1,5 +1,31 @@
 # Claude Code Assistant Instructions
 
+## Table of Contents
+
+- [Overview](#overview)
+- [Assistant Role and Expertise](#assistant-role-and-expertise)
+- [Core Development Philosophy](#core-development-philosophy)
+- [Critical Operating Rules](#critical-operating-rules)
+- [Prerequisites](#prerequisites)
+- [Custom Agents Available](#custom-agents-available)
+- [Available CLI Tools](#available-cli-tools)
+- [Complete Git Workflow Requirements](#complete-git-workflow-requirements)
+- [Data Architecture Context](#data-architecture-context)
+- [Company and Platform Context](#company-and-platform-context)
+- [Assumption Documentation and Context Handling](#assumption-documentation-and-context-handling)
+- [Human Review Optimization Rules](#human-review-optimization-rules)
+- [Analysis and Quality Control Standards](#analysis-and-quality-control-standards-and-requirements)
+- [Data Business Context](#data-business-context)
+- [Data Schema Documentation](#data-schema-documentation)
+- [Ticket Research and Knowledge Management](#ticket-research-and-knowledge-management)
+- [Database Deployment and Development Standards](#database-deployment-and-development-standards)
+- [Integration Limitations and Workarounds](#integration-limitations-and-workarounds)
+- [CLAUDE.md Update Process](#claudemd-update-process)
+- [Error Handling and Security](#error-handling-and-security)
+- [Getting Help](#getting-help)
+
+---
+
 ## Overview
 
 This document provides instructions for Claude Code when working with the data-tickets repository. You have access to several powerful command-line tools that can help solve data analysis tickets and issues.
@@ -124,9 +150,9 @@ See the **[Helpful Mac Installations Guide](./documentation/helpful_mac_installa
 - Custom integrations (Slack CLI functions)
 - Platform-specific installation instructions (macOS Homebrew)
 
-## Custom Agents Available
+## Custom Agents and Commands
 
-Specialized agents in `.claude/agents/` handle complex, autonomous tasks. **Use proactively** when appropriate.
+Specialized agents in `.claude/agents/` and commands in `.claude/commands/` handle complex tasks. **Use proactively** when appropriate.
 
 ### Available Agents
 
@@ -135,35 +161,38 @@ Specialized agents in `.claude/agents/` handle complex, autonomous tasks. **Use 
 | **code-review-agent** | Reviews SQL, Python, notebooks for best practices | Before PR, after significant code changes |
 | **sql-quality-agent** | SQL performance optimization and query efficiency | Large datasets, production queries, slow performance |
 | **qc-validator-agent** | Validates all QC requirements met | Before PR, after finalizing deliverables |
+| **docs-review-agent** | Reviews documentation, validates URLs, checks folder coherence | Before PR, after documentation updates |
 
-### How to Invoke
+### Available Commands
+
+| Command | Arguments | Purpose |
+|---------|-----------|---------|
+| `/review-work` | `[folder-path]` | Auto-runs appropriate agents based on folder contents |
+| `/save-work` | `yes` or `no` | Save progress; `yes` creates PR, `no` just commits/pushes |
+| `/merge-work` | none | Merge PR, cleanup branches, return to main |
+| `/initiate-request` | none | Start new analysis project with full setup |
+| `/summarize-session` | none | Show current progress and next steps |
+| `/google-drive-backup` | none | Backup deliverables to Google Drive |
+
+### How to Invoke Agents
 
 ```
 "Use code-review-agent to review my SQL queries"
 "Launch sql-quality-agent to optimize this query"
 "Use qc-validator-agent to check if all QC is complete"
+"Use docs-review-agent to validate documentation"
+"/review-work videos/claude_code_overview"
 ```
 
 ### Agent Responsibilities
 
-**code-review-agent checks:**
-- SQL optimization and best practices
-- Python code quality (pandas, error handling)
-- Notebook documentation
-- QC query completeness
+**code-review-agent:** SQL optimization, Python quality, notebook documentation, QC completeness
 
-**sql-quality-agent checks:**
-- Query performance and optimization
-- Efficient indexes and filters
-- Platform-specific best practices
-- SQL anti-patterns
+**sql-quality-agent:** Query performance, efficient filters, platform best practices, anti-patterns
 
-**qc-validator-agent checks:**
-- QC query coverage (counts, duplicates, completeness, logic, dates)
-- QC execution evidence
-- Assumptions documented
-- Deliverable organization
-- Project sign-off readiness
+**qc-validator-agent:** QC coverage, execution evidence, assumptions documented, sign-off readiness
+
+**docs-review-agent:** URL validation, structure review, repository indexing, folder coherence (README matches contents)
 
 ## Available CLI Tools
 
@@ -306,7 +335,6 @@ git push origin TICKET-XXX
    Non-semantic titles will fail automated checks and prevent merging.
 
 5. **Post-Merge Cleanup**
-   - Update [README.md](./README.md#completed-tickets) with ticket entry
    - Archive local branch: `git branch -d TICKET-XXX`
    - Create Google Drive backup (with permission)
 
@@ -559,7 +587,7 @@ The repository maintains comprehensive data documentation in **[Data Catalog](./
 ## Ticket Research and Knowledge Management
 
 ### Repository Structure
-All completed tickets are stored under `tickets/` directory. **For a complete chronological log, see [main README.md](./README.md#completed-tickets-log).**
+All completed tickets are stored under `tickets/` directory.
 
 ### Google Drive Integration
 
