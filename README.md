@@ -24,10 +24,13 @@ This repository serves **two purposes**:
 
 ### Video Work Examples
 The `videos/` folder contains complete examples from YouTube videos:
-- **Integrating AI and Snowflake** - Demonstrations of using Claude Code with Snowflake MCP server for data analysis
+- **Integrating AI and Snowflake** - Using Claude Code with Snowflake MCP server for data analysis
+- **Integrating Claude and Databricks** - Databricks CLI workflows including:
+  - Unity Catalog exploration
+  - Notebook creation and job scheduling
+  - Job troubleshooting and error resolution
 - Real-world data exploration and analysis workflows
 - Quality control validation patterns
-- Documentation and deliverable structures
 
 ### Template Materials
 Core template files you can adapt for your own projects:
@@ -37,7 +40,10 @@ Core template files you can adapt for your own projects:
   - `data_catalog.md` - Schema documentation template
   - `data_business_context.md` - Business context documentation template
   - `helpful_mac_installations.md` - CLI tool setup guide
-- **`resources/`** - Reusable utilities and integration scripts
+- **`.claude/agents/`** - Custom Claude Code agents for specialized tasks:
+  - `code-review-agent.md` - SQL, Python, and notebook review
+  - `sql-quality-agent.md` - Query optimization and best practices
+  - `qc-validator-agent.md` - Quality control validation
 
 ### Folder Structure Template
 ```
@@ -80,8 +86,10 @@ your-project/
 
 This template showcases integration with:
 - **Snowflake** - Cloud data warehouse and SQL development
+- **Databricks** - Unified analytics platform and job orchestration
 - **Claude Code** - AI-assisted coding and analysis
 - **Snowflake MCP Server** - Model Context Protocol for database integration
+- **Databricks CLI** - Workspace management, job scheduling, and troubleshooting
 - **Git workflows** - Version control and collaboration patterns
 - **Quality control frameworks** - Automated validation approaches
 
