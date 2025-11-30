@@ -1,6 +1,6 @@
 # Data & AI Tickets Template
 
-> 📺 **Reference repository for the [Kyle Chalmers Data & AI YouTube channel](https://youtube.com/@kylechalmersdataai)**
+> 🌐 **[KC Labs](https://www.kclabs.ai/)** | 📺 **[Kyle Chalmers Data & AI YouTube](https://youtube.com/@kylechalmersdataai)**
 
 Reference repository for the Kyle Chalmers Data & AI YouTube channel. Provides structured templates for managing data tasks with quality-first SQL development, standardized ticket workflows, automated QC validation, and multi-layer architecture patterns. Use as a foundation for reproducible analytics work.
 
