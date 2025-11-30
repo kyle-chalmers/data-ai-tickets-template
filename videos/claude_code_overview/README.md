@@ -55,7 +55,7 @@
 Claude Code is Anthropic's official CLI tool that brings AI-powered assistance directly into your terminal and development workflow.
 
 **Think of it as having a senior data engineer working alongside you who:**
-- Reads and understands your entire codebase
+- Reads and understands your codebase, previous tickets/projects, and your database
 - Executes database queries and analyzes data
 - Writes, reviews, and optimizes SQL
 - Manages git workflows and ensures quality standards
@@ -68,15 +68,7 @@ Claude Code is Anthropic's official CLI tool that brings AI-powered assistance d
 | **⚡ Speed** | Set up analysis projects in seconds, not hours |
 | **✨ Quality** | Automated QC checks prevent data quality issues |
 | **🎯 Consistency** | Standardized workflows across all team members |
-| **🛡️ Safety** | Prevents destructive SQL operations and git mistakes |
 | **📚 Knowledge** | References your documentation and business context automatically |
-
-### Real Impact
-
-Data teams using Claude Code report:
-- **60% reduction** in time-to-delivery for analysis projects
-- **90% fewer** workflow mistakes and data quality issues
-- **100% compliance** with git workflow and quality standards
 
 ---
 
@@ -192,6 +184,25 @@ your-data-project/
 
 CLAUDE.md is the instruction manual that teaches Claude about your team's specific workflows, standards, and tools.
 
+### Types of CLAUDE.md Files
+
+**User Home CLAUDE.md (`~/.claude/CLAUDE.md`)** - Personal instructions that apply to every Claude Code session you start, regardless of repository. Use this for:
+- Your preferred communication style
+- Personal tool configurations
+- Cross-project standards you always want enforced
+
+**Repository Root CLAUDE.md** - Global instructions for all work in a specific repository. See [CLAUDE.md](../../CLAUDE.md) for a comprehensive example including team standards, permissions, tools, and workflows.
+
+**Project/Ticket-Level CLAUDE.md** - Specific context for individual projects that captures lessons learned, tool configurations, and patterns for similar future work.
+
+### Real Examples from This Repository
+
+**[KAN-5 CLAUDE.md](../../tickets/kchalmers/KAN-5/CLAUDE.md)** - Snowflake CLI authentication setup and INFORMATION_SCHEMA query patterns.
+
+**[KAN-6 CLAUDE.md](../../tickets/kchalmers/KAN-6/CLAUDE.md)** - MCP server usage compared to CLI, with workflow and performance notes.
+
+These ticket-level files serve as institutional knowledge for future similar work.
+
 ### What Goes in CLAUDE.md
 
 1. **Your Role and Expertise**
@@ -240,10 +251,6 @@ CLAUDE.md is the instruction manual that teaches Claude about your team's specif
    5. Documentation
    6. Pull request for review
    ```
-
-### Example CLAUDE.md for Data Teams
-
-See the full CLAUDE.md in this repository root for a complete example tailored to data analysis workflows.
 
 ---
 
