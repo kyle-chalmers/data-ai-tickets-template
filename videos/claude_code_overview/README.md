@@ -20,26 +20,51 @@
 **1.2 Core Concepts**
 - [The Most Important Thing to Remember](#the-most-important-thing-to-remember)
 - [Designing Your Repository for Claude Success](#designing-your-repository-for-claude-success)
+  - [Recommended Folder Structure](#recommended-folder-structure)
 - [CLAUDE.md Files: Teaching Claude About Your Workflows](#claudemd-files-teaching-claude-about-your-workflows)
+  - [Types of CLAUDE.md Files](#types-of-claudemd-files)
+  - [Real Examples from This Repository](#real-examples-from-this-repository)
+  - [What Goes in CLAUDE.md](#what-goes-in-claudemd)
 
 **1.3 Modes and Features**
 - [Claude Code Modes](#claude-code-modes)
+  - [Comprehensive Modes Comparison](#comprehensive-modes-comparison)
+  - [Extended Thinking Mode](#extended-thinking-mode)
 - [Understanding Compaction and /clear](#understanding-compaction-and-clear)
+  - [Recommended Compaction Workflow](#recommended-compaction-workflow)
+  - [What is Compaction?](#what-is-compaction)
+  - [Using /clear](#using-clear)
 
 **1.4 Configuration**
 - [Settings.json Configuration](#settingsjson-configuration)
+  - [Permission Hierarchy](#permission-hierarchy)
+  - [Example Settings for Data Teams](#example-settings-for-data-teams)
 - [Workflow Structure: Git and Quality Control](#workflow-structure-git-and-quality-control)
+  - [Git Workflow Fundamentals](#git-workflow-fundamentals)
+  - [Quality Control Integration](#quality-control-integration)
 
 ### Section 2: Refining Claude to Improve Your Workflow
 
 **2.1 Customization**
 - [Custom Commands](#custom-commands)
+  - [Built-in / Commands vs Custom Commands](#built-in--commands-vs-custom-commands)
+  - [Creating Custom Commands](#creating-custom-commands)
+  - [Example Commands for Data Teams](#example-commands-for-data-teams)
 - [Agents](#agents)
+  - [How Agents Work](#how-agents-work)
+  - [Built-in Agents vs Custom Agents](#built-in-agents-vs-custom-agents)
+  - [Example Agents for Data Teams](#example-agents-for-data-teams)
+  - [Creating Custom Agents](#creating-custom-agents)
+  - [Using Agents in Commands](#using-agents-in-commands)
 - [Helpful Built-in / Commands](#helpful-built-in--commands)
+  - [MCP Servers](#mcp-servers)
 
 **2.2 Best Practices**
 - [Best Practices for Data Teams](#best-practices-for-data-teams)
 - [Collaboration and Team Usage](#collaboration-and-team-usage)
+  - [Sharing Commands and Agents](#sharing-commands-and-agents)
+  - [Team Settings](#team-settings)
+  - [Documentation for Teams](#documentation-for-teams)
 
 ### Resources
 - [Additional Resources](#additional-resources)
@@ -453,21 +478,14 @@ Claude Code has three permission levels:
 
 You can configure Claude Code to enforce a feature branch workflow through CLAUDE.md instructions and settings.json hooks. Here's the recommended workflow:
 
-```
-main (protected)
-  ↓
-  Create feature branch (analysis-customer-churn)
-  ↓
-  Work: commits, SQL queries, analysis
-  ↓
-  Quality Control: QC queries, validation
-  ↓
-  Create Pull Request
-  ↓
-  Review → Merge
-  ↓
-  Cleanup → Back to main
-```
+| Step | Command | Description |
+|------|---------|-------------|
+| 1. Create branch | `/initiate-request` | Creates feature branch and project structure |
+| 2. Work | *(develop normally)* | Write SQL queries, analysis, documentation |
+| 3. Save progress | `/save-work no` | Commit and push without PR |
+| 4. Review | `/review-work [folder]` | Run agents to validate work quality |
+| 5. Submit | `/save-work yes` | Commit, push, and create PR |
+| 6. Merge | `/merge-work` | Merge PR, delete branch, return to main |
 
 **Golden Rules:**
 - ✅ Never commit directly to main
@@ -479,34 +497,13 @@ main (protected)
 
 ### Quality Control Integration
 
-Every analysis should include quality control queries:
+I have configured every analysis to include QC validation with SQL queries that check for:
+- **Record counts** - Verify expected row counts
+- **Duplicate detection** - Identify unexpected duplicates
+- **Data completeness** - Check for missing values
+- **Business logic validation** - Confirm date ranges, unique keys, etc.
 
-**Standard QC Checks:**
-```sql
--- 1. Record Count Validation
-SELECT COUNT(*) as total_records FROM final_results;
-
--- 2. Duplicate Detection
-SELECT customer_id, COUNT(*) as duplicate_count
-FROM final_results
-GROUP BY customer_id
-HAVING COUNT(*) > 1;
-
--- 3. Data Completeness
-SELECT
-  COUNT(*) as total_records,
-  COUNT(customer_id) as customer_id_count,
-  COUNT(transaction_amount) as amount_count,
-  COUNT(*) - COUNT(customer_id) as missing_customers
-FROM final_results;
-
--- 4. Business Logic Validation
-SELECT
-  MIN(transaction_date) as earliest_date,
-  MAX(transaction_date) as latest_date,
-  COUNT(DISTINCT customer_id) as unique_customers
-FROM final_results;
-```
+Additional checks are added depending on analysis needs.
 
 **QC Folder Structure:**
 ```
