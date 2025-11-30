@@ -1,5 +1,7 @@
 # Integrating AI and Snowflake
 
+> **YouTube:** [The AI Integration Every Data Professional Needs (Claude and Claude Code + Snowflake Workflow Demo)](https://www.youtube.com/watch?v=q1y7M5mZkkE)
+
 Video demonstration of using Claude Code with Snowflake for data analysis.
 
 ## Contents

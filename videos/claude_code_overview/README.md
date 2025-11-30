@@ -34,22 +34,17 @@
 
 **2.1 Customization**
 - [Custom Commands](#custom-commands)
-- [Custom Agents](#custom-agents)
+- [Agents](#agents)
 - [Helpful Built-in / Commands](#helpful-built-in--commands)
 
 **2.2 Best Practices**
 - [Best Practices for Data Teams](#best-practices-for-data-teams)
-- [Common Workflows](#common-workflows)
-- [Troubleshooting](#troubleshooting)
 - [Collaboration and Team Usage](#collaboration-and-team-usage)
 
-### Quick Reference
-- [Essential Commands](#essential-commands)
-- [Useful Prompts](#useful-prompts)
-- [File Organization Checklist](#file-organization-checklist)
-- [Quality Control Checklist](#quality-control-checklist)
+### Resources
 - [Additional Resources](#additional-resources)
 - [Example Files in This Repository](#example-files-in-this-repository)
+- [Video](#video)
 
 ---
 
@@ -449,7 +444,7 @@ Claude Code has three permission levels:
 
 ### Git Workflow Fundamentals
 
-Claude Code enforces a feature branch workflow to keep your main branch protected:
+You can configure Claude Code to enforce a feature branch workflow through CLAUDE.md instructions and settings.json hooks. Here's the recommended workflow:
 
 ```
 main (protected)
@@ -473,7 +468,7 @@ main (protected)
 - ✅ Create PRs for all changes
 - ✅ Clean up branches after merge
 
-**Claude Code helps enforce these automatically** through settings.json hooks and safeguards.
+**You configure Claude Code to enforce these** through CLAUDE.md instructions and settings.json hooks.
 
 ### Quality Control Integration
 
@@ -582,19 +577,20 @@ If $ARGUMENTS is "no-pr", just commits and pushes.
 
 This repository includes several example commands in `.claude/commands/`:
 
-1. **`/initiate-request`** - Start a new analysis project with full structure
-2. **`/save-work [with-pr|no-pr]`** - Save progress with optional PR creation
-3. **`/merge-work`** - Complete workflow after PR merge
-4. **`/summarize-session`** - Show current progress and next steps
-5. **`/google-drive-backup`** - Backup deliverables to Google Drive for archiving
-6. **`/generate-data-object-prp`** - Create comprehensive Snowflake object development plan
-7. **`/prp-data-object-execute`** - Execute Snowflake object creation with full QC
+1. **[`/initiate-request`](.claude/commands/initiate-request.md)** - Start a new analysis project with full structure
+2. **[`/save-work [yes|no]`](.claude/commands/save-work.md)** - Save progress with optional PR creation
+3. **[`/merge-work`](.claude/commands/merge-work.md)** - Complete workflow after PR merge
+4. **[`/review-work [folder-path]`](.claude/commands/review-work.md)** - Auto-run appropriate agents based on folder contents
+5. **[`/summarize-session`](.claude/commands/summarize-session.md)** - Show current progress and next steps
+6. **[`/google-drive-backup`](.claude/commands/google-drive-backup.md)** - Backup deliverables to Google Drive
+7. **[`/generate-data-object-prp`](.claude/commands/generate-data-object-prp.md)** - Create comprehensive Snowflake object development plan
+8. **[`/prp-data-object-execute`](.claude/commands/prp-data-object-execute.md)** - Execute Snowflake object creation with full QC
 
 See each command file for detailed documentation and usage examples.
 
 ---
 
-## Custom Agents
+## Agents
 
 Agents are specialized AI assistants that Claude launches to handle complex, multi-step tasks autonomously.
 
@@ -621,6 +617,8 @@ You can explicitly request an agent:
 
 **Built-in Agents** (available in Claude Code):
 - **Explore** - Codebase exploration and pattern finding
+  - Supports thoroughness levels: quick (10-30s), medium (30-90s), very thorough (2-5min)
+  - Example: `"Use Explore agent with very thorough mode to find all payment logic"`
 - **General-Purpose** - Complex multi-step autonomous tasks
 - **Plan** - Creating implementation plans
 
@@ -629,26 +627,14 @@ You can explicitly request an agent:
 - Enforce your team's standards
 - Automate specialized reviews and validations
 
-### Agent Thoroughness Levels
-
-| Level | Time | Use Case |
-|-------|------|----------|
-| **Quick** | 10-30s | Fast answers, clear targets |
-| **Medium** | 30-90s | Standard exploration |
-| **Very Thorough** | 2-5min | Critical research, complete documentation |
-
-**Example:**
-```
-"Explore the codebase to understand payment processing logic. Use medium thoroughness."
-```
-
 ### Example Agents for Data Teams
 
 This repository includes example agents in `.claude/agents/`:
 
-1. **code-review-agent** - Reviews SQL, Python, and notebooks for quality and best practices
-2. **sql-quality-agent** - Specialized SQL review focusing on performance and optimization
-3. **qc-validator-agent** - Validates all quality control requirements are met before finalizing
+1. **[code-review-agent](.claude/agents/code-review-agent.md)** - Reviews SQL, Python, and notebooks for quality and best practices
+2. **[sql-quality-agent](.claude/agents/sql-quality-agent.md)** - Specialized SQL review focusing on performance and optimization
+3. **[qc-validator-agent](.claude/agents/qc-validator-agent.md)** - Validates all quality control requirements are met before finalizing
+4. **[docs-review-agent](.claude/agents/docs-review-agent.md)** - Reviews documentation for quality, validates URLs, and verifies folder coherence
 
 See each agent file for detailed documentation and capabilities.
 
@@ -691,6 +677,24 @@ Format your findings as:
 - **Recommendations**: How to improve
 ```
 
+### Using Agents in Commands
+
+You can reference agents within custom commands to create powerful automated workflows. The `/review-work` command demonstrates this pattern:
+
+**Example from `/review-work`:**
+```markdown
+## Process
+
+1. **Explore the folder** to understand its contents
+2. **Identify applicable agents** based on file types present
+3. **Run all applicable agents in parallel** using the Task tool
+4. **Provide consolidated review summary** with findings from each agent
+```
+
+This allows a single command to orchestrate multiple specialized agents based on folder contents, providing comprehensive reviews with one invocation.
+
+See [`.claude/commands/review-work.md`](.claude/commands/review-work.md) for the full implementation.
+
 ---
 
 ## Helpful Built-in / Commands
@@ -724,6 +728,10 @@ MCP (Model Context Protocol) servers extend Claude Code's capabilities. If you w
 ```
 
 > See previous video guides for detailed MCP setup instructions.
+
+**Setup Guides:**
+- [Snowflake MCP Setup](videos/integrating_ai_and_snowflake/instructions/SNOWFLAKE_MCP_SETUP.md)
+- [Atlassian MCP Setup](videos/integrating_jira_and_ticket_taking/ATLASSIAN_MCP_SETUP.md)
 
 ---
 
@@ -772,85 +780,6 @@ Always document assumptions made during analysis:
    - Reasoning: These are system test accounts per data team
    - Impact: 423 records excluded from analysis
 ```
-
----
-
-## Common Workflows
-
-### Daily Analysis Pattern
-
-```
-1. Start new analysis: "Start a project analyzing customer payment trends for Q4 2024"
-2. Explore data: "Show me the structure of the payments table and sample records"
-3. Develop query: "Write an exploratory query to analyze payment trends by month"
-4. Add QC: "Add comprehensive QC queries for record counts, duplicates, and date ranges"
-5. Finalize: "Create final deliverables with documentation"
-6. Submit: "Create a PR with summary of findings"
-```
-
-### SQL Development Pattern
-
-```
-1. Understand schema: "Describe the customer_transactions table structure"
-2. Draft query: "Write a query to calculate monthly active users"
-3. Test and validate: "Run this query and show me sample results"
-4. Optimize: "Review this query for performance issues and optimize"
-5. Add QC: "Create QC queries to validate the results"
-6. Document: "Update README with methodology and assumptions"
-```
-
-### Data Pipeline Pattern
-
-```
-1. Plan approach: "I need to create a Snowflake view for customer metrics. Let me plan the approach." [Use Plan Mode]
-2. Research: "Use /generate-data-object-prp to create a comprehensive development plan"
-3. Review plan: [Review the generated PRP]
-4. Execute: "Use /prp-data-object-execute to implement the view with full QC"
-5. Validate: "Review all QC results and verify the view functions correctly"
-```
-
----
-
-## Troubleshooting
-
-### Claude Seems Confused About Context
-
-**Solution:** Use `/clear` to start fresh or `/context` to see what Claude knows
-
-**Prevention:** Be explicit about what you're working on at the start of each session
-
-### Git Workflow Not Working
-
-**Check:**
-```bash
-git status              # Verify you're in a git repository
-gh auth status          # Check GitHub authentication
-git branch              # Confirm current branch
-```
-
-**Common issue:** Trying to work on main branch
-**Fix:** Settings.json hooks will prevent this - create a feature branch
-
-### Database Queries Failing
-
-**Check:**
-```bash
-# For Snowflake CLI
-snow connection test
-
-# For MCP server
-/mcp                    # Verify MCP server is active
-```
-
-**Common issue:** Authentication expired
-**Fix:** Re-authenticate with your database tool
-
-### Agent Not Finding What You Need
-
-**Try:**
-- Different thoroughness level ("use very thorough mode")
-- More specific search terms ("find queries that JOIN customers AND orders tables")
-- Specify file patterns ("search only in sql_queries/ folder")
 
 ---
 
@@ -910,80 +839,6 @@ Claude automatically references these files, ensuring consistent behavior across
 
 ---
 
-# Quick Reference
-
-## Essential Commands
-
-```bash
-# Start Claude Code
-claude
-
-# Resume previous session
-claude --resume
-
-# Built-in commands (available everywhere)
-/clear                  # Clear conversation history
-/status                 # Check current state
-/help                   # Get help
-/mcp                    # Manage MCP servers
-/context                # View current context
-
-# Custom commands (examples in this repo)
-/initiate-request       # Start new analysis project
-/save-work with-pr      # Save and create PR
-/save-work no-pr        # Save without PR
-/merge-work             # Clean up after merge
-/summarize-session      # Show progress and session summary
-/google-drive-backup    # Backup to Google Drive
-```
-
-## Useful Prompts
-
-```
-# Understanding
-"Explain how this query works"
-"What does this analysis do?"
-
-# Development
-"Write a query to find active customers in the last 30 days"
-"Add comprehensive QC queries for this analysis"
-"Optimize this query for performance"
-
-# Quality Control
-"Review this SQL for performance issues"
-"Create validation queries for duplicate detection"
-"Check this analysis for data quality problems"
-
-# Git Workflow
-"Create a PR for this analysis with business impact summary"
-"Show me what changes I've made"
-
-# Research
-"Find all queries that calculate customer lifetime value"
-"Use Explore agent to understand the payment processing logic"
-```
-
-## File Organization Checklist
-
-- [ ] Feature branch created (not on main)
-- [ ] Project folder structure set up
-- [ ] SQL queries numbered for review order
-- [ ] QC queries created and passing
-- [ ] README.md documents assumptions and methodology
-- [ ] Final deliverables clearly labeled
-- [ ] All changes committed with clear messages
-
-## Quality Control Checklist
-
-- [ ] Record count validation query
-- [ ] Duplicate detection query
-- [ ] Data completeness check
-- [ ] Business logic validation
-- [ ] Date range verification
-- [ ] All QC queries documented with results
-
----
-
 ## Additional Resources
 
 - **Official Docs:** https://code.claude.com/docs/en/overview
@@ -997,11 +852,19 @@ claude --resume
 
 Explore the `.claude/` folder in this repository for working examples:
 
-- **`.claude/commands/`** - 7 example commands demonstrating data workflows
-- **`.claude/agents/`** - 3 example agents for code review, SQL quality, and QC validation
+- **`.claude/commands/`** - 8 example commands demonstrating data workflows
+- **`.claude/agents/`** - 4 example agents for code review, SQL quality, QC validation, and documentation review
 - **`.claude/settings.json`** - Practical configuration for data teams
 
 Each file includes detailed documentation and usage examples.
+
+---
+
+## Video
+
+Watch the companion video for this guide:
+
+> **YouTube:** [INSERT VIDEO LINK]
 
 ---
 
