@@ -150,9 +150,9 @@ See the **[Helpful Mac Installations Guide](./documentation/helpful_mac_installa
 - Custom integrations (Slack CLI functions)
 - Platform-specific installation instructions (macOS Homebrew)
 
-## Custom Agents Available
+## Custom Agents and Commands
 
-Specialized agents in `.claude/agents/` handle complex, autonomous tasks. **Use proactively** when appropriate.
+Specialized agents in `.claude/agents/` and commands in `.claude/commands/` handle complex tasks. **Use proactively** when appropriate.
 
 ### Available Agents
 
@@ -161,35 +161,38 @@ Specialized agents in `.claude/agents/` handle complex, autonomous tasks. **Use 
 | **code-review-agent** | Reviews SQL, Python, notebooks for best practices | Before PR, after significant code changes |
 | **sql-quality-agent** | SQL performance optimization and query efficiency | Large datasets, production queries, slow performance |
 | **qc-validator-agent** | Validates all QC requirements met | Before PR, after finalizing deliverables |
+| **docs-review-agent** | Reviews documentation, validates URLs, checks folder coherence | Before PR, after documentation updates |
 
-### How to Invoke
+### Available Commands
+
+| Command | Arguments | Purpose |
+|---------|-----------|---------|
+| `/review-work` | `[folder-path]` | Auto-runs appropriate agents based on folder contents |
+| `/save-work` | `yes` or `no` | Save progress; `yes` creates PR, `no` just commits/pushes |
+| `/merge-work` | none | Merge PR, cleanup branches, return to main |
+| `/initiate-request` | none | Start new analysis project with full setup |
+| `/summarize-session` | none | Show current progress and next steps |
+| `/google-drive-backup` | none | Backup deliverables to Google Drive |
+
+### How to Invoke Agents
 
 ```
 "Use code-review-agent to review my SQL queries"
 "Launch sql-quality-agent to optimize this query"
 "Use qc-validator-agent to check if all QC is complete"
+"Use docs-review-agent to validate documentation"
+"/review-work videos/claude_code_overview"
 ```
 
 ### Agent Responsibilities
 
-**code-review-agent checks:**
-- SQL optimization and best practices
-- Python code quality (pandas, error handling)
-- Notebook documentation
-- QC query completeness
+**code-review-agent:** SQL optimization, Python quality, notebook documentation, QC completeness
 
-**sql-quality-agent checks:**
-- Query performance and optimization
-- Efficient indexes and filters
-- Platform-specific best practices
-- SQL anti-patterns
+**sql-quality-agent:** Query performance, efficient filters, platform best practices, anti-patterns
 
-**qc-validator-agent checks:**
-- QC query coverage (counts, duplicates, completeness, logic, dates)
-- QC execution evidence
-- Assumptions documented
-- Deliverable organization
-- Project sign-off readiness
+**qc-validator-agent:** QC coverage, execution evidence, assumptions documented, sign-off readiness
+
+**docs-review-agent:** URL validation, structure review, repository indexing, folder coherence (README matches contents)
 
 ## Available CLI Tools
 

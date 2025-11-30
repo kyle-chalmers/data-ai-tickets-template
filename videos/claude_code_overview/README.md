@@ -218,6 +218,7 @@ CLAUDE.md is the instruction manual that teaches Claude about your team's specif
    ```markdown
    ## Tools Available
    - Snowflake CLI (`snow`) - Database queries
+   - Databricks CLI (`databricks`) - Job orchestration and data platform
    - GitHub CLI (`gh`) - Git operations
    - Python - Data analysis and visualization
    ```
@@ -225,8 +226,8 @@ CLAUDE.md is the instruction manual that teaches Claude about your team's specif
 4. **Business and Data Knowledge**
    ```markdown
    ## Data Sources
-   - ANALYTICS.REPORTING.* - Production reporting tables
-   - ANALYTICS.SANDBOX.* - Development and testing
+   - [INSERT PRODUCTION DATABASE].* - Production reporting tables
+   - [INSERT DEVELOPMENT DATABASE].* - Development and testing
 
    ## Quality Standards
    - All queries must have record count validation
@@ -285,9 +286,22 @@ Claude shows its reasoning process explicitly and analyzes problems more deeply.
 
 ## Understanding Compaction and /clear
 
+### Recommended Compaction Workflow
+
+**Performance Note:** I notice a significant decrease in Claude's performance following compaction. I recommend avoiding auto-compaction when possible.
+
+**My Workflow:**
+1. Use `/clear` before hitting the auto-compaction threshold
+2. To continue the same work after clearing:
+   - Tell Claude to refamiliarize itself with the folder contents
+   - Update a CLAUDE.md file within the project folder before clearing to preserve key context
+3. This preserves better performance while maintaining work continuity
+
 ### What is Compaction?
 
-As conversations grow long, Claude Code automatically "compacts" old messages to save space while preserving important context. This happens automatically based on settings.
+As conversations grow long, Claude Code automatically "compacts" old messages to save space while preserving important context. This happens automatically when context reaches ~95% capacity.
+
+> **📖 Learn more:** [What is Claude Code Auto Compact?](https://claudelog.com/faqs/what-is-claude-code-auto-compact/)
 
 **What gets compacted:**
 - Older messages and responses
@@ -317,19 +331,6 @@ As conversations grow long, Claude Code automatically "compacts" old messages to
 ![After compaction](images/compaction_complete.png)
 
 *After compaction, the conversation continues with preserved context - notice the summary at the top showing what was compacted*
-
-### Auto-Compaction Settings
-
-Control compaction behavior in settings.json:
-
-```json
-{
-  "compaction": {
-    "enabled": true,
-    "threshold": 50000  // Compact after ~50k tokens
-  }
-}
-```
 
 ### Using /clear
 
@@ -414,12 +415,6 @@ Claude Code has three permission levels:
       "Bash(git push --force*)",     // Git safety - no force push
       "Delete"                       // No file deletions
     ]
-  },
-
-  "environment": {
-    "DATABASE": "ANALYTICS",
-    "WAREHOUSE": "DATA_ANALYSIS",
-    "SCHEMA": "REPORTING"
   },
 
   "hooks": {
@@ -898,10 +893,6 @@ git push
     "allow": ["Read", "Glob", "Grep"],
     "ask": ["Bash(snow*)", "Bash(git push*)"],
     "deny": ["Bash(snow * UPDATE *)", "Delete"]
-  },
-  "environment": {
-    "DATABASE": "${USER_DATABASE}",     // Each user sets this
-    "WAREHOUSE": "${USER_WAREHOUSE}"
   }
 }
 ```
