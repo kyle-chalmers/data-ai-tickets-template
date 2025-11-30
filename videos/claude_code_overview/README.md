@@ -184,6 +184,25 @@ your-data-project/
 
 CLAUDE.md is the instruction manual that teaches Claude about your team's specific workflows, standards, and tools.
 
+### Types of CLAUDE.md Files
+
+**User Home CLAUDE.md (`~/.claude/CLAUDE.md`)** - Personal instructions that apply to every Claude Code session you start, regardless of repository. Use this for:
+- Your preferred communication style
+- Personal tool configurations
+- Cross-project standards you always want enforced
+
+**Repository Root CLAUDE.md** - Global instructions for all work in a specific repository. See [CLAUDE.md](../../CLAUDE.md) for a comprehensive example including team standards, permissions, tools, and workflows.
+
+**Project/Ticket-Level CLAUDE.md** - Specific context for individual projects that captures lessons learned, tool configurations, and patterns for similar future work.
+
+### Real Examples from This Repository
+
+**[KAN-5 CLAUDE.md](../../tickets/kchalmers/KAN-5/CLAUDE.md)** - Snowflake CLI authentication setup and INFORMATION_SCHEMA query patterns.
+
+**[KAN-6 CLAUDE.md](../../tickets/kchalmers/KAN-6/CLAUDE.md)** - MCP server usage compared to CLI, with workflow and performance notes.
+
+These ticket-level files serve as institutional knowledge for future similar work.
+
 ### What Goes in CLAUDE.md
 
 1. **Your Role and Expertise**
@@ -232,10 +251,6 @@ CLAUDE.md is the instruction manual that teaches Claude about your team's specif
    5. Documentation
    6. Pull request for review
    ```
-
-### Example CLAUDE.md for Data Teams
-
-See the full CLAUDE.md in this repository root for a complete example tailored to data analysis workflows.
 
 ---
 
