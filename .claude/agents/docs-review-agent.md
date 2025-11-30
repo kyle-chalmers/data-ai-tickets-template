@@ -2,6 +2,7 @@
 name: docs-review-agent
 description: Reviews documentation for quality, validates URLs, ensures proper indexing, and verifies folder coherence
 tools: Read, Edit, Glob, Grep, WebFetch
+color: cyan
 ---
 
 # Documentation Review Agent

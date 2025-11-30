@@ -34,6 +34,10 @@ The `videos/` folder contains complete examples from YouTube videos:
   - Unity Catalog exploration
   - Notebook creation and job scheduling
   - Job troubleshooting and error resolution
+- **Integrating Jira and Ticket Taking** - Atlassian integration including:
+  - Atlassian CLI setup and configuration
+  - Atlassian MCP server setup
+  - Ticket workflow automation
 
 ### Template Materials
 Core template files you can adapt for your own projects:

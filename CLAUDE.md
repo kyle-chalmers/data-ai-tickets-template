@@ -1,5 +1,31 @@
 # Claude Code Assistant Instructions
 
+## Table of Contents
+
+- [Overview](#overview)
+- [Assistant Role and Expertise](#assistant-role-and-expertise)
+- [Core Development Philosophy](#core-development-philosophy)
+- [Critical Operating Rules](#critical-operating-rules)
+- [Prerequisites](#prerequisites)
+- [Custom Agents Available](#custom-agents-available)
+- [Available CLI Tools](#available-cli-tools)
+- [Complete Git Workflow Requirements](#complete-git-workflow-requirements)
+- [Data Architecture Context](#data-architecture-context)
+- [Company and Platform Context](#company-and-platform-context)
+- [Assumption Documentation and Context Handling](#assumption-documentation-and-context-handling)
+- [Human Review Optimization Rules](#human-review-optimization-rules)
+- [Analysis and Quality Control Standards](#analysis-and-quality-control-standards-and-requirements)
+- [Data Business Context](#data-business-context)
+- [Data Schema Documentation](#data-schema-documentation)
+- [Ticket Research and Knowledge Management](#ticket-research-and-knowledge-management)
+- [Database Deployment and Development Standards](#database-deployment-and-development-standards)
+- [Integration Limitations and Workarounds](#integration-limitations-and-workarounds)
+- [CLAUDE.md Update Process](#claudemd-update-process)
+- [Error Handling and Security](#error-handling-and-security)
+- [Getting Help](#getting-help)
+
+---
+
 ## Overview
 
 This document provides instructions for Claude Code when working with the data-tickets repository. You have access to several powerful command-line tools that can help solve data analysis tickets and issues.
@@ -306,7 +332,6 @@ git push origin TICKET-XXX
    Non-semantic titles will fail automated checks and prevent merging.
 
 5. **Post-Merge Cleanup**
-   - Update [README.md](./README.md#completed-tickets) with ticket entry
    - Archive local branch: `git branch -d TICKET-XXX`
    - Create Google Drive backup (with permission)
 
@@ -559,7 +584,7 @@ The repository maintains comprehensive data documentation in **[Data Catalog](./
 ## Ticket Research and Knowledge Management
 
 ### Repository Structure
-All completed tickets are stored under `tickets/` directory. **For a complete chronological log, see [main README.md](./README.md#completed-tickets-log).**
+All completed tickets are stored under `tickets/` directory.
 
 ### Google Drive Integration
 
