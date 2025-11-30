@@ -1,5 +1,7 @@
 # Atlassian CLI vs MCP: Comparison Guide
 
+> **YouTube:** [The Guide for How to SUCCESSFULLY Integrate Claude & Claude Code in Your Team's Jira Ticket Workflow](https://www.youtube.com/watch?v=WRvgMzYaIVo)
+
 Reference for understanding the differences between Atlassian CLI and MCP approaches for Jira and Confluence integration.
 
 ---

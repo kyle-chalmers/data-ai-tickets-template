@@ -1,5 +1,7 @@
 # Databricks + Claude CLI Integration
 
+> **YouTube:** [Claude Code Makes Databricks Easy: Jobs, Notebooks, SQL & Unity Catalog (All via the CLI)](https://www.youtube.com/watch?v=5_q7j-k8DbM)
+
 Complete guide for integrating Databricks with Claude Code using the Databricks CLI.
 
 ---

@@ -103,11 +103,14 @@ This template showcases integration with:
 
 ## 📺 Related Videos
 
-Check the [Kyle Chalmers Data & AI YouTube channel](https://youtube.com/@kylechalmersdataai) for videos demonstrating:
-- AI-assisted data analysis workflows
-- Snowflake database development
-- Quality control best practices
-- Real-world data engineering tasks
+Check the [Kyle Chalmers Data & AI YouTube channel](https://youtube.com/@kylechalmersdataai) for videos demonstrating these workflows:
+
+| Video | Description |
+|-------|-------------|
+| [If You Are in Data and Want to Leverage AI, this is Made for You](https://www.youtube.com/watch?v=NDR0tiJWWEA) | Introduction to the repository and AI-assisted data workflows |
+| [The AI Integration Every Data Professional Needs](https://www.youtube.com/watch?v=q1y7M5mZkkE) | Claude Code + Snowflake workflow demo |
+| [Claude Code Makes Databricks Easy](https://www.youtube.com/watch?v=5_q7j-k8DbM) | Jobs, Notebooks, SQL & Unity Catalog via CLI |
+| [How to SUCCESSFULLY Integrate Claude in Your Jira Workflow](https://www.youtube.com/watch?v=WRvgMzYaIVo) | Atlassian CLI and MCP integration guide |
 
 ## 💡 Key Concepts
 
