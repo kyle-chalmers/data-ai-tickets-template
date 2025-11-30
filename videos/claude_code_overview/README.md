@@ -337,7 +337,19 @@ As conversations grow long, Claude Code automatically "compacts" old messages to
 - Current file states
 - Important decisions and assumptions
 
-**What it looks like:**
+**Approaching Compaction:**
+
+![Approaching compaction](images/approaching_compaction.png)
+
+*When context is running low (3% remaining), Claude will notify you that compaction is approaching - you can use `/clear` to start fresh or let auto-compaction happen*
+
+**During Compaction:**
+
+![Compaction occurring](images/compaction_occurring.png)
+
+*When compaction triggers (0% context remaining), you'll see "Compacting conversation..." - this process summarizes older context while preserving key information*
+
+**After Compaction:**
 
 ![After compaction](images/compaction_complete.png)
 
