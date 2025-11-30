@@ -1,9 +1,5 @@
 {
-  "// Documentation": "For complete settings reference, see: https://code.claude.com/docs/en/features/settings",
-
   "permissions": {
-    "// Permissions Guide": "allow = auto-execute, ask = prompt first, deny = never allow",
-
     "allow": [
       "Read",
       "Write(./projects/**)",
@@ -20,38 +16,26 @@
       "Glob",
       "Grep"
     ],
-
     "ask": [
-      "// Database Operations": "Always ask before executing database commands",
       "Bash(snow*)",
       "Bash(databricks*)",
       "Bash(psql*)",
       "Bash(mysql*)",
-
-      "// Git Operations": "Ask before modifying remote repository",
       "Bash(git push*)",
       "Bash(git commit*)",
       "Bash(gh pr*)",
-
-      "// External APIs": "Ask before external API calls",
       "Bash(curl*)",
       "Bash(wget*)",
-
-      "// Environment Files": "Ask before modifying environment configuration",
       "Write(.env*)",
       "Edit(.env*)"
     ],
-
     "deny": [
-      "// Credential Protection": "Never allow access to credentials",
       "Read(.env)",
       "Read(.env.*)",
       "Read(secrets/**)",
       "Read(credentials/**)",
       "Read(**/*.pem)",
       "Read(**/*.key)",
-
-      "// SQL Safety": "Prevent destructive database operations",
       "Bash(snow * UPDATE *)",
       "Bash(snow * update *)",
       "Bash(snow * ALTER *)",
@@ -66,40 +50,25 @@
       "Bash(snow * create or replace *)",
       "Bash(snow * TRUNCATE *)",
       "Bash(snow * truncate *)",
-
-      "// Git Safety": "Prevent dangerous git operations",
       "Bash(git push --force*)",
       "Bash(git push -f*)",
       "Bash(git reset --hard*)",
-
-      "// File System Protection": "Prevent bulk deletions",
       "Bash(rm -rf*)",
       "Delete"
     ]
   },
-
   "environment": {
-    "// Environment Variables": "Set defaults for your data platform - customize these for your team",
-
     "GIT_MAIN_BRANCH": "main",
     "REPOSITORY_NAME": "data-ai-tickets-template",
-
-    "// Database Configuration": "Customize for your data warehouse",
     "DATABASE": "ANALYTICS",
     "WAREHOUSE": "DATA_ANALYSIS",
     "SCHEMA": "REPORTING",
-
-    "// Databricks Configuration": "If using Databricks",
     "DATABRICKS_PROFILE_PROD": "production",
     "DATABRICKS_PROFILE_DEV": "development"
   },
-
   "hooks": {
-    "// Hooks Documentation": "For hook configuration guide, see: https://code.claude.com/docs/en/features/hooks",
-
     "PreToolUse": [
       {
-        "// Prevent Main Branch Commits": "Block commits to protected branch",
         "matcher": "Bash(git commit*)",
         "hooks": [
           {
@@ -109,10 +78,8 @@
         ]
       }
     ],
-
     "UserPromptSubmit": [
       {
-        "// Git Workflow Reminder": "Remind to check branch before starting work",
         "matcher": "*",
         "hooks": [
           {
@@ -123,11 +90,8 @@
       }
     ]
   },
-
   "compaction": {
-    "// Compaction Settings": "Control conversation history management",
     "enabled": true,
-    "threshold": 50000,
-    "// Note": "Compaction preserves recent context and CLAUDE.md instructions while reducing token usage"
+    "threshold": 50000
   }
 }

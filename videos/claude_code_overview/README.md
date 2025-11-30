@@ -94,13 +94,13 @@ Data teams using Claude Code report:
 **Quick Install:**
 ```bash
 # Direct download
-open https://claude.ai/download
+open https://claude.com/download
 
 # Or via Homebrew (macOS)
 brew install --cask claude-code
 ```
 
-> **📖 Full Installation Guide:** https://code.claude.com/docs/en/setup#native-install-recommended
+> **📖 Full Installation Guide:** https://code.claude.com/docs/en/setup
 >
 > **⏱️ Time required:** 5 minutes
 
@@ -257,52 +257,15 @@ Claude Code operates in different modes that control how it interacts with you a
 
 ### Comprehensive Modes Comparison
 
-| Mode | Type | How to Activate | What it Controls | When to Use |
-|------|------|----------------|------------------|-------------|
-| **Standard Mode** | Default | Automatic | Normal conversational interaction | General data analysis tasks |
-| **Plan Mode** | Operational | `Shift+Tab` or auto-triggered | Creates plan before execution (read-only) | Complex multi-step analyses |
-| **Auto-Accept Mode** | Permission | `Shift+Tab` or settings.json | Automatically accepts file edits | Rapid development, trusted operations |
-| **Extended Thinking** | Reasoning | Press `Tab` or say "think hard" | Deep reasoning and analysis | Complex problems, edge cases |
+| Mode | How to Activate | Terminal Indicator | Description | When to Use |
+|------|----------------|-------------------|-------------|-------------|
+| **Standard Mode** | Automatic | *(none)* | Normal conversational interaction. Claude prompts for approval on file edits and commands based on your permissions settings. | General data analysis tasks, regular development |
+| **Plan Mode** | `Shift+Tab` to toggle | `plan mode` | Claude creates a detailed plan and waits for approval before executing changes. Read-only until you approve. | Starting tickets, complex multi-step analyses, learning how Claude approaches problems |
+| **Auto-Accept Edits** | `Shift+Tab` to toggle | `⏵⏵ accept edits on` | Automatically accepts file edits without prompting. Bash commands still require approval. Review changes via `git diff` after. | Rapid development, batch file updates |
+| **Bypass Permissions** | `Shift+Tab` to toggle | `⏵⏵ bypass permissions on` | Skips all permission prompts (file edits + bash commands). Your settings.json `deny` rules still apply as a safety net. | When comfortable with your operating rules/tool access and want zero approval interruptions. Pairs well with Plan Mode. |
+| **Extended Thinking** | Press `Tab` or say "think hard" | *(shown in response)* | Claude shows its reasoning process explicitly and analyzes problems more deeply. Takes longer but provides thorough analysis. | Complex problems, edge cases, ambiguous requirements |
 
-### Understanding Each Mode
-
-#### Standard Mode (Default)
-Your everyday interaction mode. Claude responds conversationally and can execute read operations, write files, and run commands based on your permissions settings.
-
-**When to use:** Regular analysis work, SQL development, documentation
-
-#### Plan Mode
-Claude creates a detailed plan and waits for your approval before executing any changes.
-
-**How it works:**
-```
-You: "Reorganize the analysis project structure"
-Claude: [Creates detailed plan]
-        [Waits for approval]
-You: "Proceed"
-Claude: [Executes the plan]
-```
-
-**When to use:**
-- Complex multi-step data pipelines
-- Unfamiliar analysis approaches
-- Learning how Claude works
-- Architectural decisions
-
-#### Auto-Accept Mode
-Claude makes file changes automatically without prompting for each individual edit.
-
-**How to activate:** Press `Shift+Tab` and select "Auto-Accept Edits"
-
-**When to use:**
-- Rapid development
-- Batch file updates
-- When you trust Claude's changes
-- Review changes via `git diff` after
-
-**⚠️ Important:** You can always review all changes with git before committing
-
-#### Extended Thinking Mode
+### Extended Thinking Mode
 Claude shows its reasoning process explicitly and analyzes problems more deeply.
 
 | Aspect | Normal Mode | Extended Thinking Mode |
@@ -483,7 +446,7 @@ Claude Code has three permission levels:
 
 **Hooks** - Enforce workflows (prevent commits to main, run checks before operations)
 
-> **📖 Advanced Configuration:** https://code.claude.com/docs/en/features/settings
+> **📖 Advanced Configuration:** https://code.claude.com/docs/en/settings
 
 ---
 
@@ -1032,10 +995,10 @@ claude --resume
 
 ## Additional Resources
 
-- **Official Docs:** https://code.claude.com/docs
-- **Settings Reference:** https://code.claude.com/docs/en/features/settings
-- **Commands Guide:** https://code.claude.com/docs/en/features/commands
-- **Agents Guide:** https://code.claude.com/docs/en/features/agents
+- **Official Docs:** https://code.claude.com/docs/en/overview
+- **Settings Reference:** https://code.claude.com/docs/en/settings
+- **Commands Guide:** https://code.claude.com/docs/en/slash-commands
+- **Agents Guide:** https://code.claude.com/docs/en/sub-agents
 
 ---
 
