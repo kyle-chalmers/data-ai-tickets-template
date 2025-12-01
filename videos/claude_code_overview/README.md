@@ -295,6 +295,8 @@ Claude Code operates in different modes that control how it interacts with you a
 | **Bypass Permissions** | `Shift+Tab` to toggle | `⏵⏵ bypass permissions on` | Skips all permission prompts (file edits + bash commands). Your settings.json `deny` rules still apply as a safety net. | When comfortable with your operating rules/tool access and want zero approval interruptions. Pairs well with Plan Mode. |
 | **Extended Thinking** | Press `Tab` or say "think hard" | *(shown in response)* | Claude shows its reasoning process explicitly and analyzes problems more deeply. Takes longer but provides thorough analysis. | Complex problems, edge cases, ambiguous requirements |
 
+**Session Management with `--resume`:** You can resume previous sessions using `claude --resume` (interactive picker) or `claude --resume <session-id>` (specific session). Use `claude -c` or `claude --continue` to automatically continue the most recent conversation. These flags preserve full conversation history and work with any permission mode.
+
 ### Extended Thinking Mode
 Claude shows its reasoning process explicitly and analyzes problems more deeply.
 
