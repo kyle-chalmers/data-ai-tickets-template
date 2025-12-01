@@ -207,6 +207,8 @@ your-data-project/
 
 ## CLAUDE.md Files: Teaching Claude About Your Workflows
 
+> **Official Guide:** [Claude Code Best Practices](https://www.anthropic.com/engineering/claude-code-best-practices)
+
 CLAUDE.md is the instruction manual that teaches Claude about your team's specific workflows, standards, and tools.
 
 ### Types of CLAUDE.md Files
