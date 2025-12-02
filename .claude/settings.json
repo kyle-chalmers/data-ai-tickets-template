@@ -27,15 +27,7 @@
       "Bash(curl*)",
       "Bash(wget*)",
       "Write(.env*)",
-      "Edit(.env*)"
-    ],
-    "deny": [
-      "Read(.env)",
-      "Read(.env.*)",
-      "Read(secrets/**)",
-      "Read(credentials/**)",
-      "Read(**/*.pem)",
-      "Read(**/*.key)",
+      "Edit(.env*)",
       "Bash(snow * UPDATE *)",
       "Bash(snow * update *)",
       "Bash(snow * ALTER *)",
@@ -49,7 +41,15 @@
       "Bash(snow * CREATE OR REPLACE *)",
       "Bash(snow * create or replace *)",
       "Bash(snow * TRUNCATE *)",
-      "Bash(snow * truncate *)",
+      "Bash(snow * truncate *)"
+    ],
+    "deny": [
+      "Read(.env)",
+      "Read(.env.*)",
+      "Read(secrets/**)",
+      "Read(credentials/**)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
       "Bash(git push --force*)",
       "Bash(git push -f*)",
       "Bash(git reset --hard*)",

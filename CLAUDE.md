@@ -282,6 +282,7 @@ mkdir -p tickets/[team_member]/TICKET-XXX/{source_materials,final_deliverables,e
 ```
 tickets/[team_member]/TICKET-XXX/
 ├── README.md                    # REQUIRED: Complete documentation with assumptions
+├── CLAUDE.md                    # REQUIRED: Analysis context for future Claude sessions
 ├── source_materials/            # Original files and references
 ├── final_deliverables/          # REQUIRED: Ready-to-deliver outputs (numbered)
 │   ├── 1_[description].sql     # Numbered in review order
@@ -293,6 +294,17 @@ tickets/[team_member]/TICKET-XXX/
 ├── exploratory_analysis/        # Optional: Working files (consolidated)
 └── [ticket_comment].txt         # Final Jira comment
 ```
+
+### Ticket-Specific CLAUDE.md Requirements
+Each ticket folder MUST include a `CLAUDE.md` file that captures:
+1. **Ticket Objective**: Clear statement of what the ticket aims to accomplish
+2. **Technical Approach**: Tools used, query development process, key SQL/code
+3. **Data/Domain Insights**: Learnings about the data structure, patterns discovered
+4. **Lessons Learned**: Technical gotchas, workarounds, best practices discovered
+5. **Relationship to Other Tickets**: Links to related or dependent tickets
+6. **Repository Integration**: How this ticket fits into the broader workflow
+
+This file serves as context for future Claude sessions working on related tickets.
 
 ### Closing Procedures
 1. **Final Consolidation Review**
