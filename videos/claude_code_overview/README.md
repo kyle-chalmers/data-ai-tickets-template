@@ -585,14 +585,172 @@ If $ARGUMENTS is "no-pr", just commits and pushes.
 
 This repository includes several example commands in `.claude/commands/`:
 
-1. **[`/initiate-request`](.claude/commands/initiate-request.md)** - Start a new analysis project with full structure
-2. **[`/save-work [yes|no]`](.claude/commands/save-work.md)** - Save progress with optional PR creation
-3. **[`/merge-work`](.claude/commands/merge-work.md)** - Complete workflow after PR merge
-4. **[`/review-work [folder-path]`](.claude/commands/review-work.md)** - Auto-run appropriate agents based on folder contents
-5. **[`/summarize-session`](.claude/commands/summarize-session.md)** - Show current progress and next steps
-6. **[`/google-drive-backup`](.claude/commands/google-drive-backup.md)** - Backup deliverables to Google Drive
-7. **[`/generate-data-object-prp`](.claude/commands/generate-data-object-prp.md)** - Create comprehensive Snowflake object development plan
-8. **[`/prp-data-object-execute`](.claude/commands/prp-data-object-execute.md)** - Execute Snowflake object creation with full QC
+| Command | Purpose | Arguments |
+|---------|---------|-----------|
+| **[`/initiate-request`](.claude/commands/initiate-request.md)** | Start new analysis - creates branch, folder structure, breaks down tasks | None |
+| **[`/review-work`](.claude/commands/review-work.md)** | Auto-runs agents (code-review, sql-quality, qc-validator, docs-review) based on folder contents | `[folder-path]` |
+| **[`/save-work`](.claude/commands/save-work.md)** | Commit and push; optionally create PR | `yes` (with PR) or `no` (save only) |
+| **[`/merge-work`](.claude/commands/merge-work.md)** | Merge approved PR, delete branch, return to main | None |
+| **[`/google-drive-backup`](.claude/commands/google-drive-backup.md)** | Backup deliverables to Google Drive for archiving/sharing | None |
+| **[`/generate-data-object-prp`](.claude/commands/generate-data-object-prp.md)** | Create comprehensive Snowflake object development plan | None |
+| **[`/prp-data-object-execute`](.claude/commands/prp-data-object-execute.md)** | Execute Snowflake object creation with full QC | None |
+
+### Ticket Completion Workflow Diagram
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           TICKET COMPLETION WORKFLOW                         │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+    ┌──────────────────────┐
+    │  /initiate-request   │  ← Start here with new ticket/analysis
+    │                      │
+    │  • Creates branch    │
+    │  • Sets up folders   │
+    │  • Plans tasks       │
+    │  • Asks questions    │
+    └──────────┬───────────┘
+               │
+               ▼
+    ┌──────────────────────┐
+    │                      │
+    │   DO THE WORK        │  ← Analysis, SQL, documentation
+    │                      │
+    └──────────┬───────────┘
+               │
+               ▼
+    ┌──────────────────────┐
+    │  /review-work        │  ← Quality check before saving
+    │  [folder-path]       │
+    │                      │
+    │  Auto-runs agents:   │
+    │  • code-review       │
+    │  • sql-quality       │
+    │  • qc-validator      │
+    │  • docs-review       │
+    └──────────┬───────────┘
+               │
+       ┌───────┴───────┐
+       │  Issues?      │
+       └───────┬───────┘
+           YES │ NO
+               │  │
+    ┌──────────┘  └──────────┐
+    │                        │
+    ▼                        ▼
+┌──────────┐      ┌──────────────────────┐
+│  FIX     │      │  /save-work yes      │  ← Ready for review
+│  ISSUES  │      │                      │
+│          │      │  • Commits           │
+└────┬─────┘      │  • Pushes            │
+     │            │  • Creates PR        │
+     └──► back    └──────────┬───────────┘
+          to                 │
+          review             ▼
+                  ┌──────────────────────┐
+                  │  PR APPROVED?        │
+                  └──────────┬───────────┘
+                         YES │
+                             ▼
+                  ┌──────────────────────┐
+                  │  /merge-work         │  ← Complete the cycle
+                  │                      │
+                  │  • Merges PR         │
+                  │  • Deletes branch    │
+                  │  • Returns to main   │
+                  └──────────┬───────────┘
+                             │
+                             ▼
+                  ┌──────────────────────┐
+                  │ /google-drive-backup │  ← Optional: archive
+                  │                      │
+                  │  • Backs up to GDrive│
+                  │  • For stakeholders  │
+                  └──────────────────────┘
+                             │
+                             ▼
+                      ┌──────────────┐
+                      │    DONE!     │
+                      │  Clean slate │
+                      │  Next ticket │
+                      └──────────────┘
+```
+
+### Git Branching Workflow
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           GIT BRANCHING WORKFLOW                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+MAIN BRANCH (production-ready code)
+═══════════════════════════════════════════════════════════════════════════════
+    │
+    │  ← Always stable, reviewed code
+    │
+    ├───────────────────────────────────────────────────────────────────── ●
+    │                                                                      │
+    │  /initiate-request                                                   │
+    │  creates feature branch ─────┐                                       │
+    │                              │                                       │
+    │                              ▼                                       │
+    │                    ┌─────────────────┐                               │
+    │   FEATURE BRANCH   │    KAN-7        │  ← Your isolated workspace   │
+    │   ═══════════════  │                 │                               │
+    │                    │  • Do work      │                               │
+    │                    │  • Make commits │                               │
+    │                    │  • Safe to      │                               │
+    │                    │    experiment   │                               │
+    │                    │                 │                               │
+    │                    │  /save-work no  │  ← Save progress (commits)    │
+    │                    │       ↓         │                               │
+    │                    │  /save-work yes │  ← Create PR when ready       │
+    │                    └────────┬────────┘                               │
+    │                             │                                        │
+    │                             │ Pull Request                           │
+    │                             │ (code review)                          │
+    │                             │                                        │
+    │                             ▼                                        │
+    │                    ┌─────────────────┐                               │
+    │                    │  PR #123        │                               │
+    │                    │                 │                               │
+    │                    │  Reviewers      │                               │
+    │                    │  check code     │                               │
+    │                    │  ✓ Approved     │                               │
+    │                    └────────┬────────┘                               │
+    │                             │                                        │
+    │                             │  /merge-work                           │
+    │                             │                                        │
+    │◄────────────────────────────┘                                        │
+    │                                                                      │
+    │  Feature merged into main                                            │
+    │  Branch deleted                                                      │
+    │                                                                      │
+    ├───────────────────────────────────────────────────────────────────── ●
+    │
+    │  ← Main now contains your work
+    │
+    ▼
+   Ready for next ticket...
+```
+
+**Key Git Concepts:**
+
+| Concept | Description |
+|---------|-------------|
+| **main branch** | The "source of truth" - always contains reviewed, working code |
+| **feature branch** | Your personal workspace - isolated from main until merged |
+| **commit** | A save point - snapshot of your changes |
+| **push** | Upload commits to GitHub (remote) |
+| **Pull Request (PR)** | Request to merge your feature branch into main |
+| **merge** | Combine feature branch changes into main |
+
+**Why This Workflow?**
+- **Isolation** - Your work doesn't affect main until reviewed
+- **Collaboration** - Others can review before merging
+- **History** - Clear record of what changed and why
+- **Safety** - Easy to abandon bad changes without affecting main
+- **Parallel work** - Multiple people can work on different branches
 
 See each command file for detailed documentation and usage examples.
 
