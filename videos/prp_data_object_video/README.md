@@ -110,7 +110,7 @@ PRPs solve this by front-loading the research and specification work, enabling *
 ```
 
 **What it does:**
-- Creates objects in **development schema** (e.g., BUSINESS_INTELLIGENCE_DEV)
+- Creates objects in **development schema** (e.g., DEVELOPMENT)
 - Uses **production data sources** for realistic testing
 - Implements comprehensive QC validation
 - Optimizes query performance
