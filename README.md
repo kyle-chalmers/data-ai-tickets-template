@@ -107,6 +107,7 @@ Check the [Kyle Chalmers Data & AI YouTube channel](https://youtube.com/@kylecha
 
 | Video | Description |
 |-------|-------------|
+| [FUTURE PROOF Your Data Career with this Claude Code Deep Dive](https://www.youtube.com/watch?v=g4g4yBcBNuE) | Complete Claude Code guide for data teams |
 | [If You Are in Data and Want to Leverage AI, this is Made for You](https://www.youtube.com/watch?v=NDR0tiJWWEA) | Introduction to the repository and AI-assisted data workflows |
 | [The AI Integration Every Data Professional Needs](https://www.youtube.com/watch?v=q1y7M5mZkkE) | Claude Code + Snowflake workflow demo |
 | [Claude Code Makes Databricks Easy](https://www.youtube.com/watch?v=5_q7j-k8DbM) | Jobs, Notebooks, SQL & Unity Catalog via CLI |

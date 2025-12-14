@@ -1030,7 +1030,7 @@ Each file includes detailed documentation and usage examples.
 
 Watch the companion video for this guide:
 
-> **YouTube:** [INSERT VIDEO LINK]
+> **YouTube:** [FUTURE PROOF Your Data Career with this Claude Code Deep Dive](https://www.youtube.com/watch?v=g4g4yBcBNuE)
 
 ---
 
