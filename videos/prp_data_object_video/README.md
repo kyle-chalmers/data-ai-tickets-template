@@ -40,29 +40,29 @@ PRPs solve this by front-loading the research and specification work, enabling *
 
 ---
 
-## The Three-Phase Workflow
+## The Four-Phase Workflow
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                                                                             │
-│   PHASE 1: DEFINE          PHASE 2: GENERATE         PHASE 3: EXECUTE      │
-│   ─────────────────        ──────────────────        ─────────────────      │
-│                                                                             │
-│   ┌─────────────┐          ┌─────────────┐          ┌─────────────┐        │
-│   │             │          │             │          │             │        │
-│   │  INITIAL.md │ ──────▶  │     PRP     │ ──────▶  │   Data      │        │
-│   │  (Template) │          │  (Research) │          │   Object    │        │
-│   │             │          │             │          │             │        │
-│   └─────────────┘          └─────────────┘          └─────────────┘        │
-│                                                                             │
-│   You fill out the         AI researches            AI implements          │
-│   requirements             and asks questions       with full QC           │
-│                                                                             │
-│   Output:                  Output:                  Output:                │
-│   INITIAL.md               data-object-name.md     VIEW/TABLE/DT          │
-│                                                    + Documentation        │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                                                                            │
+│  PHASE 1: DEFINE       PHASE 2: GENERATE      PHASE 3: EXECUTE       PHASE 4: PROMOTE     │
+│  ────────────────      ─────────────────      ────────────────       ───────────────      │
+│                                                                                            │
+│  ┌─────────────┐       ┌─────────────┐       ┌─────────────┐        ┌─────────────┐       │
+│  │             │       │             │       │    DEV      │        │    PROD     │       │
+│  │  INITIAL.md │ ───▶  │     PRP     │ ───▶  │   Object    │  ───▶  │   Object    │       │
+│  │  (Template) │       │  (Research) │       │   + QC      │        │  (Deploy)   │       │
+│  │             │       │             │       │             │        │             │       │
+│  └─────────────┘       └─────────────┘       └─────────────┘        └─────────────┘       │
+│                                                                                            │
+│  You fill out          AI researches         AI creates in          Review & deploy       │
+│  requirements          & asks questions      DEV schema with        to PROD schema        │
+│                                              production data                              │
+│                                                                                            │
+│  Output:               Output:               Output:                Output:               │
+│  INITIAL.md            data-object-name.md   DEV object + docs      PROD object           │
+│                                                                                            │
+└────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Phase 1: Define Requirements (`INITIAL.md`)
@@ -97,16 +97,33 @@ PRPs solve this by front-loading the research and specification work, enabling *
 
 ### Phase 3: Execute PRP (`/prp-data-object-execute`)
 
-**Purpose:** Implement, validate, and deploy the data object.
+**Purpose:** Implement and validate the data object in a development schema.
 
 **What it does:**
-- Creates objects in development environment
+- Creates objects in **development schema** (e.g., BUSINESS_INTELLIGENCE_DEV)
+- Uses **production data sources** for realistic testing
 - Implements comprehensive QC validation
 - Optimizes query performance
 - Generates documentation (README.md, CLAUDE.md)
 - Prepares production deployment template
 
-**Output:** Complete ticket folder with validated deliverables
+**Output:** Validated development object + deployment-ready SQL
+
+**Why development first:** Testing with production data in a dev schema lets you validate behavior without risking production systems. QC catches issues before they reach end users.
+
+### Phase 4: Promote to Production (Human-Executed)
+
+**Purpose:** Human reviews and deploys the validated object to production.
+
+**What you do:**
+- Review QC results and development object behavior
+- Review the generated `production_deploy_template.sql`
+- **Execute the production script manually** after approval
+- Validate the production object matches development
+
+**Output from Phase 3:** `production_deploy_template.sql` - ready-to-execute deployment script
+
+**Why human-executed:** Production deployment should always be a deliberate human decision. The AI prepares everything, but you control when and how it goes live. The deployment script handles COPY GRANTS, environment variables, and proper sequencing.
 
 ---
 
@@ -162,9 +179,14 @@ The PRP workflow can be customized for your own data projects:
 4. Review AI's research findings and answer clarifying questions
 5. Validate assumptions before PRP is finalized
 
-**Phase 3 - Execute:**
+**Phase 3 - Execute (Development):**
 6. Run `/prp-data-object-execute PRPs/your-project/data-object-name.md`
-7. Review QC results and production deployment template
+7. AI creates object in dev schema with production data sources
+8. Review QC results and validate development object
+
+**Phase 4 - Promote (Human-Executed):**
+9. Review the generated `production_deploy_template.sql`
+10. Execute deployment script in production when ready
 
 ### Key Customization Points
 - **Object Type:** VIEW, TABLE, or DYNAMIC_TABLE
