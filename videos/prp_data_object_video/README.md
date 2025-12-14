@@ -23,6 +23,11 @@ With the help of AI, we can move from problematic data infrastructure to clean, 
 
 A **Product Requirements Prompt (PRP)** is a comprehensive specification document that gives an AI agent all the context it needs to implement a data object correctly on the first attempt.
 
+This data object workflow is adapted from the **Context Engineering** framework. For deep dives on PRPs and context engineering, see:
+
+- [Context Engineering Quick Start (Product Requirement Prompts)](https://www.youtube.com/watch?v=H3lCPUx7TEE) by [Rasmus Widing](https://www.youtube.com/@RasmusWiding) - The original PRP framework this workflow adapts
+- [Context Engineering is the New Vibe Coding (Learn this Now)](https://www.youtube.com/watch?v=Egeuql3Lrzg) by [Cole Medin](https://www.youtube.com/@ColeMedin) - Why context engineering matters for AI development
+
 ### Why PRPs Matter
 
 Traditional data object development often involves:
@@ -35,11 +40,27 @@ PRPs solve this by front-loading the research and specification work, enabling *
 
 ---
 
-## The Two-Phase Workflow
+## The Three-Phase Workflow
 
-### Phase 1: Generate PRP (`/generate-data-object-prp`)
+### Phase 1: Define Requirements (`INITIAL.md`)
 
-**Purpose:** Research, analyze, and create a comprehensive specification.
+**Purpose:** Capture your requirements in a structured format before AI research begins.
+
+**What you do:**
+- Copy the template from `PRPs/templates/data-object-initial.md`
+- Fill in the object definition (name, type, target schema)
+- Define the data grain and aggregation level
+- Document business context and use cases
+- List data sources and expected relationships
+- Note any known data quality considerations
+
+**Output:** `PRPs/your-project/INITIAL.md`
+
+**Why this matters:** The INITIAL.md gives the AI a clear starting point. You're encoding your domain knowledge and requirements *before* the AI starts researching—ensuring the generated PRP addresses your actual needs.
+
+### Phase 2: Generate PRP (`/generate-data-object-prp`)
+
+**Purpose:** AI researches, analyzes, and creates a comprehensive specification based on your INITIAL.md.
 
 **What it does:**
 - Performs deep database schema analysis using Snow CLI
@@ -49,9 +70,9 @@ PRPs solve this by front-loading the research and specification work, enabling *
 - Iteratively clarifies requirements with the user
 - Generates a complete PRP document
 
-**Output:** `PRPs/snowflake-data-object-{name}.md`
+**Output:** `PRPs/your-project/snowflake-data-object-{name}.md`
 
-### Phase 2: Execute PRP (`/prp-data-object-execute`)
+### Phase 3: Execute PRP (`/prp-data-object-execute`)
 
 **Purpose:** Implement, validate, and deploy the data object.
 
@@ -108,11 +129,18 @@ This example is inspired by `CAST_VOTING_RECORD.ANALYTICS.VW_FINAL_TABLEAU_REPOR
 
 The PRP workflow can be customized for your own data projects:
 
-1. **Copy the template:** Use `PRPs/templates/data-object-initial.md` as your starting point
-2. **Fill in your requirements:** Define grain, sources, business context
-3. **Run the generate command:** Let AI research and create the PRP
-4. **Review and clarify:** Answer questions, validate assumptions
-5. **Execute:** Implement with comprehensive QC
+**Phase 1 - Define:**
+1. Copy the template from `PRPs/templates/data-object-initial.md`
+2. Fill in your requirements: grain, sources, business context, data quality notes
+
+**Phase 2 - Generate:**
+3. Run `/generate-data-object-prp PRPs/your-project/INITIAL.md`
+4. Review AI's research findings and answer clarifying questions
+5. Validate assumptions before PRP is finalized
+
+**Phase 3 - Execute:**
+6. Run `/prp-data-object-execute PRPs/your-project/snowflake-data-object-name.md`
+7. Review QC results and production deployment template
 
 ### Key Customization Points
 - **Object Type:** VIEW, TABLE, or DYNAMIC_TABLE
