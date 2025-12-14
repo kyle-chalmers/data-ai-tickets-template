@@ -5,8 +5,8 @@
 - **Scope:** SINGLE_OBJECT
 
 ## Object Definition
-- **Primary Object Name:** DT_CUSTOMER_ORDER_SUMMARY
-- **Object Type:** DYNAMIC_TABLE
+- **Primary Object Name:** VW_CUSTOMER_ORDER_SUMMARY
+- **Object Type:** VIEW
 - **Target Schema Layer:** ANALYTICS (or equivalent for sample data)
 
 ## Data Grain & Aggregation
@@ -56,8 +56,8 @@
 
 ## Requirements
 - **Performance:** As fast as possible - this is a demonstration object
-- **Refresh Pattern:** On-demand (dynamic table will auto-refresh based on lag setting)
-- **Data Retention:** All time
+- **Refresh Pattern:** Real-time (view queries source tables directly)
+- **Data Retention:** All time (inherits from source tables)
 
 ## Ticket Information
 - **Existing Jira Ticket:** CREATE_NEW (for demonstration purposes)

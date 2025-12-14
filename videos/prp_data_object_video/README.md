@@ -95,7 +95,8 @@ PRPs solve this by front-loading the research and specification work, enabling *
 
 This example demonstrates the "happy path" with clean, normalized data.
 
-**Data Object:** `DT_CUSTOMER_ORDER_SUMMARY`
+**Data Object:** `VW_CUSTOMER_ORDER_SUMMARY`
+- **Type:** VIEW (simple, no materialization needed)
 - **Grain:** One row per customer
 - **Sources:** CUSTOMER, ORDERS, LINEITEM, NATION, REGION
 - **Metrics:** Total orders, total revenue, average order value
@@ -110,7 +111,7 @@ This example demonstrates the "happy path" with clean, normalized data.
 
 **Scenario:** Create a complex analytics table that combines multiple grains—demonstrating how AI handles "messy" real-world scenarios.
 
-This example is inspired by `CAST_VOTING_RECORD.ANALYTICS.VW_FINAL_TABLEAU_REPORT`, which combines:
+This example is inspired by examples I've found in my career where I've add to join multiple grains from multiple different data sources, which combines:
 - Fine-grained detail (individual line items)
 - Aggregated metrics (order-level summaries)
 - Rankings and comparisons (customer-level window functions)
@@ -139,7 +140,7 @@ The PRP workflow can be customized for your own data projects:
 5. Validate assumptions before PRP is finalized
 
 **Phase 3 - Execute:**
-6. Run `/prp-data-object-execute PRPs/your-project/snowflake-data-object-name.md`
+6. Run `/prp-data-object-execute PRPs/your-project/data-object-name.md`
 7. Review QC results and production deployment template
 
 ### Key Customization Points
@@ -169,9 +170,6 @@ The PRP workflow can be customized for your own data projects:
 ```
 videos/prp_data_object_video/
 ├── README.md                           # This file
-├── images/
-│   ├── what_we_will_learn.jpg          # Video hook slide
-│   └── tpch_schema.png                 # TPC-H schema diagram
 └── PRPs/
     ├── templates/
     │   └── data-object-initial.md      # Template for new projects
