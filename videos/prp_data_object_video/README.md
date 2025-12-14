@@ -4,7 +4,7 @@
 
 ## The Value Proposition
 
-With the help of AI, we can move from problematic data infrastructure to clean, easy-to-use infrastructure. **Our data does not have to be in a good place to start the journey with AI**—we can use AI to help us get there.
+With the help of AI, we can move from problematic data infrastructure with gaps to more completed, easy-to-use infrastructure. **Our data does not have to be in a final state to start the journey with AI** we can use AI to help us get there.
 
 ![What We Will Learn](images/what_we_will_learn.jpg)
 
@@ -25,8 +25,8 @@ A **Product Requirements Prompt (PRP)** is a comprehensive specification documen
 
 This data object workflow is adapted from the **Context Engineering** framework. For deep dives on PRPs and context engineering, see:
 
-- [Context Engineering Quick Start (Product Requirement Prompts)](https://www.youtube.com/watch?v=H3lCPUx7TEE) by [Rasmus Widing](https://www.youtube.com/@RasmusWiding) - The original PRP framework this workflow adapts
-- [Context Engineering is the New Vibe Coding (Learn this Now)](https://www.youtube.com/watch?v=Egeuql3Lrzg) by [Cole Medin](https://www.youtube.com/@ColeMedin) - Why context engineering matters for AI development
+- [Context Engineering Quick Start (Product Requirement Prompts)](https://www.youtube.com/watch?v=H3lCPUx7TEE) by [Rasmus Widing](https://www.youtube.com/@RasmusWiding)
+- [Context Engineering is the New Vibe Coding (Learn this Now)](https://www.youtube.com/watch?v=Egeuql3Lrzg) by [Cole Medin](https://www.youtube.com/@ColeMedin)
 
 ### Why PRPs Matter
 
