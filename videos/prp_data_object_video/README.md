@@ -42,6 +42,29 @@ PRPs solve this by front-loading the research and specification work, enabling *
 
 ## The Three-Phase Workflow
 
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                                                                             │
+│   PHASE 1: DEFINE          PHASE 2: GENERATE         PHASE 3: EXECUTE      │
+│   ─────────────────        ──────────────────        ─────────────────      │
+│                                                                             │
+│   ┌─────────────┐          ┌─────────────┐          ┌─────────────┐        │
+│   │             │          │             │          │             │        │
+│   │  INITIAL.md │ ──────▶  │     PRP     │ ──────▶  │   Data      │        │
+│   │  (Template) │          │  (Research) │          │   Object    │        │
+│   │             │          │             │          │             │        │
+│   └─────────────┘          └─────────────┘          └─────────────┘        │
+│                                                                             │
+│   You fill out the         AI researches            AI implements          │
+│   requirements             and asks questions       with full QC           │
+│                                                                             │
+│   Output:                  Output:                  Output:                │
+│   INITIAL.md               data-object-name.md     VIEW/TABLE/DT          │
+│                                                    + Documentation        │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
 ### Phase 1: Define Requirements (`INITIAL.md`)
 
 **Purpose:** Capture your requirements in a structured format before AI research begins.
@@ -89,9 +112,9 @@ PRPs solve this by front-loading the research and specification work, enabling *
 
 ## Example 1: Simple TPC-H Customer Order Summary
 
-**Scenario:** Create a dynamic table summarizing customer order metrics using Snowflake's sample TPC-H dataset.
+**Scenario:** Create a view summarizing customer order metrics using Snowflake's sample TPC-H dataset.
 
-![TPC-H Schema](images/tpch_schema.png)
+**Dataset:** [Snowflake TPC-H Sample Data](https://docs.snowflake.com/en/user-guide/sample-data-tpch) - A standard decision support benchmark with 8 normalized tables (CUSTOMER, ORDERS, LINEITEM, NATION, REGION, PART, PARTSUPP, SUPPLIER).
 
 This example demonstrates the "happy path" with clean, normalized data.
 
