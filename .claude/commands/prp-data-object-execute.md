@@ -1,4 +1,4 @@
-# Execute Snowflake Data Object PRP
+# Execute Snowflake Data Object Product Requirements Prompt (PRP)
 
 ## PRP File: $ARGUMENTS
 

@@ -1,4 +1,4 @@
-# Create Snowflake Data Object PRP
+# Create Snowflake Data Object Product Requirements Prompt (PRP)
 
 ## Data Object Requirements: $ARGUMENTS
 
