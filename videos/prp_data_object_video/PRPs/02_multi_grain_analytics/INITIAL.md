@@ -57,10 +57,10 @@
 
 **Data Structure:**
 - JOIN pattern with multiple CTE-based aggregation layers
-- Similar pattern to `CAST_VOTING_RECORD.ANALYTICS.VW_FINAL_TABLEAU_REPORT` which combines:
-  - Base grain CTE (individual marks/line items)
-  - Aggregation CTE (ballot-level/order-level summaries)
-  - Ranking CTE (precinct-level/regional rankings)
+- Multi-grain architecture combining:
+  - Base grain CTE (individual line items)
+  - Aggregation CTE (order-level summaries)
+  - Ranking CTE (regional rankings)
   - Final SELECT joining all grains
 
 **Column Values:**
@@ -80,12 +80,10 @@
 ## Additional Context
 This is an advanced demonstration showing how the PRP workflow handles complex, multi-grain analytics scenarios. The goal is to demonstrate that AI can navigate the complexity that typically challenges data engineers.
 
-**Pattern Reference:** `CAST_VOTING_RECORD.ANALYTICS.VW_FINAL_TABLEAU_REPORT`
-
-This view demonstrates the pattern we want to replicate:
-1. Base CTE with finest grain (individual votes/line items)
-2. Aggregation CTEs at coarser grains (ballot totals/order totals)
-3. Ranking CTEs with window functions (precinct rankings/regional rankings)
+**Multi-Grain Pattern:**
+1. Base CTE with finest grain (individual line items)
+2. Aggregation CTEs at coarser grains (order totals, customer metrics)
+3. Ranking CTEs with window functions (regional rankings)
 4. Final SELECT joining all levels together
 
 **Expected Output Columns:**
