@@ -160,7 +160,7 @@ The PRP workflow can be customized for your own data projects:
 
 ### Execute Command
 ```bash
-/prp-data-object-execute PRPs/your-project/snowflake-data-object-name.md
+/prp-data-object-execute PRPs/your-project/data-object-name.md
 ```
 
 ---
