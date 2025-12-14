@@ -43,26 +43,26 @@ PRPs solve this by front-loading the research and specification work, enabling *
 ## The Four-Phase Workflow
 
 ```
-┌────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                                                                            │
-│  PHASE 1: DEFINE       PHASE 2: GENERATE      PHASE 3: EXECUTE       PHASE 4: PROMOTE     │
-│  ────────────────      ─────────────────      ────────────────       ───────────────      │
-│                                                                                            │
-│  ┌─────────────┐       ┌─────────────┐       ┌─────────────┐        ┌─────────────┐       │
-│  │             │       │             │       │    DEV      │        │    PROD     │       │
-│  │  INITIAL.md │ ───▶  │     PRP     │ ───▶  │   Object    │  ───▶  │   Object    │       │
-│  │  (Template) │       │  (Research) │       │   + QC      │        │  (Deploy)   │       │
-│  │             │       │             │       │             │        │             │       │
-│  └─────────────┘       └─────────────┘       └─────────────┘        └─────────────┘       │
-│                                                                                            │
-│  You fill out          AI researches         AI creates in          Review & deploy       │
-│  requirements          & asks questions      DEV schema with        to PROD schema        │
-│                                              production data                              │
-│                                                                                            │
-│  Output:               Output:               Output:                Output:               │
-│  INITIAL.md            data-object-name.md   DEV object + docs      PROD object           │
-│                                                                                            │
-└────────────────────────────────────────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│                                                                                        │
+│  PHASE 1: DEFINE      PHASE 2: GENERATE      PHASE 3: EXECUTE      PHASE 4: PROMOTE    │
+│  ────────────────     ─────────────────      ────────────────      ────────────────    │
+│                                                                                        │
+│  ┌─────────────┐      ┌─────────────┐       ┌─────────────┐       ┌─────────────┐      │
+│  │             │      │             │       │    DEV      │       │    PROD     │      │
+│  │  INITIAL.md │ ───▶ │     PRP     │ ───▶  │   Object    │ ───▶  │   Object    │      │
+│  │  (Template) │      │  (Research) │       │   + QC      │       │  (Deploy)   │      │
+│  │             │      │             │       │             │       │             │      │
+│  └─────────────┘      └─────────────┘       └─────────────┘       └─────────────┘      │
+│                                                                                        │
+│  You fill out         AI researches         AI creates in         Review & deploy      │
+│  requirements         & asks questions      DEV schema with       to PROD schema       │
+│                                             production data                            │
+│                                                                                        │
+│  Output:              Output:               Output:               Output:              │
+│  INITIAL.md           data-object-name.md   DEV object + docs     PROD object          │
+│                                                                                        │
+└────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Phase 1: Define Requirements (`INITIAL.md`)
@@ -85,6 +85,11 @@ PRPs solve this by front-loading the research and specification work, enabling *
 
 **Purpose:** AI researches, analyzes, and creates a comprehensive specification based on your INITIAL.md.
 
+**Command:**
+```bash
+/generate-data-object-prp PRPs/your-project/INITIAL.md
+```
+
 **What it does:**
 - Performs deep database schema analysis using Snow CLI
 - Maps data relationships and dependencies
@@ -93,11 +98,16 @@ PRPs solve this by front-loading the research and specification work, enabling *
 - Iteratively clarifies requirements with the user
 - Generates a complete PRP document
 
-**Output:** `PRPs/your-project/snowflake-data-object-{name}.md`
+**Output:** `PRPs/your-project/data-object-{name}.md`
 
 ### Phase 3: Execute PRP (`/prp-data-object-execute`)
 
 **Purpose:** Implement and validate the data object in a development schema.
+
+**Command:**
+```bash
+/prp-data-object-execute PRPs/your-project/data-object-{name}.md
+```
 
 **What it does:**
 - Creates objects in **development schema** (e.g., BUSINESS_INTELLIGENCE_DEV)
