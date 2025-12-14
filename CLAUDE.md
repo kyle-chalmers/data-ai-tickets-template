@@ -50,6 +50,14 @@ Simplicity should be a key goal in design. Choose straightforward solutions over
 
 Avoid building functionality on speculation. Implement features only when they are needed, not when you anticipate they might be useful in the future.
 
+### CLI Over MCP
+
+When both CLI tools and MCP servers are available for the same service (e.g., Jira, Snowflake), **prefer CLI tools first**.
+
+**Priority order:**
+1. CLI tools (acli, snow, gh, databricks)
+2. MCP servers (as fallback)
+
 ## Critical Operating Rules
 
 **ALWAYS follow these fundamental requirements in every session:**
