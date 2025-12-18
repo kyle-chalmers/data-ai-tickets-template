@@ -22,13 +22,31 @@ This command references configuration from your repository's CLAUDE.md. If not s
    - Confirm operation type (CREATE_NEW/ALTER_EXISTING) and scope (SINGLE/MULTIPLE_RELATED_OBJECTS)
    - Validate database research findings and architectural compliance
 
-2. **Environment Setup**
-   - Create ticket folder structure following standards: `tickets/[user]/[TICKET-ID]/`
+2. **Ticket Creation - MANDATORY FIRST STEP**
+   - **CRITICAL**: Check the PRP "Ticket Information" section for ticket instructions
+   - If `CREATE_NEW` is specified: Create a new Jira ticket
+   - If existing ticket provided: Verify ticket exists and retrieve details
+   - **Default to `acli` CLI** for all Jira ticket operations (unless another ticketing system is specified in CLAUDE.md):
+     ```bash
+     # Create new ticket
+     acli jira workitem create --project "[PROJECT_KEY]" --type "Task" \
+       --summary "[Object Name]: [Brief Description]" \
+       --description "[Business purpose from PRP]"
+
+     # Transition to In Progress
+     acli jira workitem transition --key "[TICKET-KEY]" --status "In Progress"
+     ```
+   - Record the ticket key (e.g., KAN-123) for folder creation
+   - Transition ticket to "In Progress" immediately after creation
+
+3. **Environment Setup**
+   - Create ticket folder structure: `tickets/[username]/[TICKET-ID]/`
+   - **Folder must use actual ticket key** from step 2 (e.g., `tickets/kylechalmers/KAN-123/`)
    - Initialize development environment connections (your development database/schema)
    - Use TodoWrite tool to create comprehensive task tracking list
    - Prepare simplified QC validation structure
 
-3. **Dependency Analysis**
+4. **Dependency Analysis**
    - If MULTIPLE_RELATED_OBJECTS: Map creation order and dependencies
    - If ALTER_EXISTING: Document current state and migration requirements
    - Validate downstream impact analysis
@@ -102,15 +120,19 @@ This command references configuration from your repository's CLAUDE.md. If not s
    - Prepare stakeholder communication and deployment timeline
    - Document any breaking changes or migration requirements
 
-3. **[OPTIONAL] Ticket Transition**
-   - If ticketing system configured: Transition ticket status appropriately
-   - Assign ticket to the user who issued the command
-   - Add completion comment with deliverable summary (keep concise)
-   - *Skip this section if ticketing system not configured*
+3. **Ticket Completion**
+   - Add completion comment to ticket with deliverable summary using `acli`:
+     ```bash
+     acli jira workitem comment --key "[TICKET-KEY]" --body "Deliverables complete. [Brief summary]"
+     ```
+   - Keep comments concise (<100 words)
+   - Do NOT transition to Done until user approves production deployment
 
 ## Success Criteria
 
 ### Technical Requirements
+- [ ] **Jira ticket created** and transitioned to "In Progress" using `acli`
+- [ ] **Ticket folder created** at `tickets/[username]/[TICKET-ID]/`
 - [ ] All objects successfully created in development environments
 - [ ] Complete QC validation suite passes with documented results
 - [ ] Performance requirements met with optimized queries

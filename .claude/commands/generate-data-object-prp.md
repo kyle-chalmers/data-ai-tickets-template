@@ -174,6 +174,9 @@ EXPLAIN [your data object query];
 ### PRP Document Location
 Save as: `PRPs/data-object-{object-name}.md` **in the same folder as INITIAL.md file**
 
+### Table of Contents Requirement
+**CRITICAL**: Every PRP document MUST include a Table of Contents at the top of the file, immediately after the title. Use markdown anchor links to all major sections for easy navigation.
+
 ### Expected Ticket Folder Reference
 **CRITICAL**: Include explicit ticket folder reference in PRP for execute command compatibility:
 - **Expected Ticket Folder**: `tickets/[username]/[TICKET-ID]/`
@@ -181,6 +184,7 @@ Save as: `PRPs/data-object-{object-name}.md` **in the same folder as INITIAL.md 
 - Use actual username and ticket number from created ticket (if applicable)
 
 ## Quality Checklist
+- [ ] Table of Contents included at top of PRP with anchor links to all sections
 - [ ] Operation type clearly identified (CREATE_NEW/ALTER_EXISTING) with appropriate strategy
 - [ ] Scope clearly identified (SINGLE_OBJECT/MULTIPLE_RELATED_OBJECTS) with deployment approach
 - [ ] If MULTIPLE_RELATED_OBJECTS: Inter-object dependencies mapped with creation/deployment order
