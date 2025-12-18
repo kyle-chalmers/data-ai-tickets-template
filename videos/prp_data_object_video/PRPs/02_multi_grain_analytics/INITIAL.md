@@ -7,7 +7,7 @@
 ## Object Definition
 - **Primary Object Name:** DT_ORDER_ANALYTICS_MULTI_GRAIN
 - **Object Type:** DYNAMIC_TABLE
-- **Target Schema Layer:** ANALYTICS (or equivalent for sample data)
+- **Target Schema Layer:** ANALYTICS.DEVELOPMENT
 
 ## Data Grain & Aggregation
 - **Grain:** MIXED - One row per LINE ITEM, but enriched with multiple aggregation levels:

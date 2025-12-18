@@ -7,7 +7,7 @@
 ## Object Definition
 - **Primary Object Name:** VW_CUSTOMER_ORDER_SUMMARY
 - **Object Type:** VIEW
-- **Target Schema Layer:** ANALYTICS (or equivalent for sample data)
+- **Target Schema Layer:** ANALYTICS.DEVELOPMENT
 
 ## Data Grain & Aggregation
 - **Grain:** One row per customer
