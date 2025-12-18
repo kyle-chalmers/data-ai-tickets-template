@@ -21,7 +21,7 @@ With the help of AI, we can move from problematic data infrastructure with gaps 
 
 ## Introduction to Product Requirements Prompts
 
-A **Product Requirements Prompt (PRP)** is a comprehensive specification document that gives an AI agent all the context it needs to implement a data object correctly on the first attempt.
+A **Product Requirements Prompt (PRP)** is a comprehensive specification document that gives an AI agent all the context it needs to implement a data object correctly with minimal iteration required.
 
 This data object workflow is adapted from the **Context Engineering** framework. For deep dives on PRPs and context engineering, see:
 
