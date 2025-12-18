@@ -1,35 +1,57 @@
-# Create Snowflake Data Object Product Requirements Prompt (PRP)
+# Create Data Object Product Requirements Prompt (PRP)
 
 ## Data Object Requirements: $ARGUMENTS
 
-Generate a complete PRP for Snowflake data object creation OR modification (views, tables, dynamic tables) with comprehensive database research. Supports both single object and multiple related objects operations. Read the INITIAL.md requirements file first to understand operation type (CREATE_NEW/ALTER_EXISTING), scope (SINGLE_OBJECT/MULTIPLE_RELATED_OBJECTS), business objectives, data grain, sources needed, and integration points. If no Jira ticket exists and CREATE_NEW is specified, create the ticket first using acli.
+Generate a complete PRP for data object creation OR modification (views, tables, dynamic tables) with comprehensive database research. Supports both single object and multiple related objects operations. Read the INITIAL.md requirements file first to understand operation type (CREATE_NEW/ALTER_EXISTING), scope (SINGLE_OBJECT/MULTIPLE_RELATED_OBJECTS), business objectives, data grain, sources needed, and integration points.
+
+## Prerequisites
+
+This command references configuration from your repository's CLAUDE.md. If not specified, defaults are used:
+- **Database CLI:** As specified in CLAUDE.md, or defaults to `snow` CLI for Snowflake
+- **Ticketing CLI:** As specified in CLAUDE.md, or defaults to `acli` for Jira
+- **Dev/Prod Databases:** Development and production database/schema names from CLAUDE.md
+- **Architecture Layers:** Your data architecture pattern from CLAUDE.md (optional)
 
 **Template Reference:** Use `PRPs/templates/data-object-initial.md` as the standard input format for data object requests.
 
-The AI agent only gets the context you provide in the PRP and training data. Include all database research findings, schema relationships, and architectural patterns in the PRP. The Agent has Snow CLI and Websearch capabilities, so reference specific database objects, documentation URLs, and implementation patterns.
+The AI agent only gets the context you provide in the PRP and training data. Include all database research findings, schema relationships, and architectural patterns in the PRP. The Agent has database CLI and web search capabilities, so reference specific database objects, documentation URLs, and implementation patterns.
 
 ## Research Process
 
 1. **Database Schema Analysis**
-   - Use Snow CLI to explore existing database objects: `snow sql -q "SHOW TABLES IN SCHEMA schema_name"`
-   - If ALTER_EXISTING: Get current object DDL for all objects: `snow sql -q "SELECT GET_DDL('VIEW', 'schema.existing_object')"`
+   - Use database CLI to explore existing database objects (adapt syntax for your platform):
+     ```sql
+     -- List tables in schema
+     SHOW TABLES IN SCHEMA schema_name;
+     -- Get object DDL
+     SELECT GET_DDL('VIEW', 'schema.existing_object');
+     -- Describe table structure
+     DESCRIBE TABLE schema.table_name;
+     ```
+   - If ALTER_EXISTING: Get current object DDL for all objects
    - If MULTIPLE_RELATED_OBJECTS: Map inter-object dependencies and creation order requirements
-   - Identify source tables and views: `snow sql -q "DESCRIBE TABLE schema.table_name"`
-   - Map data relationships and dependencies: `snow sql -q "SELECT GET_DDL('VIEW', 'schema.view_name')"`
-   - Check existing patterns in similar objects within the 5-layer architecture
-   - Validate schema filtering patterns (loan_management_system_SCHEMA(), LOS_SCHEMA())
+   - Identify source tables and views
+   - Map data relationships and dependencies
+   - Check existing patterns in similar objects within your architecture
+   - Validate schema filtering patterns as defined in your data catalog
    - **CRITICAL**: Review sample column values to identify any that need business-friendly transformation
 
 2. **Architecture Compliance**
-   - Verify layer-appropriate referencing (FRESHSNOW → BRIDGE → ANALYTICS → REPORTING)
-   - Check deployment patterns from `documentation/db_deploy_template.sql`
+   - Verify layer-appropriate referencing (follow architecture defined in your CLAUDE.md)
+   - Check deployment patterns from your deployment templates
    - Review existing DDL in `tickets/*/final_deliverables/` for patterns
-   - Ensure COPY GRANTS and environment variable usage
+   - Ensure COPY GRANTS and environment variable usage (if applicable)
 
 3. **Data Quality Assessment**
-   - Run sample queries on source tables: `snow sql -q "SELECT COUNT(*) FROM table LIMIT 1000"`
-   - Check for duplicates, nulls, data types: `snow sql -q "SELECT DISTINCT column FROM table"`
-   - Test all joins between source objects: `snow sql -q "SELECT COUNT(*) FROM table1 t1 LEFT JOIN table2 t2 ON t1.key = t2.key WHERE t2.key IS NULL"`
+   - Run sample queries on source tables:
+     ```sql
+     -- Sample record counts
+     SELECT COUNT(*) FROM table LIMIT 1000;
+     -- Check distinct values
+     SELECT DISTINCT column FROM table;
+     -- Test join integrity
+     SELECT COUNT(*) FROM table1 t1 LEFT JOIN table2 t2 ON t1.key = t2.key WHERE t2.key IS NULL;
+     ```
    - Compare record counts: source vs target object validation
    - **CRITICAL**: For data objects replacing existing references, examine the actual view/table being replaced to understand current structure and ensure comprehensive coverage
    - Make sure data issues that have been found are flagged for review and presented to the end user, prior to them being excluded
@@ -38,30 +60,30 @@ The AI agent only gets the context you provide in the PRP and training data. Inc
    - **CRITICAL**: Question any filter that significantly reduces available data without clear business justification
    - If ALTER_EXISTING: Compare old vs new data sources with sample queries to identify expected differences
    - If ALTER_EXISTING: Create before/after comparison queries to validate the migration
-   - Identify downstream dependencies using `INFORMATION_SCHEMA.TABLE_CONSTRAINTS` and `SHOW DEPENDENT OBJECTS`
+   - Identify downstream dependencies using your database's information schema
    - Test downstream impact: validate dependent views, tables, and reports still function correctly
    - Document data lineage and transformation requirements
 
 4. **Business Context Research**
    - Review similar tickets in repository for business logic patterns
-   - Check `documentation/data_business_context.md` for domain knowledge
+   - Check your documentation folder for domain knowledge
    - Validate data grain and aggregation requirements from INITIAL.md
-   - Map to existing analytics patterns (roll rates, fraud analysis, etc.)
-   - Identify compliance/regulatory requirements for financial data
+   - Map to existing analytics patterns
+   - Identify compliance/regulatory requirements for your data
    - Understand end-user personas and reporting needs
 
-5. **Jira Ticket Management**
-   - If ticket exists: `acli jira workitem view DI-XXX` to get full context
+5. **[OPTIONAL] Ticket Management**
+   - If ticketing system configured and ticket exists: view ticket to get full context
    - If CREATE_NEW specified: Create ticket using INITIAL.md business context
-   - **Default Epic**: DI-1238 (link new tickets to this epic unless specified otherwise)
    - Link to related tickets or epic if applicable
    - Document stakeholder requirements and acceptance criteria
+   - *Skip this section if ticketing system not configured*
 
 6. **Iterative User Clarification** (REQUIRED)
    - **CRITICAL**: After initial research, raise key questions iteratively to refine the PRP
    - Question any doubts or questionable parts found during analysis
    - Verify data grain interpretation matches business expectations
-   - Confirm layer placement based on use cases (FRESHSNOW/BRIDGE/ANALYTICS/REPORTING)
+   - Confirm layer placement based on use cases
    - Validate performance and refresh requirements
    - Clarify any ambiguous business logic or calculations
    - Ask about specific data quality issues discovered (duplicates, inconsistencies, missing data)
@@ -78,17 +100,17 @@ Using PRPs/templates/data-object-initial.md as input template:
 - **Operation Type**: CREATE_NEW or ALTER_EXISTING with specific requirements and expectations
 - **Business Requirements**: Complete INITIAL.md content with data grain, use cases, stakeholders
 - **Current State Analysis**: If ALTER_EXISTING, complete DDL and data samples from existing object
-- **Database Objects**: Complete DDL of related tables/views with `GET_DDL()` output
+- **Database Objects**: Complete DDL of related tables/views
 - **Schema Relationships**: Table joins, foreign keys, and data lineage mapping with join validation results
-- **Architecture Patterns**: Layer-specific referencing rules and `documentation/db_deploy_template.sql` pattern
+- **Architecture Patterns**: Layer-specific referencing rules from your CLAUDE.md
 - **Data Migration Analysis**: If changing sources, before/after comparison and expected differences
 - **Data Samples**: Representative data from source tables (first 5-10 rows with business context)
 - **Business Logic**: Existing transformation patterns, calculation logic, and KPI definitions
 - **Downstream Dependencies**: Complete dependency analysis and impact assessment for existing consumers
-- **Development Environment Setup**: Objects created in DEVELOPMENT/BUSINESS_INTELLIGENCE_DEV for testing
-- **Jira Context**: Full ticket details, stakeholder requirements, acceptance criteria
+- **Development Environment Setup**: Objects created in your development database/schema for testing
+- **Ticket Context**: Full ticket details, stakeholder requirements, acceptance criteria (if applicable)
 - **Performance/Compliance**: Indexing patterns, PII handling, regulatory requirements
-- **Documentation URLs**: Snowflake documentation for specific features used
+- **Documentation URLs**: Database documentation for specific features used
 
 ### Implementation Blueprint
 - **Operation Strategy**: CREATE_NEW vs ALTER_EXISTING approach and migration plan
@@ -99,7 +121,7 @@ Using PRPs/templates/data-object-initial.md as input template:
 - **Source Table Analysis**: Detailed breakdown of input tables and relationships
 - **Migration Analysis**: If changing sources, detailed comparison of old vs new data sources
 - **Transformation Logic**: Business rules, calculations, filtering, aggregations for each object
-- **Development Phase**: Create objects in DEVELOPMENT and BUSINESS_INTELLIGENCE_DEV using production data
+- **Development Phase**: Create objects in development database/schema using production data
 - **CRITICAL VALIDATION REQUIREMENT**: Include explicit instruction for implementer to perform independent data exploration and validation before following PRP guidance
 - **DATA GRAIN AND DEDUPLICATION ANALYSIS**: For sources containing historical or time-series data, require thorough exploration:
   - **Mandatory Investigation**: Analyze record counts vs unique identifiers to detect potential duplicates
@@ -113,30 +135,29 @@ Using PRPs/templates/data-object-initial.md as input template:
 - **Downstream Impact Analysis**: Identify and test all dependent objects with migration scenarios
 - **Quality Control Plan**: Single consolidated `qc_validation.sql` file with all mandatory tests (duplicate detection, completeness, integrity, performance)
 - **Performance Optimization**: Query optimization strategies (avoid strict time metrics, focus on "as fast as possible")
-- **Production Deployment Strategy**: Use `documentation/db_deploy_template.sql` for final deployment with proper sequencing
+- **Production Deployment Strategy**: Use your deployment template for final deployment with proper sequencing
 - **File Organization**: Align with execute command requirements - single QC file, simplified deliverables, README.md + CLAUDE.md structure
 - **Task Order**: Analysis → Independent Validation → Development → Testing → Cross-Object Validation → Comparison → User Review → Production Deployment
 
 ### Validation Gates (Must be Executable for the specific data object(s))
-```bash
-# Development Environment Object Creation
-snow sql -q "DESCRIBE DEVELOPMENT.[SCHEMA].[OBJECT_NAME]" --format csv
-snow sql -q "DESCRIBE BUSINESS_INTELLIGENCE_DEV.[SCHEMA].[OBJECT_NAME]" --format csv
+```sql
+-- Development Environment Object Creation (adapt for your database)
+DESCRIBE [DEV_DATABASE].[SCHEMA].[OBJECT_NAME];
 
-# Comprehensive QC Validation (all tests in single file)
-snow sql -q "$(cat qc_validation.sql)" --format csv
+-- Comprehensive QC Validation (all tests in single file)
+-- Run qc_validation.sql
 
-# Performance Validation
-snow sql -q "EXPLAIN $(cat final_deliverables/1_data_object_creation.sql)" --format csv
+-- Performance Validation
+EXPLAIN [your data object query];
 
-# Production Deployment Readiness (after user review)
-# snow sql -q "$(cat final_deliverables/2_production_deploy_template.sql)"
+-- Production Deployment Readiness (after user review)
+-- Execute production deployment template
 ```
 
 **Simplified Validation Approach:**
 - **Single QC File**: All validation tests consolidated in `qc_validation.sql`
 - **Comprehensive Testing**: Includes duplicate detection, completeness, integrity, performance, and comparison testing
-- **Executable Commands**: All validation gates can be run with simple Snow CLI commands
+- **Executable Commands**: All validation gates can be run with your database CLI
 
 *** CRITICAL AFTER YOU ARE DONE RESEARCHING AND EXPLORING THE CODEBASE ***
 
@@ -151,13 +172,13 @@ snow sql -q "EXPLAIN $(cat final_deliverables/1_data_object_creation.sql)" --for
 ## Output Structure
 
 ### PRP Document Location
-Save as: `PRPs/snowflake-data-object-{object-name}.md` **in the same folder as INITIAL.md file**
+Save as: `PRPs/data-object-{object-name}.md` **in the same folder as INITIAL.md file**
 
 ### Expected Ticket Folder Reference
 **CRITICAL**: Include explicit ticket folder reference in PRP for execute command compatibility:
-- **Expected Ticket Folder**: `tickets/[username]/DI-XXX/` 
+- **Expected Ticket Folder**: `tickets/[username]/[TICKET-ID]/`
 - This ensures seamless integration with prp-data-object-execute command
-- Use actual username (e.g., analyst) and ticket number from created ticket
+- Use actual username and ticket number from created ticket (if applicable)
 
 ## Quality Checklist
 - [ ] Operation type clearly identified (CREATE_NEW/ALTER_EXISTING) with appropriate strategy
@@ -165,17 +186,17 @@ Save as: `PRPs/snowflake-data-object-{object-name}.md` **in the same folder as I
 - [ ] If MULTIPLE_RELATED_OBJECTS: Inter-object dependencies mapped with creation/deployment order
 - [ ] Complete database schema analysis with DDL and sample data included for all objects
 - [ ] If ALTER_EXISTING: Current state documented with baseline queries and expected changes
-- [ ] Architecture compliance verified (5-layer referencing rules) for all objects
-- [ ] All source tables and relationships documented with Snow CLI output
+- [ ] Architecture compliance verified for all objects
+- [ ] All source tables and relationships documented with database CLI output
 - [ ] Join validation tests created and executable for all table relationships
 - [ ] If MULTIPLE_RELATED_OBJECTS: Cross-object relationship validation queries created
 - [ ] If ALTER_EXISTING: Before/after comparison queries created for data migration validation
 - [ ] Downstream dependency analysis completed with migration impact assessment
-- [ ] Development environment objects created in DEVELOPMENT/BUSINESS_INTELLIGENCE_DEV
+- [ ] Development environment objects created in your development database/schema
 - [ ] Source-to-target data validation queries executable and documented
 - [ ] Business logic patterns identified from existing tickets
 - [ ] Quality control validation queries are executable with comprehensive testing
-- [ ] Production deployment template follows `documentation/db_deploy_template.sql` pattern with proper sequencing
+- [ ] Production deployment template follows your deployment pattern with proper sequencing
 - [ ] Performance optimization considerations documented for all objects (focus on "as fast as possible", avoid strict time metrics)
 - [ ] Data lineage and transformation logic clearly specified
 - [ ] Error handling and edge cases covered
@@ -187,14 +208,14 @@ Save as: `PRPs/snowflake-data-object-{object-name}.md` **in the same folder as I
 - [ ] Portfolio exclusions and business logic clearly documented with examples
 
 ## Confidence Assessment
-Score the PRP on a scale of 1-10 (confidence level for one-pass Snowflake data object creation):
+Score the PRP on a scale of 1-10 (confidence level for one-pass data object creation):
 
 **Scoring Criteria:**
 - 8-10: Complete database context, clear architecture compliance, executable validation
-- 6-7: Good database research, some missing context or validation gaps  
+- 6-7: Good database research, some missing context or validation gaps
 - 4-5: Basic research, unclear requirements or incomplete architecture analysis
 - 1-3: Insufficient database context, missing critical information for implementation
 
 **Target Score: 8+ for production data object creation**
 
-Remember: The goal is one-pass implementation success with production-ready Snowflake objects that follow architectural standards and pass quality validation.
+Remember: The goal is one-pass implementation success with production-ready data objects that follow architectural standards and pass quality validation.
