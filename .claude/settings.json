@@ -6,42 +6,28 @@
       "Write(./documentation/**)",
       "Write(./videos/**)",
       "Bash(git status)",
-      "Bash(git branch*)",
-      "Bash(git diff*)",
-      "Bash(git log*)",
-      "Bash(git show*)",
-      "Bash(ls*)",
+      "Bash(git branch:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(ls:*)",
       "Bash(pwd)",
-      "Bash(tree*)",
+      "Bash(tree:*)",
       "Glob",
       "Grep"
     ],
     "ask": [
-      "Bash(snow*)",
-      "Bash(databricks*)",
-      "Bash(psql*)",
-      "Bash(mysql*)",
-      "Bash(git push*)",
-      "Bash(git commit*)",
-      "Bash(gh pr*)",
-      "Bash(curl*)",
-      "Bash(wget*)",
+      "Bash(snow:*)",
+      "Bash(databricks:*)",
+      "Bash(psql:*)",
+      "Bash(mysql:*)",
+      "Bash(git push:*)",
+      "Bash(git commit:*)",
+      "Bash(gh pr:*)",
+      "Bash(curl:*)",
+      "Bash(wget:*)",
       "Write(.env*)",
-      "Edit(.env*)",
-      "Bash(snow * UPDATE *)",
-      "Bash(snow * update *)",
-      "Bash(snow * ALTER *)",
-      "Bash(snow * alter *)",
-      "Bash(snow * DROP *)",
-      "Bash(snow * drop *)",
-      "Bash(snow * DELETE *)",
-      "Bash(snow * delete *)",
-      "Bash(snow * INSERT *)",
-      "Bash(snow * insert *)",
-      "Bash(snow * CREATE OR REPLACE *)",
-      "Bash(snow * create or replace *)",
-      "Bash(snow * TRUNCATE *)",
-      "Bash(snow * truncate *)"
+      "Edit(.env*)"
     ],
     "deny": [
       "Read(.env)",
@@ -50,14 +36,14 @@
       "Read(credentials/**)",
       "Read(**/*.pem)",
       "Read(**/*.key)",
-      "Bash(git push --force*)",
-      "Bash(git push -f*)",
-      "Bash(git reset --hard*)",
-      "Bash(rm -rf*)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(rm -rf:*)",
       "Delete"
     ]
   },
-  "environment": {
+  "env": {
     "GIT_MAIN_BRANCH": "main",
     "REPOSITORY_NAME": "data-ai-tickets-template",
     "DATABASE": "ANALYTICS",
@@ -69,7 +55,7 @@
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "Bash(git commit*)",
+        "matcher": "Bash(git commit:*)",
         "hooks": [
           {
             "type": "command",
@@ -84,14 +70,10 @@
         "hooks": [
           {
             "type": "prompt",
-            "systemPrompt": "CRITICAL: Before ANY work begins, check current git branch. If on main and user is starting work, create a feature branch FIRST. Never allow commits to main. Follow git workflow from CLAUDE.md."
+            "prompt": "CRITICAL: Before ANY work begins, check current git branch. If on main and user is starting work, create a feature branch FIRST. Never allow commits to main. Follow git workflow from CLAUDE.md."
           }
         ]
       }
     ]
-  },
-  "compaction": {
-    "enabled": true,
-    "threshold": 50000
   }
 }
