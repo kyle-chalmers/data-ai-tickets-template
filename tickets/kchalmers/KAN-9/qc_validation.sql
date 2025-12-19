@@ -1,0 +1,65 @@
+-- ============================================================================
+-- QC VALIDATION: TBL_ORDER_ANALYTICS_MULTI_GRAIN
+-- Run all tests after table creation
+-- ============================================================================
+
+--1.1: Verify table exists and check column structure
+DESCRIBE TABLE ANALYTICS.DEVELOPMENT.TBL_ORDER_ANALYTICS_MULTI_GRAIN;
+
+--2.1: Record count validation
+SELECT 'Table Record Count' AS test_name, COUNT(*) AS record_count
+FROM ANALYTICS.DEVELOPMENT.TBL_ORDER_ANALYTICS_MULTI_GRAIN;
+
+--2.2: Compare to source (fulfilled orders only)
+SELECT 'Source LINEITEM (Fulfilled Orders)' AS test_name, COUNT(*) AS record_count
+FROM SNOWFLAKE_SAMPLE_DATA.TPCH_SF100.LINEITEM l
+JOIN SNOWFLAKE_SAMPLE_DATA.TPCH_SF100.ORDERS o ON l.L_ORDERKEY = o.O_ORDERKEY
+WHERE o.O_ORDERSTATUS = 'F';
+
+--3.1: Primary key uniqueness (L_ORDERKEY + L_LINENUMBER) - should return 0
+SELECT 'Duplicate Check' AS test_name, COUNT(*) AS duplicate_count
+FROM (
+    SELECT L_ORDERKEY, L_LINENUMBER, COUNT(*) AS cnt
+    FROM ANALYTICS.DEVELOPMENT.TBL_ORDER_ANALYTICS_MULTI_GRAIN
+    GROUP BY L_ORDERKEY, L_LINENUMBER
+    HAVING COUNT(*) > 1
+);
+
+--4.1: Order status verification (should only have 'F')
+SELECT 'Order Status Check' AS test_name, O_ORDERSTATUS, COUNT(*) AS record_count
+FROM ANALYTICS.DEVELOPMENT.TBL_ORDER_ANALYTICS_MULTI_GRAIN
+GROUP BY O_ORDERSTATUS;
+
+--5.1: Data distribution by region
+SELECT
+    REGION_NAME,
+    COUNT(*) AS line_items,
+    COUNT(DISTINCT C_CUSTKEY) AS unique_customers,
+    COUNT(DISTINCT L_ORDERKEY) AS unique_orders
+FROM ANALYTICS.DEVELOPMENT.TBL_ORDER_ANALYTICS_MULTI_GRAIN
+GROUP BY REGION_NAME
+ORDER BY REGION_NAME;
+
+--5.2: Regional percentage sum (should be 100% per region)
+SELECT
+    REGION_NAME,
+    ROUND(SUM(CUSTOMER_PCT_OF_REGIONAL_REVENUE), 2) AS total_pct
+FROM (
+    SELECT DISTINCT C_CUSTKEY, REGION_NAME, CUSTOMER_PCT_OF_REGIONAL_REVENUE
+    FROM ANALYTICS.DEVELOPMENT.TBL_ORDER_ANALYTICS_MULTI_GRAIN
+)
+GROUP BY REGION_NAME
+ORDER BY REGION_NAME;
+
+--6.1: Null check on critical columns
+SELECT
+    'Null Check' AS test_name,
+    SUM(CASE WHEN L_ORDERKEY IS NULL THEN 1 ELSE 0 END) AS null_orderkey,
+    SUM(CASE WHEN C_CUSTKEY IS NULL THEN 1 ELSE 0 END) AS null_custkey,
+    SUM(CASE WHEN CUSTOMER_LIFETIME_VALUE IS NULL THEN 1 ELSE 0 END) AS null_ltv,
+    SUM(CASE WHEN CUSTOMER_RANK_IN_REGION IS NULL THEN 1 ELSE 0 END) AS null_rank
+FROM ANALYTICS.DEVELOPMENT.TBL_ORDER_ANALYTICS_MULTI_GRAIN;
+
+--7.1: Sample output (quick check)
+SELECT TOP 5 L_ORDERKEY, CUSTOMER_NAME, REGION_NAME, CUSTOMER_RANK_IN_REGION
+FROM ANALYTICS.DEVELOPMENT.TBL_ORDER_ANALYTICS_MULTI_GRAIN;
