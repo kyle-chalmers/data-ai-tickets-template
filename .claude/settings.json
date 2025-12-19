@@ -43,7 +43,7 @@
       "Delete"
     ]
   },
-  "environment": {
+  "env": {
     "GIT_MAIN_BRANCH": "main",
     "REPOSITORY_NAME": "data-ai-tickets-template",
     "DATABASE": "ANALYTICS",
@@ -63,10 +63,17 @@
           }
         ]
       }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "CRITICAL: Before ANY work begins, check current git branch. If on main and user is starting work, create a feature branch FIRST. Never allow commits to main. Follow git workflow from CLAUDE.md."
+          }
+        ]
+      }
     ]
-  },
-  "compaction": {
-    "enabled": true,
-    "threshold": 50000
   }
 }
