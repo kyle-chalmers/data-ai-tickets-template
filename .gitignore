@@ -90,3 +90,8 @@ logs/
 
 # Claude Code specific
 .claude/commands/.DS_Store
+
+# Local notes (not tracked)
+LOCAL_*.md
+*_LOCAL.md
+.local/
