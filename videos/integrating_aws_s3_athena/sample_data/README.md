@@ -221,10 +221,28 @@ If wildfire data format is challenging (NetCDF/Zarr requires special handling), 
 ## Data Preparation Checklist
 
 - [x] Identify dataset for demo (Wildfire Projections)
-- [ ] Create S3 bucket in us-west-2
-- [ ] Explore wildfire dataset structure
-- [ ] Copy sample data to your bucket
-- [ ] Create Athena database
-- [ ] Create external table(s)
-- [ ] Run test queries
+- [x] Create S3 bucket in us-west-2 (`kclabs-athena-demo-2025`, `kclabs-athena-results-2025`)
+- [x] Explore wildfire dataset structure
+- [x] Copy sample data to your bucket (`era-ren-collection.csv`)
+- [x] Create Athena database (`wildfire_demo`)
+- [x] Create external table(s) (`renewable_energy_catalog`)
+- [x] Run test queries (verified working)
 - [ ] Prepare analysis queries for video
+
+## Current Setup Summary
+
+**Buckets:**
+- `s3://kclabs-athena-demo-2025/wildfire-data/` - contains sample CSV
+- `s3://kclabs-athena-results-2025/` - Athena query results
+
+**Athena:**
+- Database: `wildfire_demo`
+- Table: `renewable_energy_catalog` (9 columns, ~200 rows of renewable energy catalog data)
+
+**Quick Test:**
+```bash
+aws athena start-query-execution \
+  --query-string "SELECT * FROM wildfire_demo.renewable_energy_catalog LIMIT 5" \
+  --query-execution-context Database=wildfire_demo \
+  --result-configuration OutputLocation=s3://kclabs-athena-results-2025/
+```

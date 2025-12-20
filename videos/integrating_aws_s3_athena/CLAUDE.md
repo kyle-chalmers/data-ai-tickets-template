@@ -4,6 +4,49 @@ Quick reference for AWS CLI syntax and common patterns for data lake operations.
 
 ---
 
+## Current Project Setup
+
+**AWS Account:** 987540640696 (kclabsai)
+**IAM User:** kylechalmers-cli
+**Region:** us-west-2
+
+### S3 Buckets Created
+
+| Bucket | Purpose |
+|--------|---------|
+| `kclabs-athena-demo-2025` | Demo data storage |
+| `kclabs-athena-results-2025` | Athena query results |
+
+### Athena Resources
+
+| Resource | Name |
+|----------|------|
+| **Database** | `wildfire_demo` |
+| **Table** | `renewable_energy_catalog` |
+
+### Sample Data Source
+
+**California Wildfire Projections Dataset**
+- **S3 Location:** `s3://wfclimres/`
+- **Region:** us-west-2
+- **Provider:** Cal-Adapt / Eagle Rock Analytics
+- **AWS Marketplace:** https://aws.amazon.com/marketplace/pp/prodview-ynmdoogdmotne
+
+### Test Query
+
+```bash
+# Query the renewable energy catalog
+aws athena start-query-execution \
+  --query-string "SELECT installation, source_id, experiment_id, COUNT(*) as count FROM wildfire_demo.renewable_energy_catalog GROUP BY installation, source_id, experiment_id ORDER BY count DESC LIMIT 10" \
+  --query-execution-context Database=wildfire_demo \
+  --result-configuration OutputLocation=s3://kclabs-athena-results-2025/
+
+# Get results (replace QUERY_ID)
+aws athena get-query-results --query-execution-id QUERY_ID | jq -r '.ResultSet.Rows[] | [.Data[].VarCharValue] | @tsv'
+```
+
+---
+
 ## Authentication Setup
 
 ### Configure with Access Keys
