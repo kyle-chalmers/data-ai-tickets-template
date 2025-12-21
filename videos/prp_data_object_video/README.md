@@ -1,6 +1,6 @@
 # Product Requirements Prompt (PRP) for Data Objects
 
-> **YouTube:** [Coming Soon]
+> **YouTube:** [Stop Waiting: Use AI to Build Better Data Infrastructure with this Context Engineering Framework)](https://youtu.be/DUK39XqEVm0)
 
 ## The Value Proposition
 

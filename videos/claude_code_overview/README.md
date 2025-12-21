@@ -4,6 +4,15 @@
 
 ---
 
+## Video
+
+Watch the companion video for this guide:
+
+> **YouTube:** [FUTURE PROOF Your Data Career with this Claude Code Deep Dive](https://www.youtube.com/watch?v=g4g4yBcBNuE)
+> **YouTube Update Video:** [UPDATE to settings.json Chapter from my Last Claude Code Deep Dive Video](https://youtu.be/WKt28ytMl3c)
+
+---
+
 ## 📑 Table of Contents
 
 ### Introduction
@@ -1023,14 +1032,6 @@ Explore the `.claude/` folder in this repository for working examples:
 - **`.claude/settings.json`** - Practical configuration for data teams
 
 Each file includes detailed documentation and usage examples.
-
----
-
-## Video
-
-Watch the companion video for this guide:
-
-> **YouTube:** [FUTURE PROOF Your Data Career with this Claude Code Deep Dive](https://www.youtube.com/watch?v=g4g4yBcBNuE)
 
 ---
 
