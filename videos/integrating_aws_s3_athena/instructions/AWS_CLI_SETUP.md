@@ -435,3 +435,13 @@ chmod 600 ~/.aws/credentials
 1. [Explore the example workflow](../example_workflow/README.md)
 2. Review the [CLAUDE.md reference](../CLAUDE.md) for common commands
 3. Set up your first S3 bucket and Athena database
+
+---
+
+## Resources
+
+### AWS CLI Installation Documentation
+
+- [AWS CLI Official Installation Guide](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+- [Homebrew Formula - awscli](https://formulae.brew.sh/formula/awscli)
+- [Installing AWS CLI Using Homebrew: A Simple Guide](https://medium.com/@jeffreyomoakah/installing-aws-cli-using-homebrew-a-simple-guide-486df9da3092)
