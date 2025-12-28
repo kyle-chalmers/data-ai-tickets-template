@@ -91,6 +91,9 @@ logs/
 # Claude Code specific
 .claude/commands/.DS_Store
 
+# Private Claude commands (not tracked)
+.claude/commands/generate-script-outline.md
+
 # Local notes (not tracked)
 LOCAL_*.md
 *_LOCAL.md
