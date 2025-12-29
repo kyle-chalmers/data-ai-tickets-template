@@ -17,11 +17,12 @@ Enable Claude to:
 
 ## The Value Proposition
 
-Many data teams store raw data in S3 and query it with Athena. This video shows how Claude Code can:
-- **Explore data lakes** without leaving the terminal
-- **Run ad-hoc Athena queries** conversationally
-- **Automate data workflows** (upload → catalog → query → export)
-- **Reduce context switching** between AWS Console and analysis tools
+Many data teams store raw data in S3 and query it with Athena. The real power here isn't just running AWS commands from your terminal - it's that **Claude does the work for you**:
+
+- **Delegation, not automation** - Describe what you want in plain English
+- **Claude handles the complexity** - Claude can take care of searching in S3 and querying Athena for you
+- **You just QC the results** - Your job? QC the results
+- **No more context switching** - Stay in your terminal, skip the AWS Console entirely
 
 ---
 
@@ -197,6 +198,11 @@ videos/integrating_aws_s3_athena/
 ---
 
 ## Resources
+
+**AWS CLI Installation:**
+- [AWS CLI Official Installation Guide](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+- [Homebrew Formula - awscli](https://formulae.brew.sh/formula/awscli)
+- [Installing AWS CLI Using Homebrew: A Simple Guide](https://medium.com/@jeffreyomoakah/installing-aws-cli-using-homebrew-a-simple-guide-486df9da3092)
 
 **Official Documentation:**
 - AWS CLI: https://docs.aws.amazon.com/cli/
