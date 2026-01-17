@@ -63,17 +63,6 @@
           }
         ]
       }
-    ],
-    "UserPromptSubmit": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "prompt",
-            "prompt": "CRITICAL: Before ANY work begins, check current git branch. If on main and user is starting work, create a feature branch FIRST. Never allow commits to main. Follow git workflow from CLAUDE.md."
-          }
-        ]
-      }
     ]
   }
 }
