@@ -19,7 +19,7 @@ Enable Claude to:
 
 Many data teams store raw data in S3 and query it with Athena. The real power here isn't just running AWS commands from your terminal - it's that **Claude does the work for you**:
 
-- **Delegation, not automation** - Describe what you want in plain English
+- **Delegation to AI** - Describe what you want in plain English
 - **Claude handles the complexity** - Claude can take care of searching in S3 and querying Athena for you
 - **You just QC the results** - Your job? QC the results
 - **No more context switching** - Stay in your terminal, skip the AWS Console entirely
