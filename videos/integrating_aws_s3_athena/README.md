@@ -19,9 +19,9 @@ Enable Claude to:
 
 Many data teams store raw data in S3 and query it with Athena. The real power here isn't just running AWS commands from your terminal - it's that **Claude does the work for you**:
 
-- **Delegation to AI** - Describe what you want in plain English
-- **Claude handles the complexity** - Claude can take care of searching in S3 and querying Athena for you
-- **You just QC the results** - Your job? QC the results
+- **Delegation, not automation** - Describe what you want in plain English
+- **Claude handles the complexity** - Searching S3 and querying Athena for you
+- **You just QC the results** - Your job is quality control
 - **No more context switching** - Stay in your terminal, skip the AWS Console entirely
 
 ---
@@ -30,26 +30,46 @@ Many data teams store raw data in S3 and query it with Athena. The real power he
 
 ### Section 1: Setup and Configuration
 - AWS CLI installation and configuration
-- IAM permissions for S3 and Athena
+- IAM permissions for S3 and Athena (least privilege)
 - Credential management best practices
-- Claude Code settings.json for AWS
+- Verifying setup: `aws sts get-caller-identity`
 
 ### Section 2: S3 Operations
-- Listing and exploring buckets
-- Uploading and downloading files
-- Working with partitioned data
-- Common patterns for data lakes
+- Listing and exploring buckets: `aws s3 ls`
+- Uploading and downloading files: `aws s3 cp`
+- Syncing directories: `aws s3 sync`
+- Working with partitioned data lake structures
 
 ### Section 3: Athena Queries
-- Running SQL queries from CLI
+- Running SQL queries from CLI: `aws athena start-query-execution`
 - Managing databases and tables
-- Query result handling
-- Cost optimization tips
+- Query result handling: `aws athena get-query-results`
+- Cost optimization tips (workgroups, query limits)
 
-### Section 4: Practical Workflow
-- End-to-end example: CSV → S3 → Athena → Analysis
-- Building reusable query patterns
-- Integration with existing data workflows
+### Section 4: Practical Workflow Demo
+Complete end-to-end workflow: **CSV -> S3 -> Athena Table -> Query -> Export**
+
+1. Upload sample data to S3
+2. Create database and external table in Athena
+3. Run analysis query
+4. Export results to S3/local
+5. Cleanup
+
+---
+
+## Demo Datasets
+
+### Primary: California Wildfire Projections
+- **S3 Location:** `s3://wfclimres/` (public dataset, us-west-2)
+- **Database:** `wildfire_demo`
+- **Table:** `renewable_energy_catalog` (216 rows)
+- Real climate research data for exploration
+
+### Workflow Demo: Sample Sales Data
+- **S3 Location:** `s3://kclabs-athena-demo-2025/sales-demo/`
+- **Database:** `sales_demo`
+- **Table:** `sales` (10 rows)
+- Simple CSV for end-to-end demonstration
 
 ---
 
@@ -60,9 +80,10 @@ Many data teams store raw data in S3 and query it with Athena. The real power he
 | S3 Bucket Operations | Full (list, cp, sync, rm) |
 | S3 Object Management | Full (upload, download, presign) |
 | Athena Queries | Full (start-query, get-results) |
-| Glue Catalog | Full (databases, tables, partitions) |
 | Query History | Full (list-query-executions) |
 | Cost Control | Workgroups, query limits |
+
+> **Note:** Athena automatically stores table metadata in the AWS Glue Data Catalog. No separate Glue configuration needed for basic workflows.
 
 ---
 
@@ -102,25 +123,26 @@ Full setup guide: [instructions/AWS_CLI_SETUP.md](./instructions/AWS_CLI_SETUP.m
 aws s3 ls
 
 # List objects in bucket
-aws s3 ls s3://bucket-name/prefix/
+aws s3 ls s3://kclabs-athena-demo-2025/
 
 # Copy file to S3
-aws s3 cp local-file.csv s3://bucket-name/data/
+aws s3 cp sample_sales.csv s3://kclabs-athena-demo-2025/sales-demo/
 
 # Download from S3
-aws s3 cp s3://bucket-name/data/file.csv ./local-file.csv
+aws s3 cp s3://kclabs-athena-demo-2025/sales-demo/sample_sales.csv ./
 
 # Sync directory
-aws s3 sync ./local-dir s3://bucket-name/prefix/
+aws s3 sync ./local-dir s3://kclabs-athena-demo-2025/data/
 ```
 
 ### Athena Queries
 ```bash
 # Start a query
 aws athena start-query-execution \
-  --query-string "SELECT * FROM database.table LIMIT 10" \
+  --query-string "SELECT * FROM sales_demo.sales LIMIT 10" \
   --work-group "primary" \
-  --query-execution-context Database=my_database
+  --query-execution-context Database=sales_demo \
+  --result-configuration OutputLocation=s3://kclabs-athena-results-2025/
 
 # Get query status
 aws athena get-query-execution --query-execution-id <ID>
@@ -129,36 +151,24 @@ aws athena get-query-execution --query-execution-id <ID>
 aws athena get-query-results --query-execution-id <ID>
 ```
 
-### Glue Catalog
-```bash
-# List databases
-aws glue get-databases
-
-# List tables in database
-aws glue get-tables --database-name my_database
-
-# Get table schema
-aws glue get-table --database-name my_database --name my_table
-```
-
 ---
 
 ## Claude Code Integration Examples
 
 **S3 Exploration:**
-- "List all buckets and show me what's in the data-lake bucket"
+- "List all buckets and show me what's in the demo bucket"
 - "Upload this CSV to S3 and tell me the object URL"
 - "Find all parquet files modified in the last week"
 
 **Athena Queries:**
-- "Query the sales table for Q4 2024 totals by region"
-- "Show me the schema for the customer_events table"
+- "Query the sales table for totals by region"
+- "Show me the schema for the renewable_energy_catalog table"
 - "Run this query and save results to a local CSV"
 
 **Workflow Automation:**
-- "Create an Athena table for the new CSV I uploaded"
-- "Partition the events table by date and region"
-- "Generate a report of query costs this month"
+- "Create an Athena table for the CSV I just uploaded"
+- "Generate a report of revenue by region"
+- "Clean up the test database and data"
 
 ---
 
@@ -189,10 +199,14 @@ ls -l ~/.aws/credentials  # Should show: -rw-------
 videos/integrating_aws_s3_athena/
 ├── README.md                    # This file
 ├── CLAUDE.md                    # AWS CLI reference for Claude
+├── final_deliverables/
+│   └── script_outline.md        # Video script (source of truth)
 ├── instructions/
 │   └── AWS_CLI_SETUP.md         # Detailed setup guide
+├── sample_data/
+│   └── README.md                # Dataset options and setup
 └── example_workflow/
-    └── README.md                # Step-by-step example
+    └── README.md                # Step-by-step workflow example
 ```
 
 ---
@@ -202,13 +216,11 @@ videos/integrating_aws_s3_athena/
 **AWS CLI Installation:**
 - [AWS CLI Official Installation Guide](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 - [Homebrew Formula - awscli](https://formulae.brew.sh/formula/awscli)
-- [Installing AWS CLI Using Homebrew: A Simple Guide](https://medium.com/@jeffreyomoakah/installing-aws-cli-using-homebrew-a-simple-guide-486df9da3092)
 
 **Official Documentation:**
 - AWS CLI: https://docs.aws.amazon.com/cli/
 - S3 Commands: https://docs.aws.amazon.com/cli/latest/reference/s3/
 - Athena CLI: https://docs.aws.amazon.com/cli/latest/reference/athena/
-- Glue CLI: https://docs.aws.amazon.com/cli/latest/reference/glue/
 
 **Getting Help:**
 - `aws help`

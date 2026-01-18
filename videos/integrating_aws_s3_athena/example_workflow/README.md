@@ -1,6 +1,8 @@
 # Example Workflow: Sales Data Analysis
 
-This workflow demonstrates an end-to-end data analysis using S3 and Athena with Claude Code.
+This workflow demonstrates an end-to-end data analysis using S3 and Athena.
+
+Matches the Practical Workflow Demo in `final_deliverables/script_outline.md`.
 
 ---
 
@@ -8,7 +10,7 @@ This workflow demonstrates an end-to-end data analysis using S3 and Athena with 
 
 You have sales data in CSV format that needs to be:
 1. Uploaded to S3
-2. Cataloged in Glue/Athena
+2. Cataloged in Athena (creates table pointing to S3)
 3. Queried for analysis
 4. Results exported locally
 
@@ -17,9 +19,10 @@ You have sales data in CSV format that needs to be:
 ## Prerequisites
 
 - AWS CLI configured (see [setup guide](../instructions/AWS_CLI_SETUP.md))
-- S3 bucket for data: `your-data-bucket`
-- S3 bucket for Athena results: `your-athena-results`
-- Athena workgroup configured
+- S3 buckets:
+  - Data: `kclabs-athena-demo-2025`
+  - Results: `kclabs-athena-results-2025`
+- Region: `us-west-2`
 
 ---
 
@@ -48,20 +51,16 @@ EOF
 ## Step 2: Upload to S3
 
 ```bash
-# Set variables
-BUCKET="your-data-bucket"
-PREFIX="sales_data"
-
 # Upload file
-aws s3 cp sample_sales.csv s3://${BUCKET}/${PREFIX}/sample_sales.csv
+aws s3 cp sample_sales.csv s3://kclabs-athena-demo-2025/sales-demo/sample_sales.csv
 
 # Verify upload
-aws s3 ls s3://${BUCKET}/${PREFIX}/
+aws s3 ls s3://kclabs-athena-demo-2025/sales-demo/
 ```
 
 **Expected output:**
 ```
-2024-01-25 10:30:00        456 sample_sales.csv
+2024-01-25 10:30:00        509 sample_sales.csv
 ```
 
 ---
@@ -70,146 +69,87 @@ aws s3 ls s3://${BUCKET}/${PREFIX}/
 
 ### Create Database
 
-```bash
-RESULTS_BUCKET="your-athena-results"
+Run in Athena Console or via CLI:
 
-aws athena start-query-execution \
-  --query-string "CREATE DATABASE IF NOT EXISTS sales_analytics" \
-  --work-group "primary" \
-  --result-configuration OutputLocation=s3://${RESULTS_BUCKET}/
+```sql
+CREATE DATABASE IF NOT EXISTS sales_demo;
 ```
 
 ### Create External Table
 
-```bash
-BUCKET="your-data-bucket"
-RESULTS_BUCKET="your-athena-results"
-
-aws athena start-query-execution \
-  --query-string "
-    CREATE EXTERNAL TABLE IF NOT EXISTS sales_analytics.sales (
-      order_id INT,
-      customer_id STRING,
-      product_name STRING,
-      quantity INT,
-      unit_price DOUBLE,
-      order_date DATE,
-      region STRING
-    )
-    ROW FORMAT DELIMITED
-    FIELDS TERMINATED BY ','
-    STORED AS TEXTFILE
-    LOCATION 's3://${BUCKET}/sales_data/'
-    TBLPROPERTIES ('skip.header.line.count'='1')
-  " \
-  --work-group "primary" \
-  --query-execution-context Database=sales_analytics \
-  --result-configuration OutputLocation=s3://${RESULTS_BUCKET}/
+```sql
+CREATE EXTERNAL TABLE sales_demo.sales (
+  order_id INT,
+  customer_id STRING,
+  product_name STRING,
+  quantity INT,
+  unit_price DOUBLE,
+  order_date DATE,
+  region STRING
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE
+LOCATION 's3://kclabs-athena-demo-2025/sales-demo/'
+TBLPROPERTIES ('skip.header.line.count'='1');
 ```
 
-### Verify Table Creation
+> **Note:** The table is just metadata - a schema definition pointing to S3. Athena reads directly from the files. Table metadata is automatically stored in the AWS Glue Data Catalog.
+
+### CLI Alternative
 
 ```bash
-# List tables
-aws glue get-tables --database-name sales_analytics \
-  | jq -r '.TableList[].Name'
-
-# Check schema
-aws glue get-table \
-  --database-name sales_analytics \
-  --name sales \
-  | jq '.Table.StorageDescriptor.Columns'
+aws athena start-query-execution \
+  --query-string "CREATE DATABASE IF NOT EXISTS sales_demo" \
+  --work-group "primary" \
+  --result-configuration OutputLocation=s3://kclabs-athena-results-2025/
 ```
 
 ---
 
 ## Step 4: Run Analysis Queries
 
-### Helper Function for Queries
+### Business Question: What's the total revenue by region?
 
-```bash
-# Function to run query and wait for results
-run_athena_query() {
-  local query="$1"
-  local database="${2:-sales_analytics}"
-
-  QUERY_ID=$(aws athena start-query-execution \
-    --query-string "$query" \
-    --work-group "primary" \
-    --query-execution-context Database=$database \
-    --result-configuration OutputLocation=s3://${RESULTS_BUCKET}/ \
-    --output text --query 'QueryExecutionId')
-
-  echo "Query ID: $QUERY_ID"
-
-  # Wait for completion
-  while true; do
-    STATE=$(aws athena get-query-execution \
-      --query-execution-id $QUERY_ID \
-      --query 'QueryExecution.Status.State' \
-      --output text)
-
-    if [[ "$STATE" == "SUCCEEDED" ]]; then
-      echo "Query succeeded!"
-      break
-    elif [[ "$STATE" == "FAILED" || "$STATE" == "CANCELLED" ]]; then
-      echo "Query $STATE"
-      aws athena get-query-execution \
-        --query-execution-id $QUERY_ID \
-        --query 'QueryExecution.Status.StateChangeReason'
-      return 1
-    fi
-    sleep 1
-  done
-
-  # Return results
-  aws athena get-query-results --query-execution-id $QUERY_ID
-}
+```sql
+SELECT
+  region,
+  COUNT(*) as order_count,
+  SUM(quantity) as total_units,
+  ROUND(SUM(quantity * unit_price), 2) as total_revenue
+FROM sales_demo.sales
+GROUP BY region
+ORDER BY total_revenue DESC;
 ```
 
-### Query 1: Total Sales by Region
-
-```bash
-run_athena_query "
-  SELECT
-    region,
-    COUNT(*) as order_count,
-    SUM(quantity) as total_units,
-    ROUND(SUM(quantity * unit_price), 2) as total_revenue
-  FROM sales
-  GROUP BY region
-  ORDER BY total_revenue DESC
-"
+**Expected Results:**
+```
+region    order_count    total_units    total_revenue
+South     3              10             639.90
+North     3              14             559.86
+East      2              12             399.88
+West      2              2              149.98
 ```
 
-### Query 2: Top Customers
+### CLI Execution
 
 ```bash
-run_athena_query "
-  SELECT
-    customer_id,
-    COUNT(*) as order_count,
-    ROUND(SUM(quantity * unit_price), 2) as total_spent
-  FROM sales
-  GROUP BY customer_id
-  ORDER BY total_spent DESC
-  LIMIT 5
-"
-```
+# Start query
+QUERY_ID=$(aws athena start-query-execution \
+  --query-string "SELECT region, COUNT(*) as order_count, SUM(quantity) as total_units, ROUND(SUM(quantity * unit_price), 2) as total_revenue FROM sales_demo.sales GROUP BY region ORDER BY total_revenue DESC" \
+  --work-group "primary" \
+  --query-execution-context Database=sales_demo \
+  --result-configuration OutputLocation=s3://kclabs-athena-results-2025/ \
+  --output text --query 'QueryExecutionId')
 
-### Query 3: Product Performance
+echo "Query ID: $QUERY_ID"
 
-```bash
-run_athena_query "
-  SELECT
-    product_name,
-    SUM(quantity) as units_sold,
-    ROUND(AVG(unit_price), 2) as avg_price,
-    ROUND(SUM(quantity * unit_price), 2) as revenue
-  FROM sales
-  GROUP BY product_name
-  ORDER BY revenue DESC
-"
+# Wait for completion (poll status)
+aws athena get-query-execution --query-execution-id $QUERY_ID \
+  --query 'QueryExecution.Status.State' --output text
+
+# Get results
+aws athena get-query-results --query-execution-id $QUERY_ID
 ```
 
 ---
@@ -218,73 +158,36 @@ run_athena_query "
 
 ### Download Query Results
 
+Every Athena query automatically saves results to S3. Download the CSV:
+
 ```bash
-# Run a query
-QUERY_ID=$(aws athena start-query-execution \
-  --query-string "SELECT * FROM sales ORDER BY order_date" \
-  --work-group "primary" \
-  --query-execution-context Database=sales_analytics \
-  --result-configuration OutputLocation=s3://${RESULTS_BUCKET}/ \
-  --output text --query 'QueryExecutionId')
-
-# Wait for completion
-sleep 5
-
-# Download results CSV
-aws s3 cp s3://${RESULTS_BUCKET}/${QUERY_ID}.csv ./query_results.csv
+# Download results CSV (replace QUERY_ID)
+aws s3 cp s3://kclabs-athena-results-2025/${QUERY_ID}.csv ./results.csv
 
 # View results
-cat query_results.csv
-```
-
-### Export Summary Report
-
-```bash
-# Create summary query
-QUERY_ID=$(aws athena start-query-execution \
-  --query-string "
-    SELECT
-      'Total Orders' as metric, CAST(COUNT(*) AS VARCHAR) as value FROM sales
-    UNION ALL
-    SELECT
-      'Total Revenue', CAST(ROUND(SUM(quantity * unit_price), 2) AS VARCHAR) FROM sales
-    UNION ALL
-    SELECT
-      'Unique Customers', CAST(COUNT(DISTINCT customer_id) AS VARCHAR) FROM sales
-    UNION ALL
-    SELECT
-      'Avg Order Value', CAST(ROUND(AVG(quantity * unit_price), 2) AS VARCHAR) FROM sales
-  " \
-  --work-group "primary" \
-  --query-execution-context Database=sales_analytics \
-  --result-configuration OutputLocation=s3://${RESULTS_BUCKET}/ \
-  --output text --query 'QueryExecutionId')
-
-sleep 5
-aws s3 cp s3://${RESULTS_BUCKET}/${QUERY_ID}.csv ./summary_report.csv
+cat results.csv
 ```
 
 ---
 
-## Step 6: Cleanup (Optional)
+## Step 6: Cleanup
+
+Clean up test resources:
+
+```sql
+DROP TABLE IF EXISTS sales_demo.sales;
+DROP DATABASE IF EXISTS sales_demo;
+```
 
 ```bash
-# Remove test data from S3
-aws s3 rm s3://${BUCKET}/sales_data/ --recursive
-
-# Drop table
-aws athena start-query-execution \
-  --query-string "DROP TABLE IF EXISTS sales_analytics.sales" \
-  --work-group "primary"
-
-# Drop database
-aws athena start-query-execution \
-  --query-string "DROP DATABASE IF EXISTS sales_analytics" \
-  --work-group "primary"
+# Remove S3 data
+aws s3 rm s3://kclabs-athena-demo-2025/sales-demo/ --recursive
 
 # Clean local files
-rm -f sample_sales.csv query_results.csv summary_report.csv
+rm -f sample_sales.csv results.csv
 ```
+
+**Important:** Tables are just pointers - the S3 data persists until you explicitly delete it.
 
 ---
 
@@ -294,7 +197,7 @@ Instead of running these commands manually, ask Claude:
 
 **Data Upload:**
 ```
-"Upload sample_sales.csv to S3 bucket my-data-bucket in the sales_data folder"
+"Upload sample_sales.csv to S3 in the sales-demo folder"
 ```
 
 **Table Creation:**
@@ -310,61 +213,20 @@ order_id, customer_id, product_name, quantity, unit_price, order_date, region"
 
 **Export:**
 ```
-"Export the full sales table to a local CSV file"
+"Export the query results to a local CSV file"
+```
+
+**Cleanup:**
+```
+"Clean up the sales_demo database and remove the S3 test data"
 ```
 
 ---
 
-## Extending This Workflow
+## Key Takeaways
 
-### Add Partitioning
-
-For larger datasets, partition by date:
-
-```sql
-CREATE EXTERNAL TABLE sales_partitioned (
-  order_id INT,
-  customer_id STRING,
-  product_name STRING,
-  quantity INT,
-  unit_price DOUBLE,
-  region STRING
-)
-PARTITIONED BY (order_date DATE)
-STORED AS PARQUET
-LOCATION 's3://bucket/sales_partitioned/'
-```
-
-### Use Parquet Format
-
-Convert CSV to Parquet for better performance:
-
-```sql
-CREATE TABLE sales_parquet
-WITH (
-  format = 'PARQUET',
-  external_location = 's3://bucket/sales_parquet/'
-) AS
-SELECT * FROM sales
-```
-
-### Schedule Regular Updates
-
-Combine with AWS Lambda or Step Functions to:
-- Automatically process new files uploaded to S3
-- Run daily/weekly analysis queries
-- Export reports to stakeholders
-
----
-
-## Files Created
-
-After running this workflow:
-
-```
-example_workflow/
-├── README.md           # This file
-├── sample_sales.csv    # Sample data (created during workflow)
-├── query_results.csv   # Full data export
-└── summary_report.csv  # Summary metrics
-```
+1. **External Tables** - Athena tables are just metadata pointing to S3; no data copying
+2. **Pay Per Query** - Cost is ~$5 per TB scanned (our demo: negligible)
+3. **Results in S3** - Every query saves output to your results bucket
+4. **Standard SQL** - Use familiar SQL syntax against files in S3
+5. **No ETL Required** - Query data directly where it lives

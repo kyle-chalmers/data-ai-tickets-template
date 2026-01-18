@@ -244,56 +244,18 @@ aws athena batch-get-query-execution \
 
 ---
 
-## Glue Catalog (Metadata)
+## Glue Data Catalog (Background)
 
-### Databases
+Athena automatically stores table metadata in the AWS Glue Data Catalog. No separate Glue configuration is needed for basic workflows.
 
-```bash
-# List all databases
-aws glue get-databases
-
-# Get specific database
-aws glue get-database --name my_database
-
-# Create database
-aws glue create-database --database-input '{
-  "Name": "my_database",
-  "Description": "My data lake database"
-}'
-```
-
-### Tables
-
+For advanced use cases (inspecting metadata programmatically):
 ```bash
 # List tables in database
-aws glue get-tables --database-name my_database
+aws glue get-tables --database-name wildfire_demo
 
 # Get table schema
-aws glue get-table --database-name my_database --name my_table
-
-# Get just column info
-aws glue get-table \
-  --database-name my_database \
-  --name my_table \
+aws glue get-table --database-name wildfire_demo --name renewable_energy_catalog \
   --query 'Table.StorageDescriptor.Columns'
-```
-
-### Partitions
-
-```bash
-# List partitions
-aws glue get-partitions --database-name my_database --table-name my_table
-
-# Add partition
-aws glue create-partition \
-  --database-name my_database \
-  --table-name my_table \
-  --partition-input '{...}'
-
-# Repair partitions (via Athena)
-aws athena start-query-execution \
-  --query-string "MSCK REPAIR TABLE my_database.my_table" \
-  --work-group "primary"
 ```
 
 ---
