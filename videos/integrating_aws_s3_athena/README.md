@@ -28,12 +28,11 @@ Enable Claude to:
 
 | Term | Definition |
 |------|------------|
-| **S3 (Simple Storage Service)** | Amazon's cloud storage - think of it as an infinitely expandable hard drive in the sky where you store files |
-| **Athena** | A query service that lets you run SQL directly on files in S3 - no database server needed |
+| **S3 (Simple Storage Service)** | Amazon's cloud storage, or data lake - think of it as an infinitely expandable hard drive in the sky where you store files |
 | **Data Lake** | A storage approach where you dump raw data first, then figure out how to use it later (opposite of traditional databases) |
-| **CLI (Command Line Interface)** | The text-based terminal where you type commands instead of clicking through a graphical interface |
-| **IAM (Identity and Access Management)** | AWS's permission system - controls who can do what with your cloud resources |
+| **Athena** | A query service that lets you run SQL directly on files in S3 - no database server needed |
 | **External Table** | A table definition that points to files somewhere else - the data stays in S3, Athena just knows how to read it |
+| **IAM (Identity and Access Management)** | AWS's permission system - controls who can do what with your cloud resources |
 
 ---
 
