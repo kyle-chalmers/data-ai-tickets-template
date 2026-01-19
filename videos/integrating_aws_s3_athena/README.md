@@ -6,6 +6,19 @@ Complete guide for integrating AWS S3 and Athena with Claude Code using the AWS 
 
 ---
 
+## Key Terms / Glossary
+
+| Term | Definition |
+|------|------------|
+| **S3 (Simple Storage Service)** | Amazon's cloud storage - think of it as an infinitely expandable hard drive in the sky where you store files |
+| **Athena** | A query service that lets you run SQL directly on files in S3 - no database server needed |
+| **Data Lake** | A storage approach where you dump raw data first, then figure out how to use it later (opposite of traditional databases) |
+| **CLI (Command Line Interface)** | The text-based terminal where you type commands instead of clicking through a graphical interface |
+| **IAM (Identity and Access Management)** | AWS's permission system - controls who can do what with your cloud resources |
+| **External Table** | A table definition that points to files somewhere else - the data stays in S3, Athena just knows how to read it |
+
+---
+
 ## Video Goals
 
 Enable Claude to:

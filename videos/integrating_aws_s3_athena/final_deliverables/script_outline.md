@@ -1,22 +1,6 @@
 # AWS S3 + Athena Integration - Video Script
 
-**Total Estimated Runtime:** 12-15 minutes
-
----
-
-## DEFINITIONS BOX
-
-*Display as on-screen graphic when terms first appear, or as a dedicated segment*
-
-| Term | Definition |
-|------|------------|
-| **S3 (Simple Storage Service)** | Amazon's cloud storage - think of it as an infinitely expandable hard drive in the sky where you store files |
-| **Athena** | A query service that lets you run SQL directly on files in S3 - no database server needed |
-| **Data Lake** | A storage approach where you dump raw data first, then figure out how to use it later (opposite of traditional databases) |
-| **CLI (Command Line Interface)** | The text-based terminal where you type commands instead of clicking through a graphical interface |
-| **IAM (Identity and Access Management)** | AWS's permission system - controls who can do what with your cloud resources |
-| **External Table** | A table definition that points to files somewhere else - the data stays in S3, Athena just knows how to read it |
-| **Workgroup** | An Athena feature for organizing queries, controlling costs, and managing who can run what |
+**Total Estimated Runtime:** 13-16 minutes
 
 ---
 
@@ -26,18 +10,12 @@
 *(Standing, high energy, direct to camera)*
 
 **Option 1:**
-- "What if you never had to open the AWS Console again to query your data lake?"
-
-**Option 2:**
-- "I used to spend 15 minutes just clicking through the AWS Console to run a simple query. Now I do it in one sentence. Let me show you how."
-
-**Option 3:**
-- "Your data lake is sitting there, full of insights. But if you're still clicking through S3 and Athena in the browser, you're working harder than you need to."
+- "What if you didn't have to open the AWS Console again to query your data lake?"
 
 ### 6-15 Seconds
 *(Set expectations)*
 
-- "In this video, I'm going to show you how to connect the AWS CLI to your data lake, and then - here's the real magic - how to let Claude handle the heavy lifting for you."
+- "In this video, I'm going to show you how to connect the AWS CLI to your AWS data lake, and then - here's the real magic - how to let Claude Code handle the heavy lifting of working with S3 and Amazon Athena for you."
 
 ### Rest of Hook (Build the value proposition)
 
@@ -50,97 +28,43 @@
 - "This is delegation, not automation. Big difference."
 
 [Personal anecdote opportunity: Share a specific example of time saved or a complex query Claude wrote for you]
+- "For me, my team has multiple reporting jobs that produce csv files that are saved to AWS. If we want to query that data with Athena, we need to navigate to where the data is placed within S3 and then we need to set up the structure within Athena to properly query it, which means we were spending time searching and navigating through interfaces. But now with Claude, it can quickly interpret the information for where data is stored in our S3 buckets and quickley set up the queries from Athena to give me the information. Additionally, it can navigate to S3 and place files there when we need it to."
 
 **Section Transition:**
-- "Before we dive into the CLI magic, let me show you what we're working with."
+- "So today to show you the power of this integration, I will first show you how to install the AWS CLI and cover the prerequisites you need to have in order to have it work. Then we will utilize the AWS CLI as if we are doing a real data analysis, placing data into S3 and then analyzing it using Athena, and compare that process to what we would have to do using the AWS Console."
 
 ---
 
-## SECTION 1: THE DEMO DATASET (60-90 seconds)
-
-### Opening (10 seconds)
-*(Explaining the data)*
-
-- "For this demo, I'm using a real climate research dataset from the AWS Data Exchange - not some toy example."
-
-### Dataset Overview (30-40 seconds)
-[Show on screen: S3 bucket structure, table preview]
-
-- "This is the California Wildfire and Renewable Energy Projections dataset from Cal-Adapt and Eagle Rock Analytics."
-
-**Key details to mention:**
-- S3 Location: `s3://wfclimres/` (public dataset, us-west-2)
-- Database: `wildfire_demo`
-- Table: `renewable_energy_catalog` (216 rows)
-
-- "What's cool about this dataset is it contains climate model projections for California renewable energy generation - solar PV, wind power, capacity factors across multiple climate scenarios."
-
-### Why This Dataset (20 seconds)
-
-- "I picked this because it's a real catalog that points to terabytes of actual climate projection data. Perfect for showing how to explore and navigate a real data lake, not just a CSV with ten rows."
-
-[Show on screen: Sample of the data columns]
-
-| Column | What it means |
-|--------|---------------|
-| `installation` | Energy type (pv_distributed, pv_utility, wind) |
-| `source_id` | Climate model used |
-| `experiment_id` | Scenario (historical, reanalysis, ssp370) |
-| `path` | S3 location of actual data files |
-
-**Section Transition:**
-- "Now let me show you where this lives in the AWS Console, so you understand what we're replacing with the CLI."
-
----
-
-## SECTION 2: AWS CONSOLE NAVIGATION (90-120 seconds)
+## SECTION 1: KEY TERMS (45-60 seconds)
 
 ### Opening (10 seconds)
 
-- "Before we automate anything, you need to know what the manual process looks like. This is the 'before' picture."
+- "Before we jump in, let me quickly define a few terms you'll hear throughout this video."
 
-### Athena Query Editor Walkthrough (45-60 seconds)
-[Show on screen: AWS Console screen recording]
+### Brief Verbal Overview (30-40 seconds)
 
-**Step-by-step narration:**
+- "**S3** - Amazon's cloud storage. Think of it as an infinitely expandable hard drive in the sky."
 
-1. "First, go to AWS Console, then Athena."
-   [Show: Navigate to Athena]
+- "**Athena** - A query service that lets you run SQL directly on files in S3. No database server needed."
 
-2. "Click Query Editor in the left sidebar."
-   [Show: Click on Query Editor]
+- "**Data Lake** - A storage approach where you dump raw data first, then figure out how to use it later."
 
-3. "Select your database from the dropdown - in our case, `wildfire_demo`."
-   [Show: Database dropdown selection]
+- "**CLI** - Command Line Interface. The text-based terminal where you type commands instead of clicking through a graphical interface."
 
-4. "You can see your tables listed here - `renewable_energy_catalog`."
-   [Show: Tables panel]
+- "**IAM** - AWS's permission system. Controls who can do what with your cloud resources."
 
-5. "Run a simple query to see what we're working with."
-   [Show: Execute query]
-   ```sql
-   SELECT * FROM wildfire_demo.renewable_energy_catalog LIMIT 20;
-   ```
+- "**External Table** - A table definition that points to files somewhere else. The data stays in S3, Athena just knows how to read it."
 
-### What to Point Out (20-30 seconds)
-[Show on screen: Highlighting each element]
+### Transition (5 seconds)
 
-- "Notice the query results displayed in a grid."
-- "Query history and saved queries are over here."
-- "And every query Athena runs automatically writes results to an S3 bucket - you can grab those CSVs anytime."
-
-### The Problem with This Approach (15 seconds)
-
-- "This works fine for ad-hoc queries. But if you're doing this five, ten, twenty times a day? All that clicking adds up. And good luck scripting this workflow."
-
-[Personal anecdote opportunity: How many times did you have to click through this before you got frustrated enough to automate?]
+- "I've put detailed definitions in the video description and the README if you want to reference them later."
 
 **Section Transition:**
-- "Alright, let's get out of the browser and into the terminal. Here's where it gets good."
+- "Alright, let's get the AWS CLI set up."
 
 ---
 
-## SECTION 3: SETUP AND CONFIGURATION (2-3 minutes)
+## SECTION 2: SETUP AND CONFIGURATION (2-3 minutes)
 
 ### Opening (10 seconds)
 
@@ -207,11 +131,95 @@ aws configure --profile development
 ```
 
 **Section Transition:**
-- "CLI is set up. Now let's start moving data around."
+- "CLI is set up. Now let's look at the data we'll be working with."
 
 ---
 
-## SECTION 4: S3 OPERATIONS (2-3 minutes)
+## SECTION 3: THE DEMO DATASET (60-90 seconds)
+
+### Opening (10 seconds)
+*(Explaining the data)*
+
+- "For this demo, I'm using a real climate research dataset from the AWS Data Exchange - not some toy example."
+
+### Dataset Overview (30-40 seconds)
+[Show on screen: S3 bucket structure, table preview]
+
+- "This is the California Wildfire and Renewable Energy Projections dataset from Cal-Adapt and Eagle Rock Analytics."
+
+**Key details to mention:**
+- S3 Location: `s3://wfclimres/` (public dataset, us-west-2)
+- Database: `wildfire_demo`
+- Table: `renewable_energy_catalog` (216 rows)
+
+- "What's cool about this dataset is it contains climate model projections for California renewable energy generation - solar PV, wind power, capacity factors across multiple climate scenarios."
+
+### Why This Dataset (20 seconds)
+
+- "I picked this because it's a real catalog that points to terabytes of actual climate projection data. Perfect for showing how to explore and navigate a real data lake, not just a CSV with ten rows."
+
+[Show on screen: Sample of the data columns]
+
+| Column | What it means |
+|--------|---------------|
+| `installation` | Energy type (pv_distributed, pv_utility, wind) |
+| `source_id` | Climate model used |
+| `experiment_id` | Scenario (historical, reanalysis, ssp370) |
+| `path` | S3 location of actual data files |
+
+**Section Transition:**
+- "Now let me show you where this lives in the AWS Console, so you understand what we're replacing with the CLI."
+
+---
+
+## SECTION 4: AWS CONSOLE NAVIGATION (90-120 seconds)
+
+### Opening (10 seconds)
+
+- "Before we automate anything, you need to know what the manual process looks like. This is the 'before' picture."
+
+### Athena Query Editor Walkthrough (45-60 seconds)
+[Show on screen: AWS Console screen recording]
+
+**Step-by-step narration:**
+
+1. "First, go to AWS Console, then Athena."
+   [Show: Navigate to Athena]
+
+2. "Click Query Editor in the left sidebar."
+   [Show: Click on Query Editor]
+
+3. "Select your database from the dropdown - in our case, `wildfire_demo`."
+   [Show: Database dropdown selection]
+
+4. "You can see your tables listed here - `renewable_energy_catalog`."
+   [Show: Tables panel]
+
+5. "Run a simple query to see what we're working with."
+   [Show: Execute query]
+   ```sql
+   SELECT * FROM wildfire_demo.renewable_energy_catalog LIMIT 20;
+   ```
+
+### What to Point Out (20-30 seconds)
+[Show on screen: Highlighting each element]
+
+- "Notice the query results displayed in a grid."
+- "Query history and saved queries are over here."
+- "And every query Athena runs automatically writes results to an S3 bucket - you can grab those CSVs anytime."
+
+### The Problem with This Approach (15 seconds)
+
+- "This works fine for ad-hoc queries. But if you're doing this five, ten, twenty times a day? All that clicking adds up. And good luck scripting this workflow."
+
+[Personal anecdote opportunity: How many times did you have to click through this before you got frustrated enough to automate?]
+
+**Section Transition:**
+- "Alright, let's get out of the browser and into the terminal. Here's where it gets good."
+
+---
+
+## SECTION 5: S3 OPERATIONS (2-3 minutes)
 
 ### Opening (10 seconds)
 
@@ -277,7 +285,7 @@ aws s3 presign s3://bucket-name/file.csv --expires-in 3600
 
 ---
 
-## SECTION 5: ATHENA QUERIES FROM CLI (2-3 minutes)
+## SECTION 6: ATHENA QUERIES FROM CLI (2-3 minutes)
 
 ### Opening (10 seconds)
 
@@ -331,7 +339,7 @@ aws athena get-query-results --query-execution-id $QUERY_ID | \
 
 ---
 
-## SECTION 6: PRACTICAL WORKFLOW DEMO (4-5 minutes)
+## SECTION 7: PRACTICAL WORKFLOW DEMO (4-5 minutes)
 
 ### Opening (10 seconds)
 
@@ -502,7 +510,7 @@ aws s3 rm s3://kclabs-athena-demo-2025/sales-demo/ --recursive
 
 ---
 
-## SECTION 7: THE CLAUDE INTEGRATION (Optional - 60-90 seconds)
+## SECTION 8: THE CLAUDE INTEGRATION (60-90 seconds)
 
 *If including AI delegation content*
 
@@ -542,6 +550,8 @@ aws s3 rm s3://kclabs-athena-demo-2025/sales-demo/ --recursive
 
 - "I'm creating more content on AI-assisted data engineering workflows, so hit that bell if you want to see what's next."
 
+- "Also apologies for the sporadic releases of my video, with the birth of my son, time has been more difficult to come by, but I'm planning on releasing on more normal schedule here shortly."
+
 - "Thanks so much for watching. See you in the next one."
 
 ---
@@ -576,7 +586,7 @@ aws sts get-caller-identity
 - File upload progress
 
 **Graphics Needed:**
-- Definitions box overlay
+- Key terms overlay
 - S3/Athena architecture diagram
 - Cost breakdown visual
 - CLI vs Console comparison
