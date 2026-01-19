@@ -140,32 +140,31 @@ aws configure --profile development
 ### Opening (10 seconds)
 *(Explaining the data)*
 
-- "For this demo, I'm using a real climate research dataset from the AWS Data Exchange - not some toy example."
+- "For this demo, I'm using real climate data from the IMF - not some toy example."
 
 ### Dataset Overview (30-40 seconds)
 [Show on screen: S3 bucket structure, table preview]
 
-- "This is the California Wildfire and Renewable Energy Projections dataset from Cal-Adapt and Eagle Rock Analytics."
+- "This is the IMF Global Surface Temperature dataset, originally compiled by the FAO. It tracks temperature change relative to a 1951-1980 baseline for over 200 countries from 1961 to 2024."
 
 **Key details to mention:**
-- S3 Location: `s3://wfclimres/` (public dataset, us-west-2)
-- Database: `wildfire_demo`
-- Table: `renewable_energy_catalog` (216 rows)
+- S3 Location: `s3://kclabs-athena-demo-2026/climate-data/`
+- Database: `climate_demo`
+- Table: `global_temperature` (200+ rows)
 
-- "What's cool about this dataset is it contains climate model projections for California renewable energy generation - solar PV, wind power, capacity factors across multiple climate scenarios."
+- "What's useful about this dataset is it lets us analyze real climate trends - which countries are warming fastest, how temperature change has accelerated over decades."
 
 ### Why This Dataset (20 seconds)
 
-- "I picked this because it's a real catalog that points to terabytes of actual climate projection data. Perfect for showing how to explore and navigate a real data lake, not just a CSV with ten rows."
+- "I picked this because it's real data that tells a meaningful story. We can ask questions like 'which countries have the highest temperature increase in 2024?' or 'how has warming accelerated in the US over the past 50 years?'"
 
 [Show on screen: Sample of the data columns]
 
 | Column | What it means |
 |--------|---------------|
-| `installation` | Energy type (pv_distributed, pv_utility, wind) |
-| `source_id` | Climate model used |
-| `experiment_id` | Scenario (historical, reanalysis, ssp370) |
-| `path` | S3 location of actual data files |
+| `Country` | Country or region name |
+| `ISO2`, `ISO3` | Country codes (US, USA) |
+| `Y1961` - `Y2024` | Temperature change for each year (degrees Celsius) |
 
 **Section Transition:**
 - "Now let me show you where this lives in the AWS Console, so you understand what we're replacing with the CLI."
@@ -189,16 +188,16 @@ aws configure --profile development
 2. "Click Query Editor in the left sidebar."
    [Show: Click on Query Editor]
 
-3. "Select your database from the dropdown - in our case, `wildfire_demo`."
+3. "Select your database from the dropdown - in our case, `climate_demo`."
    [Show: Database dropdown selection]
 
-4. "You can see your tables listed here - `renewable_energy_catalog`."
+4. "You can see your tables listed here - `global_temperature`."
    [Show: Tables panel]
 
 5. "Run a simple query to see what we're working with."
    [Show: Execute query]
    ```sql
-   SELECT * FROM wildfire_demo.renewable_energy_catalog LIMIT 20;
+   SELECT Country, ISO3, Y2024 FROM climate_demo.global_temperature WHERE Y2024 IS NOT NULL LIMIT 20;
    ```
 
 ### What to Point Out (20-30 seconds)
@@ -233,10 +232,10 @@ aws configure --profile development
 aws s3 ls
 
 # List bucket contents
-aws s3 ls s3://kclabs-athena-demo-2025/
+aws s3 ls s3://kclabs-athena-demo-2026/
 
 # List with details
-aws s3 ls s3://kclabs-athena-demo-2025/ --human-readable --summarize
+aws s3 ls s3://kclabs-athena-demo-2026/ --human-readable --summarize
 ```
 
 - "The `--human-readable` flag shows file sizes in MB and GB instead of bytes. The `--summarize` flag gives you totals."
@@ -246,7 +245,7 @@ aws s3 ls s3://kclabs-athena-demo-2025/ --human-readable --summarize
 
 ```bash
 # Upload a single file
-aws s3 cp sample_sales.csv s3://kclabs-athena-demo-2025/sales-demo/
+aws s3 cp global_surface_temperature.csv s3://kclabs-athena-demo-2026/climate-data/
 
 # Upload a directory
 aws s3 cp ./local-dir s3://bucket-name/prefix/ --recursive
@@ -297,10 +296,10 @@ aws s3 presign s3://bucket-name/file.csv --expires-in 3600
 ```bash
 # Start query execution
 aws athena start-query-execution \
-  --query-string "SELECT * FROM wildfire_demo.renewable_energy_catalog LIMIT 10" \
+  --query-string "SELECT Country, ISO3, Y2024 FROM climate_demo.global_temperature WHERE Y2024 IS NOT NULL ORDER BY Y2024 DESC LIMIT 10" \
   --work-group "primary" \
-  --query-execution-context Database=wildfire_demo \
-  --result-configuration OutputLocation=s3://kclabs-athena-results-2025/
+  --query-execution-context Database=climate_demo \
+  --result-configuration OutputLocation=s3://kclabs-athena-results-2026/
 ```
 
 - "This returns a Query Execution ID. Think of it like a ticket number - you use it to check status and get results."
@@ -352,13 +351,12 @@ aws athena get-query-results --query-execution-id $QUERY_ID | \
 #### The Data (15 seconds)
 [Show on screen: CSV preview]
 
-- "We're using a simple sales dataset - ten rows of regional sales data."
+- "We're using the IMF Global Surface Temperature dataset - temperature change by country from 1961 to 2024."
 
 ```
-order_id,customer_id,product_name,quantity,unit_price,order_date,region
-1001,C001,Widget A,5,29.99,2024-01-15,North
-1002,C002,Widget B,3,49.99,2024-01-16,South
-...
+ObjectId,Country,ISO2,ISO3,Indicator,Unit,Source,...,Y2020,Y2021,Y2022,Y2023,Y2024
+1,Afghanistan,AF,AFG,Temperature change...,Degree Celsius,FAO,...,0.552,1.418,1.967,1.748,2.188
+2,Africa,,AFRTMP,Temperature change...,Degree Celsius,FAO,...,1.177,1.4,1.014,1.485,1.75
 ```
 
 #### Console Method (20 seconds)
@@ -371,8 +369,8 @@ order_id,customer_id,product_name,quantity,unit_price,order_date,region
 [Show on screen: Terminal commands]
 
 ```bash
-aws s3 cp sample_sales.csv s3://kclabs-athena-demo-2025/sales-demo/
-aws s3 ls s3://kclabs-athena-demo-2025/sales-demo/
+aws s3 cp global_surface_temperature.csv s3://kclabs-athena-demo-2026/climate-data/
+aws s3 ls s3://kclabs-athena-demo-2026/climate-data/
 ```
 
 - "One command. Done. Data's in S3."
@@ -393,26 +391,42 @@ aws s3 ls s3://kclabs-athena-demo-2025/sales-demo/
 [Show on screen: Query execution]
 
 ```sql
-CREATE DATABASE IF NOT EXISTS sales_demo;
+CREATE DATABASE IF NOT EXISTS climate_demo;
 ```
 
 #### Create External Table (45 seconds)
 [Show on screen: Query and explanation]
 
 ```sql
-CREATE EXTERNAL TABLE sales_demo.sales (
-  order_id INT,
-  customer_id STRING,
-  product_name STRING,
-  quantity INT,
-  unit_price DOUBLE,
-  order_date DATE,
-  region STRING
+CREATE EXTERNAL TABLE climate_demo.global_temperature (
+    ObjectId INT,
+    Country STRING,
+    ISO2 STRING,
+    ISO3 STRING,
+    Indicator STRING,
+    Unit STRING,
+    Source STRING,
+    CTS_Code STRING,
+    CTS_Name STRING,
+    CTS_Full_Descriptor STRING,
+    Y1961 DOUBLE, Y1962 DOUBLE, Y1963 DOUBLE, Y1964 DOUBLE, Y1965 DOUBLE,
+    Y1966 DOUBLE, Y1967 DOUBLE, Y1968 DOUBLE, Y1969 DOUBLE, Y1970 DOUBLE,
+    Y1971 DOUBLE, Y1972 DOUBLE, Y1973 DOUBLE, Y1974 DOUBLE, Y1975 DOUBLE,
+    Y1976 DOUBLE, Y1977 DOUBLE, Y1978 DOUBLE, Y1979 DOUBLE, Y1980 DOUBLE,
+    Y1981 DOUBLE, Y1982 DOUBLE, Y1983 DOUBLE, Y1984 DOUBLE, Y1985 DOUBLE,
+    Y1986 DOUBLE, Y1987 DOUBLE, Y1988 DOUBLE, Y1989 DOUBLE, Y1990 DOUBLE,
+    Y1991 DOUBLE, Y1992 DOUBLE, Y1993 DOUBLE, Y1994 DOUBLE, Y1995 DOUBLE,
+    Y1996 DOUBLE, Y1997 DOUBLE, Y1998 DOUBLE, Y1999 DOUBLE, Y2000 DOUBLE,
+    Y2001 DOUBLE, Y2002 DOUBLE, Y2003 DOUBLE, Y2004 DOUBLE, Y2005 DOUBLE,
+    Y2006 DOUBLE, Y2007 DOUBLE, Y2008 DOUBLE, Y2009 DOUBLE, Y2010 DOUBLE,
+    Y2011 DOUBLE, Y2012 DOUBLE, Y2013 DOUBLE, Y2014 DOUBLE, Y2015 DOUBLE,
+    Y2016 DOUBLE, Y2017 DOUBLE, Y2018 DOUBLE, Y2019 DOUBLE, Y2020 DOUBLE,
+    Y2021 DOUBLE, Y2022 DOUBLE, Y2023 DOUBLE, Y2024 DOUBLE
 )
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
 STORED AS TEXTFILE
-LOCATION 's3://kclabs-athena-demo-2025/sales-demo/'
+LOCATION 's3://kclabs-athena-demo-2026/climate-data/'
 TBLPROPERTIES ('skip.header.line.count'='1');
 ```
 
@@ -432,26 +446,24 @@ TBLPROPERTIES ('skip.header.line.count'='1');
 
 #### The Business Question (10 seconds)
 
-- "Let's answer a real question: What's the total revenue by region?"
+- "Let's answer a real question: Which countries have the highest temperature change in 2024?"
 
 #### Run the Query (30-40 seconds)
 [Show on screen: Query execution and results grid]
 
 ```sql
-SELECT
-  region,
-  COUNT(*) as order_count,
-  SUM(quantity) as total_units,
-  ROUND(SUM(quantity * unit_price), 2) as total_revenue
-FROM sales_demo.sales
-GROUP BY region
-ORDER BY total_revenue DESC;
+-- Top 10 countries with highest 2024 temperature change
+SELECT Country, ISO3, Y2024 as temp_change_2024
+FROM climate_demo.global_temperature
+WHERE Y2024 IS NOT NULL AND ISO3 IS NOT NULL
+ORDER BY Y2024 DESC
+LIMIT 10;
 ```
 
 #### What to Point Out (20-30 seconds)
 [Show on screen: Highlighting each element]
 
-- "Results grid shows our aggregated data by region."
+- "Results grid shows which countries are warming fastest."
 - "Query execution time is at the bottom - fraction of a second for this small dataset."
 - "Data scanned shows you the cost - about five dollars per terabyte."
 - "Query history tab lets you re-run or reference past queries."
@@ -470,7 +482,7 @@ ORDER BY total_revenue DESC;
 
 - "Every Athena query automatically saves results to your designated S3 bucket."
 
-1. Navigate to `s3://kclabs-athena-results-2025/`
+1. Navigate to `s3://kclabs-athena-results-2026/`
 2. Find the query result file (named by query execution ID)
 3. You'll see a `.csv` and `.metadata` file for each query
 
@@ -478,7 +490,7 @@ ORDER BY total_revenue DESC;
 [Show on screen: Terminal commands]
 
 ```bash
-aws s3 cp s3://kclabs-athena-results-2025/{query-id}.csv ./results.csv
+aws s3 cp s3://kclabs-athena-results-2026/{query-id}.csv ./results.csv
 cat ./results.csv
 ```
 
@@ -494,12 +506,12 @@ cat ./results.csv
 - "Good hygiene: clean up when you're done experimenting."
 
 ```sql
-DROP TABLE IF EXISTS sales_demo.sales;
-DROP DATABASE IF EXISTS sales_demo;
+DROP TABLE IF EXISTS climate_demo.global_temperature;
+DROP DATABASE IF EXISTS climate_demo;
 ```
 
 ```bash
-aws s3 rm s3://kclabs-athena-demo-2025/sales-demo/ --recursive
+aws s3 rm s3://kclabs-athena-demo-2026/climate-data/ --recursive
 ```
 
 **Talking point:**
@@ -518,7 +530,7 @@ aws s3 rm s3://kclabs-athena-demo-2025/sales-demo/ --recursive
 
 - "Everything I just showed you? I rarely type those commands anymore."
 
-- "Instead, I tell Claude: 'Find all the wind power projections in the wildfire dataset and summarize by climate model.'"
+- "Instead, I tell Claude: 'Find the countries with the highest temperature change in 2024 and compare their warming trends over the past 50 years.'"
 
 - "Claude figures out the S3 paths, writes the Athena query, handles the async execution, and presents me with results to review."
 

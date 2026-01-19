@@ -14,32 +14,34 @@ Quick reference for AWS CLI syntax and common patterns for data lake operations.
 
 | Bucket | Purpose |
 |--------|---------|
-| `kclabs-athena-demo-2025` | Demo data storage |
-| `kclabs-athena-results-2025` | Athena query results |
+| `kclabs-athena-demo-2026` | Demo data storage |
+| `kclabs-athena-results-2026` | Athena query results |
 
 ### Athena Resources
 
 | Resource | Name |
 |----------|------|
-| **Database** | `wildfire_demo` |
-| **Table** | `renewable_energy_catalog` |
+| **Database** | `climate_demo` |
+| **Table** | `global_temperature` |
 
 ### Sample Data Source
 
-**California Wildfire Projections Dataset**
-- **S3 Location:** `s3://wfclimres/`
+**IMF Global Surface Temperature Dataset**
+- **Source:** International Monetary Fund (IMF) Climate Change Indicators
+- **Original Provider:** Food and Agriculture Organization of the United Nations (FAO)
+- **S3 Location:** `s3://kclabs-athena-demo-2026/climate-data/`
 - **Region:** us-west-2
-- **Provider:** Cal-Adapt / Eagle Rock Analytics
-- **AWS Marketplace:** https://aws.amazon.com/marketplace/pp/prodview-ynmdoogdmotne
+- **License:** CC BY-NC-SA 3.0 IGO
+- **Content:** Annual mean surface temperature change (degrees Celsius) vs 1951-1980 baseline, by country, 1961-2024
 
 ### Test Query
 
 ```bash
-# Query the renewable energy catalog
+# Query the global temperature data
 aws athena start-query-execution \
-  --query-string "SELECT installation, source_id, experiment_id, COUNT(*) as count FROM wildfire_demo.renewable_energy_catalog GROUP BY installation, source_id, experiment_id ORDER BY count DESC LIMIT 10" \
-  --query-execution-context Database=wildfire_demo \
-  --result-configuration OutputLocation=s3://kclabs-athena-results-2025/
+  --query-string "SELECT Country, ISO3, Y2020, Y2021, Y2022, Y2023, Y2024 FROM climate_demo.global_temperature WHERE ISO3 IS NOT NULL ORDER BY Y2024 DESC LIMIT 10" \
+  --query-execution-context Database=climate_demo \
+  --result-configuration OutputLocation=s3://kclabs-athena-results-2026/
 
 # Get results (replace QUERY_ID)
 aws athena get-query-results --query-execution-id QUERY_ID | jq -r '.ResultSet.Rows[] | [.Data[].VarCharValue] | @tsv'
@@ -251,10 +253,10 @@ Athena automatically stores table metadata in the AWS Glue Data Catalog. No sepa
 For advanced use cases (inspecting metadata programmatically):
 ```bash
 # List tables in database
-aws glue get-tables --database-name wildfire_demo
+aws glue get-tables --database-name climate_demo
 
 # Get table schema
-aws glue get-table --database-name wildfire_demo --name renewable_energy_catalog \
+aws glue get-table --database-name climate_demo --name global_temperature \
   --query 'Table.StorageDescriptor.Columns'
 ```
 
