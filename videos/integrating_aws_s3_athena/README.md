@@ -89,31 +89,55 @@ Full setup guide: [instructions/AWS_CLI_SETUP.md](./instructions/AWS_CLI_SETUP.m
 
 ---
 
-## Demo Datasets
+## Demo Dataset
 
-### Primary: California Wildfire Projections
-- **S3 Location:** `s3://wfclimres/` (public dataset, us-west-2)
-- **Database:** `wildfire_demo`
-- **Table:** `renewable_energy_catalog` (216 rows)
-- Real climate research data containing climate model projections for California renewable energy generation - solar PV, wind power, capacity factors across multiple climate scenarios
+### IMF Global Surface Temperature Data
+- **S3 Location:** `s3://kclabs-athena-demo-2026/climate-data/`
+- **Database:** `climate_demo`
+- **Table:** `global_temperature` (200+ countries/regions)
+- Real climate data: annual mean surface temperature change (degrees Celsius) relative to 1951-1980 baseline, by country, from 1961-2024
 
 | Column | What it means |
 |--------|---------------|
-| `installation` | Energy type (pv_distributed, pv_utility, wind) |
-| `source_id` | Climate model used |
-| `experiment_id` | Scenario (historical, reanalysis, ssp370) |
-| `path` | S3 location of actual data files |
+| `Country` | Country or region name |
+| `ISO2`, `ISO3` | Country codes (e.g., US, USA) |
+| `Indicator` | Description of the measurement |
+| `Unit` | Degree Celsius |
+| `Source` | FAO/IMF attribution |
+| `Y1961` - `Y2024` | Temperature change for each year |
 
-**Sample Data File:** `sample_data/era-ren-collection.csv` - Renewable energy catalog extracted from this dataset.
+**Sample Data File:** `sample_data/global_surface_temperature.csv` - IMF climate indicators extracted from FAO data.
 
-**Download it yourself:**
-```bash
-aws s3 cp --no-sign-request s3://wfclimres/era/era-ren-collection.csv ./sample_data/
+**Data Source:**
+- International Monetary Fund (IMF) Climate Change Indicators
+- Original data: Food and Agriculture Organization of the United Nations (FAO)
+- License: CC BY-NC-SA 3.0 IGO
+
+### Full Demo Prompt
+
+Use this prompt to demonstrate Claude's end-to-end AWS capabilities:
+
+```
+Upload the sample data file at sample_data/global_surface_temperature.csv to S3.
+
+Create this bucket if it doesn't exist:
+- kclabs-athena-demo-2026
+and then place the csv inside a folder called climate-data inside of it.
+
+Then:
+1. Create the necessary Athena infrastructure to query this data
+2. Write a query to pivot the dataset so years become rows ordered by highest temperature change descending
+3. Save the pivoted results as a CSV in final_deliverables/pivoted_temperature_data.csv
+
+Finally, query Athena to find the 5 years with the largest mean temperature change for the United States and tell me the results.
 ```
 
-**Resources:**
-- [AWS Open Data Registry](https://registry.opendata.aws/caladapt-wildfire-dataset/)
-- [Cal-Adapt Data Access Portal](https://analytics.cal-adapt.org/data/access/)
+This prompt demonstrates:
+- **S3 Operations**: Bucket creation, file upload, path organization
+- **Athena Infrastructure**: Database/table creation with proper schema
+- **SQL Analysis**: Complex pivot query with ordering
+- **Data Export**: Saving query results locally
+- **Business Intelligence**: Extracting specific insights from the data
 
 ---
 
@@ -126,10 +150,10 @@ aws s3 cp --no-sign-request s3://wfclimres/era/era-ren-collection.csv ./sample_d
 aws s3 ls
 
 # List bucket contents
-aws s3 ls s3://kclabs-athena-demo-2025/
+aws s3 ls s3://kclabs-athena-demo-2026/
 
 # List with details
-aws s3 ls s3://kclabs-athena-demo-2025/ --human-readable --summarize
+aws s3 ls s3://kclabs-athena-demo-2026/ --human-readable --summarize
 ```
 
 The `--human-readable` flag shows file sizes in MB and GB instead of bytes. The `--summarize` flag gives you totals.
@@ -138,7 +162,7 @@ The `--human-readable` flag shows file sizes in MB and GB instead of bytes. The 
 
 ```bash
 # Upload a single file
-aws s3 cp era-ren-collection.csv s3://kclabs-athena-demo-2025/renewable-energy/
+aws s3 cp global_surface_temperature.csv s3://kclabs-athena-demo-2026/climate-data/
 
 # Upload a directory
 aws s3 cp ./local-dir s3://bucket-name/prefix/ --recursive
@@ -156,7 +180,7 @@ aws s3 sync ./local-dir s3://bucket-name/prefix/
 aws s3 sync ./local-dir s3://bucket-name/prefix/ --delete
 
 # Download from S3
-aws s3 cp s3://kclabs-athena-demo-2025/renewable-energy/era-ren-collection.csv ./
+aws s3 cp s3://kclabs-athena-demo-2026/climate-data/global_surface_temperature.csv ./
 ```
 
 Sync is smart - it only uploads files that have changed. The `--delete` flag makes S3 match your local exactly.
@@ -180,10 +204,10 @@ Athena queries work asynchronously - you start a query, it runs in the backgroun
 ```bash
 # Start query execution
 aws athena start-query-execution \
-  --query-string "SELECT * FROM wildfire_demo.renewable_energy_catalog LIMIT 10" \
+  --query-string "SELECT Country, ISO3, Y2024 FROM climate_demo.global_temperature WHERE Y2024 IS NOT NULL ORDER BY Y2024 DESC LIMIT 10" \
   --work-group "primary" \
-  --query-execution-context Database=wildfire_demo \
-  --result-configuration OutputLocation=s3://kclabs-athena-results-2025/
+  --query-execution-context Database=climate_demo \
+  --result-configuration OutputLocation=s3://kclabs-athena-results-2026/
 ```
 
 This returns a Query Execution ID - think of it like a ticket number you use to check status and get results.
@@ -224,42 +248,71 @@ Complete end-to-end workflow: **CSV -> S3 -> Athena Table -> Query -> Export**
 ### Step 1: Upload Data to S3
 
 ```bash
-aws s3 cp era-ren-collection.csv s3://kclabs-athena-demo-2025/renewable-energy/
-aws s3 ls s3://kclabs-athena-demo-2025/renewable-energy/
+aws s3 cp global_surface_temperature.csv s3://kclabs-athena-demo-2026/climate-data/
+aws s3 ls s3://kclabs-athena-demo-2026/climate-data/
 ```
 
 ### Step 2: Create Database and Table
 
 ```sql
 -- Create database
-CREATE DATABASE IF NOT EXISTS renewable_demo;
+CREATE DATABASE IF NOT EXISTS climate_demo;
 
--- Create external table
-CREATE EXTERNAL TABLE renewable_demo.energy_catalog (
-  installation STRING,
-  source_id STRING,
-  experiment_id STRING,
-  path STRING
+-- Create external table for wide-format temperature data
+CREATE EXTERNAL TABLE climate_demo.global_temperature (
+    ObjectId INT,
+    Country STRING,
+    ISO2 STRING,
+    ISO3 STRING,
+    Indicator STRING,
+    Unit STRING,
+    Source STRING,
+    CTS_Code STRING,
+    CTS_Name STRING,
+    CTS_Full_Descriptor STRING,
+    Y1961 DOUBLE, Y1962 DOUBLE, Y1963 DOUBLE, Y1964 DOUBLE, Y1965 DOUBLE,
+    Y1966 DOUBLE, Y1967 DOUBLE, Y1968 DOUBLE, Y1969 DOUBLE, Y1970 DOUBLE,
+    Y1971 DOUBLE, Y1972 DOUBLE, Y1973 DOUBLE, Y1974 DOUBLE, Y1975 DOUBLE,
+    Y1976 DOUBLE, Y1977 DOUBLE, Y1978 DOUBLE, Y1979 DOUBLE, Y1980 DOUBLE,
+    Y1981 DOUBLE, Y1982 DOUBLE, Y1983 DOUBLE, Y1984 DOUBLE, Y1985 DOUBLE,
+    Y1986 DOUBLE, Y1987 DOUBLE, Y1988 DOUBLE, Y1989 DOUBLE, Y1990 DOUBLE,
+    Y1991 DOUBLE, Y1992 DOUBLE, Y1993 DOUBLE, Y1994 DOUBLE, Y1995 DOUBLE,
+    Y1996 DOUBLE, Y1997 DOUBLE, Y1998 DOUBLE, Y1999 DOUBLE, Y2000 DOUBLE,
+    Y2001 DOUBLE, Y2002 DOUBLE, Y2003 DOUBLE, Y2004 DOUBLE, Y2005 DOUBLE,
+    Y2006 DOUBLE, Y2007 DOUBLE, Y2008 DOUBLE, Y2009 DOUBLE, Y2010 DOUBLE,
+    Y2011 DOUBLE, Y2012 DOUBLE, Y2013 DOUBLE, Y2014 DOUBLE, Y2015 DOUBLE,
+    Y2016 DOUBLE, Y2017 DOUBLE, Y2018 DOUBLE, Y2019 DOUBLE, Y2020 DOUBLE,
+    Y2021 DOUBLE, Y2022 DOUBLE, Y2023 DOUBLE, Y2024 DOUBLE
 )
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
 STORED AS TEXTFILE
-LOCATION 's3://kclabs-athena-demo-2025/renewable-energy/'
+LOCATION 's3://kclabs-athena-demo-2026/climate-data/'
 TBLPROPERTIES ('skip.header.line.count'='1');
 ```
 
 The table is just a pointer - Athena reads directly from S3. No data copying, no ETL pipeline.
 
-### Step 3: Run Analysis Query
+### Step 3: Run Analysis Queries
 
 ```sql
-SELECT
-  installation,
-  experiment_id,
-  COUNT(*) as projection_count
-FROM renewable_demo.energy_catalog
-GROUP BY installation, experiment_id
-ORDER BY projection_count DESC;
+-- Top 10 countries with highest 2024 temperature change
+SELECT Country, ISO3, Y2024 as temp_change_2024
+FROM climate_demo.global_temperature
+WHERE Y2024 IS NOT NULL AND ISO3 IS NOT NULL
+ORDER BY Y2024 DESC
+LIMIT 10;
+
+-- Temperature trend for USA over decades
+SELECT Country, Y1970, Y1980, Y1990, Y2000, Y2010, Y2020, Y2024
+FROM climate_demo.global_temperature
+WHERE ISO3 = 'USA';
+
+-- Compare recent years across major economies
+SELECT Country, ISO3, Y2020, Y2021, Y2022, Y2023, Y2024
+FROM climate_demo.global_temperature
+WHERE ISO3 IN ('USA', 'CHN', 'DEU', 'JPN', 'GBR', 'FRA')
+ORDER BY Y2024 DESC;
 ```
 
 ### Step 4: Export Results
@@ -267,19 +320,19 @@ ORDER BY projection_count DESC;
 Every Athena query automatically saves results to your designated S3 bucket.
 
 ```bash
-aws s3 cp s3://kclabs-athena-results-2025/{query-id}.csv ./results.csv
+aws s3 cp s3://kclabs-athena-results-2026/{query-id}.csv ./results.csv
 cat ./results.csv
 ```
 
 ### Step 5: Cleanup
 
 ```sql
-DROP TABLE IF EXISTS renewable_demo.energy_catalog;
-DROP DATABASE IF EXISTS renewable_demo;
+DROP TABLE IF EXISTS climate_demo.global_temperature;
+DROP DATABASE IF EXISTS climate_demo;
 ```
 
 ```bash
-aws s3 rm s3://kclabs-athena-demo-2025/renewable-energy/ --recursive
+aws s3 rm s3://kclabs-athena-demo-2026/climate-data/ --recursive
 ```
 
 Tables are just pointers, but the S3 data persists until you delete it.
@@ -290,22 +343,22 @@ Tables are just pointers, but the S3 data persists until you delete it.
 
 **S3 Exploration:**
 - "List all buckets and show me what's in the demo bucket"
-- "Upload this CSV to S3 and tell me the object URL"
-- "Find all parquet files modified in the last week"
+- "Upload the temperature CSV to S3 and tell me the object URL"
+- "Find all CSV files in the climate-data folder"
 
 **Athena Queries:**
-- "Query the renewable energy table for projections by installation type"
-- "Show me the schema for the renewable_energy_catalog table"
-- "Run this query and save results to a local CSV"
+- "Query the temperature table for the top 10 countries with highest warming in 2024"
+- "Show me the schema for the global_temperature table"
+- "Compare temperature trends for USA, China, and Germany from 1990 to 2024"
 
 **Workflow Automation:**
 - "Create an Athena table for the CSV I just uploaded"
-- "Generate a report of revenue by region"
+- "Generate a report of temperature change by continent"
 - "Clean up the test database and data"
 
 ### The Real Workflow
 
-Instead of typing CLI commands, tell Claude: "Find all the wind power projections in the wildfire dataset and summarize by climate model."
+Instead of typing CLI commands, tell Claude: "Find the countries with the most temperature change in 2024 and compare their warming trends over the past 50 years."
 
 Claude figures out the S3 paths, writes the Athena query, handles the async execution, and presents you with results to review.
 
@@ -361,7 +414,7 @@ videos/integrating_aws_s3_athena/
 ├── instructions/
 │   └── AWS_CLI_SETUP.md         # Detailed setup guide
 ├── sample_data/
-│   └── era-ren-collection.csv   # Renewable energy catalog (216 rows)
+│   └── global_surface_temperature.csv   # IMF temperature data (200+ countries)
 └── example_workflow/
     └── README.md                # Step-by-step workflow example
 ```

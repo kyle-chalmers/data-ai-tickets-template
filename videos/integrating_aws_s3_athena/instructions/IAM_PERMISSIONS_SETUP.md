@@ -10,7 +10,6 @@ Complete guide to setting up IAM permissions for the S3/Athena video demo.
 |------------|--------------|
 | **S3 Bucket Creation** | Creating your own bucket for data and Athena results |
 | **S3 Object Operations** | Uploading, downloading, listing files |
-| **S3 Public Dataset Access** | Reading from `s3://wfclimres` (Wildfire data) |
 | **Athena Query Execution** | Running SQL queries |
 | **Glue Catalog Access** | Creating databases and tables |
 
@@ -71,22 +70,6 @@ Attach these managed policies:
             "Resource": [
                 "arn:aws:s3:::YOUR-BUCKET-NAME-*",
                 "arn:aws:s3:::YOUR-BUCKET-NAME-*/*"
-            ]
-        },
-        {
-            "Sid": "S3PublicDatasetAccess",
-            "Effect": "Allow",
-            "Action": [
-                "s3:GetObject",
-                "s3:ListBucket"
-            ],
-            "Resource": [
-                "arn:aws:s3:::wfclimres",
-                "arn:aws:s3:::wfclimres/*",
-                "arn:aws:s3:::nyc-tlc",
-                "arn:aws:s3:::nyc-tlc/*",
-                "arn:aws:s3:::noaa-gsod-pds",
-                "arn:aws:s3:::noaa-gsod-pds/*"
             ]
         },
         {
@@ -157,7 +140,7 @@ aws configure
 Enter when prompted:
 - **AWS Access Key ID:** `AKIA...your-key...`
 - **AWS Secret Access Key:** `your-secret-key`
-- **Default region name:** `us-west-2` (for Wildfire data)
+- **Default region name:** `us-west-2`
 - **Default output format:** `json`
 
 ---
@@ -170,9 +153,6 @@ aws sts get-caller-identity
 
 # List your buckets
 aws s3 ls
-
-# Test access to Wildfire dataset
-aws s3 ls s3://wfclimres/ --region us-west-2
 
 # Test bucket creation
 aws s3 mb s3://your-unique-bucket-name-demo-2024 --region us-west-2
@@ -198,20 +178,6 @@ aws s3 ls | grep athena
 ---
 
 ## Troubleshooting
-
-### "Access Denied" on Public Dataset
-
-Public datasets require your AWS account to be in good standing. Verify:
-
-```bash
-aws sts get-caller-identity
-```
-
-If this works but public buckets fail, the bucket may require specific region:
-
-```bash
-aws s3 ls s3://wfclimres/ --region us-west-2
-```
 
 ### "Unable to locate credentials"
 
@@ -271,9 +237,6 @@ aws sts get-caller-identity
 # Create bucket
 aws s3 mb s3://bucket-name --region us-west-2
 
-# List public dataset
-aws s3 ls s3://wfclimres/ --region us-west-2
-
 # Test Athena (requires workgroup setup)
 aws athena list-work-groups
 ```
@@ -283,6 +246,5 @@ aws athena list-work-groups
 ## Next Steps
 
 Once setup is verified:
-1. [Explore the Wildfire dataset](../sample_data/README.md)
-2. [Run the example workflow](../example_workflow/README.md)
-3. Start recording the demo!
+1. [Run the example workflow](../example_workflow/README.md)
+2. Start recording the demo!
