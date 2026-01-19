@@ -10,7 +10,7 @@ Complete guide for integrating AWS S3 and Athena with Claude Code using the AWS 
 
 Many data teams store raw data in S3 and query it with Athena. The real power here isn't just running AWS commands from your terminal - it's that **Claude does the work for you**:
 
-- **Delegation, not automation** - Describe what you want in plain English
+- **Delegation to Claude** - Describe what you want in plain English
 - **Claude handles the complexity** - Searching S3 and querying Athena for you
 - **You just QC the results** - Your job is quality control
 - **No more context switching** - Stay in your terminal, skip the AWS Console entirely
