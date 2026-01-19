@@ -79,6 +79,12 @@ aws configure --profile development
 # Then use: aws s3 ls --profile production
 ```
 
+**Official AWS Documentation:**
+- [Getting Started with the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html)
+- [Installing the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+- [AWS CLI S3 Command Reference](https://docs.aws.amazon.com/cli/latest/reference/s3/)
+- [AWS CLI Athena Command Reference](https://docs.aws.amazon.com/cli/latest/reference/athena/)
+
 Full setup guide: [instructions/AWS_CLI_SETUP.md](./instructions/AWS_CLI_SETUP.md)
 
 ---
