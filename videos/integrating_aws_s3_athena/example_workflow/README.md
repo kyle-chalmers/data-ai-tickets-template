@@ -1,4 +1,4 @@
-# Example Workflow: Sales Data Analysis
+# Example Workflow: Renewable Energy Data Analysis
 
 This workflow demonstrates an end-to-end data analysis using S3 and Athena.
 
@@ -8,7 +8,7 @@ Matches the Practical Workflow Demo in `final_deliverables/script_outline.md`.
 
 ## Scenario
 
-You have sales data in CSV format that needs to be:
+You have renewable energy projection data in CSV format that needs to be:
 1. Uploaded to S3
 2. Cataloged in Athena (creates table pointing to S3)
 3. Queried for analysis
@@ -28,22 +28,22 @@ You have sales data in CSV format that needs to be:
 
 ## Step 1: Prepare Sample Data
 
-Create sample sales data:
+Use the renewable energy catalog from the California Wildfire Projections dataset:
 
 ```bash
-cat > sample_sales.csv << 'EOF'
-order_id,customer_id,product_name,quantity,unit_price,order_date,region
-1001,C001,Widget A,5,29.99,2024-01-15,North
-1002,C002,Widget B,3,49.99,2024-01-16,South
-1003,C001,Widget C,2,99.99,2024-01-17,North
-1004,C003,Widget A,10,29.99,2024-01-18,East
-1005,C002,Widget B,1,49.99,2024-01-19,West
-1006,C004,Widget C,4,99.99,2024-01-20,South
-1007,C001,Widget A,7,29.99,2024-01-21,North
-1008,C005,Widget B,2,49.99,2024-01-22,East
-1009,C003,Widget C,1,99.99,2024-01-23,West
-1010,C004,Widget A,3,29.99,2024-01-24,South
-EOF
+# Download from public S3 bucket
+aws s3 cp --no-sign-request s3://wfclimres/era/era-ren-collection.csv ./era-ren-collection.csv
+
+# Or use the local sample data
+cp ../sample_data/era-ren-collection.csv ./
+```
+
+**Sample Data Structure:**
+```
+installation,source_id,experiment_id,path
+pv_distributed,ERA5,reanalysis,s3://wfclimres/era/...
+pv_utility,CNRM-ESM2-1,historical,s3://wfclimres/...
+wind,EC-Earth3,ssp370,s3://wfclimres/...
 ```
 
 ---
@@ -52,15 +52,15 @@ EOF
 
 ```bash
 # Upload file
-aws s3 cp sample_sales.csv s3://kclabs-athena-demo-2025/sales-demo/sample_sales.csv
+aws s3 cp era-ren-collection.csv s3://kclabs-athena-demo-2025/renewable-energy/era-ren-collection.csv
 
 # Verify upload
-aws s3 ls s3://kclabs-athena-demo-2025/sales-demo/
+aws s3 ls s3://kclabs-athena-demo-2025/renewable-energy/
 ```
 
 **Expected output:**
 ```
-2024-01-25 10:30:00        509 sample_sales.csv
+2024-01-25 10:30:00      12345 era-ren-collection.csv
 ```
 
 ---
@@ -72,25 +72,22 @@ aws s3 ls s3://kclabs-athena-demo-2025/sales-demo/
 Run in Athena Console or via CLI:
 
 ```sql
-CREATE DATABASE IF NOT EXISTS sales_demo;
+CREATE DATABASE IF NOT EXISTS renewable_demo;
 ```
 
 ### Create External Table
 
 ```sql
-CREATE EXTERNAL TABLE sales_demo.sales (
-  order_id INT,
-  customer_id STRING,
-  product_name STRING,
-  quantity INT,
-  unit_price DOUBLE,
-  order_date DATE,
-  region STRING
+CREATE EXTERNAL TABLE renewable_demo.energy_catalog (
+  installation STRING,
+  source_id STRING,
+  experiment_id STRING,
+  path STRING
 )
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
 STORED AS TEXTFILE
-LOCATION 's3://kclabs-athena-demo-2025/sales-demo/'
+LOCATION 's3://kclabs-athena-demo-2025/renewable-energy/'
 TBLPROPERTIES ('skip.header.line.count'='1');
 ```
 
@@ -100,7 +97,7 @@ TBLPROPERTIES ('skip.header.line.count'='1');
 
 ```bash
 aws athena start-query-execution \
-  --query-string "CREATE DATABASE IF NOT EXISTS sales_demo" \
+  --query-string "CREATE DATABASE IF NOT EXISTS renewable_demo" \
   --work-group "primary" \
   --result-configuration OutputLocation=s3://kclabs-athena-results-2025/
 ```
@@ -109,26 +106,25 @@ aws athena start-query-execution \
 
 ## Step 4: Run Analysis Queries
 
-### Business Question: What's the total revenue by region?
+### Business Question: How many projections exist by energy type and scenario?
 
 ```sql
 SELECT
-  region,
-  COUNT(*) as order_count,
-  SUM(quantity) as total_units,
-  ROUND(SUM(quantity * unit_price), 2) as total_revenue
-FROM sales_demo.sales
-GROUP BY region
-ORDER BY total_revenue DESC;
+  installation,
+  experiment_id,
+  COUNT(*) as projection_count
+FROM renewable_demo.energy_catalog
+GROUP BY installation, experiment_id
+ORDER BY projection_count DESC;
 ```
 
 **Expected Results:**
 ```
-region    order_count    total_units    total_revenue
-South     3              10             639.90
-North     3              14             559.86
-East      2              12             399.88
-West      2              2              149.98
+installation     experiment_id    projection_count
+pv_utility       ssp370          72
+pv_distributed   ssp370          72
+wind             ssp370          72
+...
 ```
 
 ### CLI Execution
@@ -136,9 +132,9 @@ West      2              2              149.98
 ```bash
 # Start query
 QUERY_ID=$(aws athena start-query-execution \
-  --query-string "SELECT region, COUNT(*) as order_count, SUM(quantity) as total_units, ROUND(SUM(quantity * unit_price), 2) as total_revenue FROM sales_demo.sales GROUP BY region ORDER BY total_revenue DESC" \
+  --query-string "SELECT installation, experiment_id, COUNT(*) as projection_count FROM renewable_demo.energy_catalog GROUP BY installation, experiment_id ORDER BY projection_count DESC" \
   --work-group "primary" \
-  --query-execution-context Database=sales_demo \
+  --query-execution-context Database=renewable_demo \
   --result-configuration OutputLocation=s3://kclabs-athena-results-2025/ \
   --output text --query 'QueryExecutionId')
 
@@ -175,16 +171,16 @@ cat results.csv
 Clean up test resources:
 
 ```sql
-DROP TABLE IF EXISTS sales_demo.sales;
-DROP DATABASE IF EXISTS sales_demo;
+DROP TABLE IF EXISTS renewable_demo.energy_catalog;
+DROP DATABASE IF EXISTS renewable_demo;
 ```
 
 ```bash
 # Remove S3 data
-aws s3 rm s3://kclabs-athena-demo-2025/sales-demo/ --recursive
+aws s3 rm s3://kclabs-athena-demo-2025/renewable-energy/ --recursive
 
 # Clean local files
-rm -f sample_sales.csv results.csv
+rm -f era-ren-collection.csv results.csv
 ```
 
 **Important:** Tables are just pointers - the S3 data persists until you explicitly delete it.
@@ -197,18 +193,18 @@ Instead of running these commands manually, ask Claude:
 
 **Data Upload:**
 ```
-"Upload sample_sales.csv to S3 in the sales-demo folder"
+"Upload era-ren-collection.csv to S3 in the renewable-energy folder"
 ```
 
 **Table Creation:**
 ```
 "Create an Athena table for the CSV I just uploaded. The columns are:
-order_id, customer_id, product_name, quantity, unit_price, order_date, region"
+installation, source_id, experiment_id, path"
 ```
 
 **Analysis:**
 ```
-"Query the sales table to show total revenue by region, sorted highest to lowest"
+"Query the energy catalog table to show projection counts by installation type and scenario"
 ```
 
 **Export:**
@@ -218,7 +214,7 @@ order_id, customer_id, product_name, quantity, unit_price, order_date, region"
 
 **Cleanup:**
 ```
-"Clean up the sales_demo database and remove the S3 test data"
+"Clean up the renewable_demo database and remove the S3 test data"
 ```
 
 ---

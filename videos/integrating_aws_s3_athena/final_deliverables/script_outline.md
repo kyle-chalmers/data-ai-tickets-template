@@ -246,7 +246,7 @@ aws s3 ls s3://kclabs-athena-demo-2025/ --human-readable --summarize
 
 ```bash
 # Upload a single file
-aws s3 cp sample_sales.csv s3://kclabs-athena-demo-2025/sales-demo/
+aws s3 cp era-ren-collection.csv s3://kclabs-athena-demo-2025/renewable-energy/
 
 # Upload a directory
 aws s3 cp ./local-dir s3://bucket-name/prefix/ --recursive
@@ -352,13 +352,13 @@ aws athena get-query-results --query-execution-id $QUERY_ID | \
 #### The Data (15 seconds)
 [Show on screen: CSV preview]
 
-- "We're using a simple sales dataset - ten rows of regional sales data."
+- "We're using the renewable energy catalog - climate model projections for California energy generation."
 
 ```
-order_id,customer_id,product_name,quantity,unit_price,order_date,region
-1001,C001,Widget A,5,29.99,2024-01-15,North
-1002,C002,Widget B,3,49.99,2024-01-16,South
-...
+installation,source_id,experiment_id,path
+pv_distributed,ERA5,reanalysis,s3://wfclimres/era/...
+pv_utility,CNRM-ESM2-1,historical,s3://wfclimres/...
+wind,EC-Earth3,ssp370,s3://wfclimres/...
 ```
 
 #### Console Method (20 seconds)
@@ -371,8 +371,8 @@ order_id,customer_id,product_name,quantity,unit_price,order_date,region
 [Show on screen: Terminal commands]
 
 ```bash
-aws s3 cp sample_sales.csv s3://kclabs-athena-demo-2025/sales-demo/
-aws s3 ls s3://kclabs-athena-demo-2025/sales-demo/
+aws s3 cp era-ren-collection.csv s3://kclabs-athena-demo-2025/renewable-energy/
+aws s3 ls s3://kclabs-athena-demo-2025/renewable-energy/
 ```
 
 - "One command. Done. Data's in S3."
@@ -393,26 +393,23 @@ aws s3 ls s3://kclabs-athena-demo-2025/sales-demo/
 [Show on screen: Query execution]
 
 ```sql
-CREATE DATABASE IF NOT EXISTS sales_demo;
+CREATE DATABASE IF NOT EXISTS renewable_demo;
 ```
 
 #### Create External Table (45 seconds)
 [Show on screen: Query and explanation]
 
 ```sql
-CREATE EXTERNAL TABLE sales_demo.sales (
-  order_id INT,
-  customer_id STRING,
-  product_name STRING,
-  quantity INT,
-  unit_price DOUBLE,
-  order_date DATE,
-  region STRING
+CREATE EXTERNAL TABLE renewable_demo.energy_catalog (
+  installation STRING,
+  source_id STRING,
+  experiment_id STRING,
+  path STRING
 )
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
 STORED AS TEXTFILE
-LOCATION 's3://kclabs-athena-demo-2025/sales-demo/'
+LOCATION 's3://kclabs-athena-demo-2025/renewable-energy/'
 TBLPROPERTIES ('skip.header.line.count'='1');
 ```
 
@@ -432,20 +429,19 @@ TBLPROPERTIES ('skip.header.line.count'='1');
 
 #### The Business Question (10 seconds)
 
-- "Let's answer a real question: What's the total revenue by region?"
+- "Let's answer a real question: How many climate projections exist by energy type and scenario?"
 
 #### Run the Query (30-40 seconds)
 [Show on screen: Query execution and results grid]
 
 ```sql
 SELECT
-  region,
-  COUNT(*) as order_count,
-  SUM(quantity) as total_units,
-  ROUND(SUM(quantity * unit_price), 2) as total_revenue
-FROM sales_demo.sales
-GROUP BY region
-ORDER BY total_revenue DESC;
+  installation,
+  experiment_id,
+  COUNT(*) as projection_count
+FROM renewable_demo.energy_catalog
+GROUP BY installation, experiment_id
+ORDER BY projection_count DESC;
 ```
 
 #### What to Point Out (20-30 seconds)
@@ -494,12 +490,12 @@ cat ./results.csv
 - "Good hygiene: clean up when you're done experimenting."
 
 ```sql
-DROP TABLE IF EXISTS sales_demo.sales;
-DROP DATABASE IF EXISTS sales_demo;
+DROP TABLE IF EXISTS renewable_demo.energy_catalog;
+DROP DATABASE IF EXISTS renewable_demo;
 ```
 
 ```bash
-aws s3 rm s3://kclabs-athena-demo-2025/sales-demo/ --recursive
+aws s3 rm s3://kclabs-athena-demo-2025/renewable-energy/ --recursive
 ```
 
 **Talking point:**

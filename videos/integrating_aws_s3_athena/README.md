@@ -115,12 +115,6 @@ aws s3 cp --no-sign-request s3://wfclimres/era/era-ren-collection.csv ./sample_d
 - [AWS Open Data Registry](https://registry.opendata.aws/caladapt-wildfire-dataset/)
 - [Cal-Adapt Data Access Portal](https://analytics.cal-adapt.org/data/access/)
 
-### Workflow Demo: Sample Sales Data
-- **S3 Location:** `s3://kclabs-athena-demo-2025/sales-demo/`
-- **Database:** `sales_demo`
-- **Table:** `sales` (10 rows)
-- Simple CSV for end-to-end demonstration
-
 ---
 
 ## S3 Operations
@@ -144,7 +138,7 @@ The `--human-readable` flag shows file sizes in MB and GB instead of bytes. The 
 
 ```bash
 # Upload a single file
-aws s3 cp sample_sales.csv s3://kclabs-athena-demo-2025/sales-demo/
+aws s3 cp era-ren-collection.csv s3://kclabs-athena-demo-2025/renewable-energy/
 
 # Upload a directory
 aws s3 cp ./local-dir s3://bucket-name/prefix/ --recursive
@@ -162,7 +156,7 @@ aws s3 sync ./local-dir s3://bucket-name/prefix/
 aws s3 sync ./local-dir s3://bucket-name/prefix/ --delete
 
 # Download from S3
-aws s3 cp s3://kclabs-athena-demo-2025/sales-demo/sample_sales.csv ./
+aws s3 cp s3://kclabs-athena-demo-2025/renewable-energy/era-ren-collection.csv ./
 ```
 
 Sync is smart - it only uploads files that have changed. The `--delete` flag makes S3 match your local exactly.
@@ -230,30 +224,27 @@ Complete end-to-end workflow: **CSV -> S3 -> Athena Table -> Query -> Export**
 ### Step 1: Upload Data to S3
 
 ```bash
-aws s3 cp sample_sales.csv s3://kclabs-athena-demo-2025/sales-demo/
-aws s3 ls s3://kclabs-athena-demo-2025/sales-demo/
+aws s3 cp era-ren-collection.csv s3://kclabs-athena-demo-2025/renewable-energy/
+aws s3 ls s3://kclabs-athena-demo-2025/renewable-energy/
 ```
 
 ### Step 2: Create Database and Table
 
 ```sql
 -- Create database
-CREATE DATABASE IF NOT EXISTS sales_demo;
+CREATE DATABASE IF NOT EXISTS renewable_demo;
 
 -- Create external table
-CREATE EXTERNAL TABLE sales_demo.sales (
-  order_id INT,
-  customer_id STRING,
-  product_name STRING,
-  quantity INT,
-  unit_price DOUBLE,
-  order_date DATE,
-  region STRING
+CREATE EXTERNAL TABLE renewable_demo.energy_catalog (
+  installation STRING,
+  source_id STRING,
+  experiment_id STRING,
+  path STRING
 )
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
 STORED AS TEXTFILE
-LOCATION 's3://kclabs-athena-demo-2025/sales-demo/'
+LOCATION 's3://kclabs-athena-demo-2025/renewable-energy/'
 TBLPROPERTIES ('skip.header.line.count'='1');
 ```
 
@@ -263,13 +254,12 @@ The table is just a pointer - Athena reads directly from S3. No data copying, no
 
 ```sql
 SELECT
-  region,
-  COUNT(*) as order_count,
-  SUM(quantity) as total_units,
-  ROUND(SUM(quantity * unit_price), 2) as total_revenue
-FROM sales_demo.sales
-GROUP BY region
-ORDER BY total_revenue DESC;
+  installation,
+  experiment_id,
+  COUNT(*) as projection_count
+FROM renewable_demo.energy_catalog
+GROUP BY installation, experiment_id
+ORDER BY projection_count DESC;
 ```
 
 ### Step 4: Export Results
@@ -284,12 +274,12 @@ cat ./results.csv
 ### Step 5: Cleanup
 
 ```sql
-DROP TABLE IF EXISTS sales_demo.sales;
-DROP DATABASE IF EXISTS sales_demo;
+DROP TABLE IF EXISTS renewable_demo.energy_catalog;
+DROP DATABASE IF EXISTS renewable_demo;
 ```
 
 ```bash
-aws s3 rm s3://kclabs-athena-demo-2025/sales-demo/ --recursive
+aws s3 rm s3://kclabs-athena-demo-2025/renewable-energy/ --recursive
 ```
 
 Tables are just pointers, but the S3 data persists until you delete it.
@@ -304,7 +294,7 @@ Tables are just pointers, but the S3 data persists until you delete it.
 - "Find all parquet files modified in the last week"
 
 **Athena Queries:**
-- "Query the sales table for totals by region"
+- "Query the renewable energy table for projections by installation type"
 - "Show me the schema for the renewable_energy_catalog table"
 - "Run this query and save results to a local CSV"
 
