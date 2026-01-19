@@ -104,6 +104,17 @@ Full setup guide: [instructions/AWS_CLI_SETUP.md](./instructions/AWS_CLI_SETUP.m
 | `experiment_id` | Scenario (historical, reanalysis, ssp370) |
 | `path` | S3 location of actual data files |
 
+**Sample Data File:** `sample_data/era-ren-collection.csv` - Renewable energy catalog extracted from this dataset.
+
+**Download it yourself:**
+```bash
+aws s3 cp --no-sign-request s3://wfclimres/era/era-ren-collection.csv ./sample_data/
+```
+
+**Resources:**
+- [AWS Open Data Registry](https://registry.opendata.aws/caladapt-wildfire-dataset/)
+- [Cal-Adapt Data Access Portal](https://analytics.cal-adapt.org/data/access/)
+
 ### Workflow Demo: Sample Sales Data
 - **S3 Location:** `s3://kclabs-athena-demo-2025/sales-demo/`
 - **Database:** `sales_demo`
@@ -360,7 +371,7 @@ videos/integrating_aws_s3_athena/
 ├── instructions/
 │   └── AWS_CLI_SETUP.md         # Detailed setup guide
 ├── sample_data/
-│   └── README.md                # Dataset options and setup
+│   └── era-ren-collection.csv   # Renewable energy catalog (216 rows)
 └── example_workflow/
     └── README.md                # Step-by-step workflow example
 ```

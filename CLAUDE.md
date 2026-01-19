@@ -221,21 +221,17 @@ Specialized agents in `.claude/agents/` and commands in `.claude/commands/` hand
   - Create PRs: `gh pr create --title "PR title" --body "PR description"` (**<200 words max**)
   - Issue management: `gh issue create`, `gh issue list`
 
-- **Tableau CLI (`tabcmd`)** - Tableau server management
-  - Publish: `tabcmd publish "workbook.twbx" -n "Workbook Name"`
-  - User management: `tabcmd login -s https://tableau.server.com`
-
 - **Databricks CLI (`databricks`)** - Job orchestration and data platform management
   - Profiles: `biprod` (production) and `bidev` (development)
   - Workspace management: `databricks workspace list --profile biprod`
   - Job management: `databricks jobs list --profile bidev`
   - Query execution: `databricks sql execute --profile biprod --sql "SELECT 1"`
 
-- **Slack CLI Functions** - Custom team communication integration
-  - Located: `~/.slack_user_functions.zsh` and `resources/slack_user_functions.zsh`
-  - User lookup: `slack_user_by_email(email)`, `slack_users()`
-  - Messaging: `slack_dm_by_email(email, message)`, `slack_send(channel_id, message)` (**<100 words max**)
-  - Group creation: `slack_group_by_emails_dynamic(email1, email2, ...)`
+- **AWS CLI (`aws`)** - Cloud services management (S3, Athena, and more)
+  - S3 operations: `aws s3 ls s3://bucket-name/`, `aws s3 cp file.csv s3://bucket-name/`
+  - Athena queries: `aws athena start-query-execution --query-string "SELECT * FROM table" --result-configuration OutputLocation=s3://bucket/results/`
+  - Query results: `aws athena get-query-results --query-execution-id <id>`
+  - List databases: `aws athena list-databases --catalog-name AwsDataCatalog`
 
 ### Enhanced Analysis Tools
 - **tree** - Directory visualization: `tree -L 2 tickets/`
