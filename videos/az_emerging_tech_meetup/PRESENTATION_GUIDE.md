@@ -462,13 +462,18 @@ I want to see your reasoning on what API to use and how to handle scheduling.
 
 ## Resources (1 minute)
 
-"Everything I showed is open-sourced:"
+**[Show QR codes on screen - see qr_codes/ folder]**
 
-- **Repository**: github.com/kyle-chalmers/data-ai-tickets-template
-- **Claude Code**: claude.com/download
-- **My YouTube**: KC Labs AI - Detailed integration videos
+"Everything I showed is open-sourced. I've got QR codes up so you can grab these easily:"
 
-"The repo has all the CLAUDE.md examples, commands, agents, and the Databricks job we just created."
+| Resource | Link |
+|----------|------|
+| **GitHub Repo** | github.com/kyle-chalmers/data-ai-tickets-template |
+| **LinkedIn** | linkedin.com/in/kylechalmers |
+| **YouTube** | KC Labs AI Channel |
+| **Claude Code** | claude.ai/download |
+
+"The repo has all the CLAUDE.md examples, commands, agents, and the Databricks job we just created. My YouTube channel has detailed videos on each integration if you want to go deeper."
 
 ---
 
@@ -497,9 +502,13 @@ I want to see your reasoning on what API to use and how to handle scheduling.
 
 ## Closing
 
-"Thank you for being here. If this helped you think differently about AI and data workflows, I'd love to connect."
+"Thank you for being here tonight. If this helped you think differently about AI and data workflows, I'd love to connect."
 
-"I'll be around after for anyone who wants to chat about implementations."
+**[Keep QR codes on screen]**
+
+"The QR codes are still up - LinkedIn if you want to connect professionally, YouTube for more detailed tutorials on each integration, and GitHub for all the code."
+
+"I'll be around after for anyone who wants to chat about implementations or see anything in more detail."
 
 "Thanks to Arizona AI & Emerging Technology Meetup for having me!"
 

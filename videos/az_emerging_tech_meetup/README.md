@@ -1,7 +1,7 @@
 # Arizona AI & Emerging Technology Meetup Presentation
 
 **Event:** The AI-Empowered Data Revolution: Hands-On Demos to 10X Your Data Workflows
-**Date:** Tuesday, January 21, 2026, 6:00 PM - 7:00 PM MST
+**Date:** Wednesday, January 21, 2026, 6:00 PM - 7:00 PM MST
 **Venue:** 1951@SkySong, 1475 N. Scottsdale Road, Room 151, Scottsdale, AZ
 **Meetup Link:** https://www.meetup.com/azemergingtech/events/312526569/
 
@@ -11,9 +11,11 @@
 
 | File | Description |
 |------|-------------|
-| [PRESENTATION_GUIDE.md](./PRESENTATION_GUIDE.md) | Speaker script with timing and demo narration |
+| [PRESENTER_README.md](./PRESENTER_README.md) | **Primary presenter reference** - Quick links, prompts, QR codes |
+| [PRESENTATION_GUIDE.md](./PRESENTATION_GUIDE.md) | Full speaker script with timing and narration |
 | [DEMO_SCRIPTS.md](./DEMO_SCRIPTS.md) | Copy-paste commands for live demos |
 | [datasets/demo1_dataset.md](./datasets/demo1_dataset.md) | CO2 emissions dataset documentation |
+| [qr_codes/](./qr_codes/) | QR codes for LinkedIn, YouTube, GitHub repo |
 
 **Related Files:**
 | File | Description |
@@ -141,8 +143,15 @@
 
 ## Resources
 
-- **Repository**: github.com/kyle-chalmers/data-ai-tickets-template
-- **Claude Code**: claude.com/download
+### Connect With Kyle
+| Platform | Link | QR Code |
+|----------|------|---------|
+| **LinkedIn** | [linkedin.com/in/kylechalmers](https://www.linkedin.com/in/kylechalmers/) | [qr_codes/linkedin_qr.png](./qr_codes/linkedin_qr.png) |
+| **YouTube** | [KC Labs AI Channel](https://www.youtube.com/channel/UCkRi29nXFxNBuPhjseoB6AQ) | [qr_codes/youtube_qr.png](./qr_codes/youtube_qr.png) |
+| **GitHub Repo** | [data-ai-tickets-template](https://github.com/kyle-chalmers/data-ai-tickets-template) | [qr_codes/repo_qr.png](./qr_codes/repo_qr.png) |
+
+### Technical Resources
+- **Claude Code**: claude.ai/download
 - **Our World in Data**: github.com/owid/co2-data
 - **Open-Meteo API**: open-meteo.com/en/docs/historical-weather-api
 - **Databricks CLI**: docs.databricks.com/dev-tools/cli/
