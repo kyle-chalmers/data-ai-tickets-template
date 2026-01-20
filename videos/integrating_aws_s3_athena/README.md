@@ -1,6 +1,6 @@
 # AWS S3 + Athena Integration with Claude Code
 
-> **YouTube:** [Coming Soon]
+> **YouTube:** [Skip S3 and Athena in the AWS Console | CLI + Claude Code Workflow](https://www.youtube.com/watch?v=kCUTStWwErg)
 
 Complete guide for integrating AWS S3 and Athena with Claude Code using the AWS CLI.
 

@@ -112,6 +112,7 @@ Check the [Kyle Chalmers Data & AI YouTube channel](https://youtube.com/@kylecha
 | [The AI Integration Every Data Professional Needs](https://www.youtube.com/watch?v=q1y7M5mZkkE) | Claude Code + Snowflake workflow demo |
 | [Claude Code Makes Databricks Easy](https://www.youtube.com/watch?v=5_q7j-k8DbM) | Jobs, Notebooks, SQL & Unity Catalog via CLI |
 | [How to SUCCESSFULLY Integrate Claude in Your Jira Workflow](https://www.youtube.com/watch?v=WRvgMzYaIVo) | Atlassian CLI and MCP integration guide |
+| [Skip S3 and Athena in the AWS Console](https://www.youtube.com/watch?v=kCUTStWwErg) | CLI + Claude Code workflow for AWS data lakes |
 
 ## 💡 Key Concepts
 
