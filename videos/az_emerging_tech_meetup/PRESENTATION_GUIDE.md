@@ -24,16 +24,16 @@
 ## Pre-Demo Checklist
 
 ### Day Before
-- [ ] `snow sql -q "SELECT 1" --format csv`
-- [ ] `aws sts get-caller-identity`
-- [ ] `aws s3 ls s3://kclabs-athena-demo-2026/`
-- [ ] `acli jira project list --filter KAN`
-- [ ] `databricks workspace list / --profile bidev`
-- [ ] Test Open-Meteo API:
+- [x] `snow sql -q "SELECT 1" --format csv`
+- [x] `aws sts get-caller-identity`
+- [x] `aws s3 ls s3://kclabs-athena-demo-2026/`
+- [x] `acli jira project list --limit 10` (verify KAN appears)
+- [x] `databricks workspace list /`
+- [x] Test Open-Meteo API:
   ```bash
   curl -s "https://archive-api.open-meteo.com/v1/archive?latitude=33.45&longitude=-112.07&start_date=2024-12-01&end_date=2024-12-05&daily=temperature_2m_max"
   ```
-- [ ] Clean test branches: `git branch -d [demo-branches]`
+- [x] Clean test branches: `git branch -d [demo-branches]`
 
 ### 30 Minutes Before
 - [ ] `cd /Users/kylechalmers/Development/data-ai-tickets-template`
@@ -49,8 +49,8 @@
 snow connection list
 snow sql -q "SELECT 1" --format csv
 aws sts get-caller-identity
-acli jira project list --filter KAN
-databricks workspace list / --profile bidev
+acli jira project list --limit 10
+databricks workspace list /
 ```
 
 **Expected Results:**
@@ -434,11 +434,11 @@ aws sts get-caller-identity
 **1. Context is Everything**
 > "Claude Code is only as good as the context you give it. CLAUDE.md, folder structure, documentation - that's what makes AI effective."
 
-**2. Teach Once, Benefit Forever**
-> "Custom commands and agents encode your best practices. Define your workflow once, every future analysis follows automatically."
+**2. Tools Become Seamless**
+> "Natural language becomes your universal API. You just saw me orchestrate Jira, S3, Snowflake, and Databricks without memorizing CLI syntax or switching contexts."
 
-**3. Delegation, Not Automation**
-> "This isn't replacing data professionals. It's delegating mechanical work so you can focus on understanding data and making decisions."
+**3. More Thinking, Less Typing**
+> "Your role shifts from execution to oversight. AI handles the mechanical work while you focus on critical thinking, quality control, and decision-making."
 
 #### Resources (1 minute)
 
@@ -575,15 +575,12 @@ curl -s "https://archive-api.open-meteo.com/v1/archive?latitude=33.45&longitude=
 **Deploy Job:**
 ```bash
 databricks fs cp databricks_jobs/climate_data_refresh/climate_refresh.py \
-  dbfs:/jobs/climate_data_refresh/climate_refresh.py --profile bidev
-databricks jobs create --json-file databricks_jobs/climate_data_refresh/job_config.json --profile bidev
-```
+  dbfs:/jobs/climate_data_refresh/climate_refresh.py databricks jobs create --json-file databricks_jobs/climate_data_refresh/job_config.json ```
 
 **Trigger Run:**
 ```bash
 JOB_ID=$(databricks jobs list --profile bidev | grep "Climate Data" | awk '{print $1}')
-databricks jobs run-now --job-id $JOB_ID --profile bidev
-```
+databricks jobs run-now --job-id $JOB_ID ```
 
 **Close Ticket:**
 ```bash
