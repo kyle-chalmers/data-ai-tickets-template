@@ -224,7 +224,7 @@ I want to see your reasoning on what API to use and how to handle scheduling.
 
 ---
 
-## Three Takeaways
+## Takeaways
 
 <table>
 <tr>
@@ -232,21 +232,21 @@ I want to see your reasoning on what API to use and how to handle scheduling.
 
 ### 1️⃣ Context is Everything
 
-Claude Code is only as good as the context you give it. CLAUDE.md, folder structure, and documentation make AI effective.
+Claude Code is only as good as the context you give it. CLAUDE.md, folder structure, tools (e.g. the ones we demo'ed today), and documentation make AI effective.
 
 </td>
 <td width="33%" align="center">
 
-### 2️⃣ Tools Become Seamless
+### 2️⃣ Productivity for Data Work Explodes with this setup
 
-Natural language becomes your universal API. Orchestrate Jira, S3, Snowflake, and Databricks without memorizing CLI syntax.
+Previously, doing something like these two analyses with using this many tools would have taken me at least a few hours to do if not more. Now I'm able to complete this within this demo, which makes it reasonable to say this can 10x productivity once fully setup.
 
 </td>
 <td width="33%" align="center">
 
 ### 3️⃣ More Thinking, Less Typing
 
-Your role shifts from execution to oversight. AI handles mechanical work while you focus on critical thinking and QC.
+When AI is serving as your assistant or running autonomously, your role shifts from execution to oversight especially. AI handles mechanical work while you focus on critical thinking and QC.
 
 </td>
 </tr>
