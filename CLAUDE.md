@@ -205,29 +205,32 @@ Specialized agents in `.claude/agents/` and commands in `.claude/commands/` hand
 ## Available CLI Tools
 
 ### Core Platform Tools
-- **Snowflake CLI (`snow`)** - Database queries and management
+
+- **Snowflake CLI (`snow`)** - Database queries and management | [Docs](https://docs.snowflake.com/en/developer-guide/snowflake-cli/index)
   - Authentication: Duo Security (15-minute lockout warning)
   - Query execution: `snow sql -q "SELECT * FROM table" --format csv`
   - Object management: `snow connection list`, `snow warehouse list`
   - Schema operations: `snow sql -q "DESCRIBE TABLE schema.table"`
 
-- **Jira CLI (`acli`)** - Ticket tracking and workflow automation
+- **Jira CLI (`acli`)** - Ticket tracking and workflow automation | [Docs](https://developer.atlassian.com/cloud/acli/reference/commands/)
   - View tickets: `acli jira workitem view TICKET-KEY`
+  - List projects: `acli jira project list --limit 10`
   - Create tickets: Use file input to avoid labels field issues (**<200 words max**)
-  - Transition tickets: `acli jira workitem transition --key "[PROJECT INITIALS]-XXXX" --status "Done"`
-  - Comments: `acli jira workitem comment --key "[PROJECT INITIALS]-XXXX" --body "Comment text"` (**<100 words max**)
+  - Transition tickets: `acli jira workitem transition --key "PROJECT-XXX" --status "Done"`
+  - Comments: `acli jira workitem comment --key "PROJECT-XXX" --body "Comment text"` (**<100 words max**)
 
-- **GitHub CLI (`gh`)** - Repository and issue management
+- **GitHub CLI (`gh`)** - Repository and issue management | [Docs](https://cli.github.com/manual/)
   - Create PRs: `gh pr create --title "PR title" --body "PR description"` (**<200 words max**)
   - Issue management: `gh issue create`, `gh issue list`
 
-- **Databricks CLI (`databricks`)** - Job orchestration and data platform management
-  - Profiles: `biprod` (production) and `bidev` (development)
-  - Workspace management: `databricks workspace list --profile biprod`
-  - Job management: `databricks jobs list --profile bidev`
-  - Query execution: `databricks sql execute --profile biprod --sql "SELECT 1"`
+- **Databricks CLI (`databricks`)** - Job orchestration and data platform management | [Docs](https://docs.databricks.com/dev-tools/cli/index.html)
+  - Profile: `DEFAULT` (no `--profile` flag needed)
+  - Workspace management: `databricks workspace list /`
+  - Job management: `databricks jobs list`, `databricks jobs create --json-file config.json`
+  - File operations: `databricks fs cp local_file.py dbfs:/path/`
+  - Job execution: `databricks jobs run-now --job-id <id>`
 
-- **AWS CLI (`aws`)** - Cloud services management (S3, Athena, and more)
+- **AWS CLI (`aws`)** - Cloud services management (S3, Athena, and more) | [Docs](https://docs.aws.amazon.com/cli/)
   - S3 operations: `aws s3 ls s3://bucket-name/`, `aws s3 cp file.csv s3://bucket-name/`
   - Athena queries: `aws athena start-query-execution --query-string "SELECT * FROM table" --result-configuration OutputLocation=s3://bucket/results/`
   - Query results: `aws athena get-query-results --query-execution-id <id>`
