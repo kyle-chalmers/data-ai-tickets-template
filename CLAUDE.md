@@ -358,7 +358,30 @@ git push origin TICKET-XXX
    - Create Google Drive backup (with permission)
 
 ## Data Architecture Context
-[INSERT CONTEXT HERE]
+
+<!--
+GUIDANCE: Describe your data warehouse architecture layers.
+Keep concise - link to detailed docs if needed.
+-->
+
+### Database Overview
+<!-- List primary databases and their purposes -->
+| Database | Purpose | Access |
+|----------|---------|--------|
+| [PROD_DB_NAME] | [Production reporting] | [Read-only] |
+| [DEV_DB_NAME] | [Development/testing] | [Read-write] |
+
+### Schema Layers
+<!-- Describe your data layer organization -->
+| Layer | Schema Pattern | Purpose |
+|-------|----------------|---------|
+| [Raw/Bronze] | [SCHEMA_PATTERN] | [Ingested data] |
+| [Staging/Silver] | [SCHEMA_PATTERN] | [Cleansed data] |
+| [Analytics/Gold] | [SCHEMA_PATTERN] | [Business-ready] |
+
+### Data Flow
+<!-- Brief description of how data moves through layers -->
+[YOUR_DATA_FLOW_DESCRIPTION]
 
 ### Architecture Guidelines for Ticket Work
 
@@ -376,7 +399,26 @@ git push origin TICKET-XXX
 ## Company and Platform Context
 
 ### Business Context
-[INSERT BUSINESS CONTEXT]
+
+<!--
+GUIDANCE: Describe your business domain briefly.
+Focus on what Claude needs to understand your data's meaning.
+-->
+
+#### Industry & Domain
+<!-- One sentence: What does your company do? -->
+[YOUR_COMPANY_DESCRIPTION]
+
+#### Key Business Entities
+<!-- Core concepts that appear in your data -->
+- [ENTITY_1]: [Brief definition]
+- [ENTITY_2]: [Brief definition]
+- [ENTITY_3]: [Brief definition]
+
+#### Common Metrics
+<!-- Frequently analyzed KPIs -->
+- [METRIC_1]: [Definition and calculation]
+- [METRIC_2]: [Definition and calculation]
 
 ### Platform Integration
 - **Loan Management System**: Core system for loan origination, servicing, and collections
@@ -564,7 +606,25 @@ Always evaluate queries for efficiency before finalizing:
 - **Use SQL for data validation**, Python for complex analysis
 
 #### Data Architecture Best Practices
-[INSERT BEST PRACTICES]
+
+<!--
+GUIDANCE: Document patterns and pitfalls specific to your environment.
+-->
+
+##### Naming Conventions
+<!-- Your standard patterns -->
+- Tables: [PATTERN, e.g., lowercase_snake_case]
+- Views: [PATTERN, e.g., VW_ prefix]
+- Columns: [PATTERN]
+
+##### Common Query Patterns
+<!-- Frequently used SQL patterns in your org -->
+[YOUR_COMMON_PATTERNS]
+
+##### Known Pitfalls
+<!-- Issues to avoid -->
+- [PITFALL_1]: [How to avoid]
+- [PITFALL_2]: [How to avoid]
 
 ### Quality Control Deliverables
 
