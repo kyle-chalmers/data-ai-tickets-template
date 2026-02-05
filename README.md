@@ -38,6 +38,10 @@ The `videos/` folder contains complete examples from YouTube videos:
   - Atlassian CLI setup and configuration
   - Atlassian MCP server setup
   - Ticket workflow automation
+- **Claude Code vs Cursor** - Head-to-head comparison building the same Databricks job with both tools:
+  - AGENTS.md universal standard for AI coding tools
+  - Context engineering systems compared (CLAUDE.md vs AGENTS.md + .cursorrules)
+  - When to use Claude Code vs Cursor based on workflow
 
 ### Template Materials
 Core template files you can adapt for your own projects:
