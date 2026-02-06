@@ -1,19 +1,18 @@
-# Claude Code vs Cursor: Context Engineering for AI Coding Tools
+# Claude Code vs Cursor: AI Coding Tools for Data Analyses
 
 > **YouTube:** [Link TBD]
 
-Compare Claude Code and Cursor by building the same Databricks job with both tools. The real story: how context engineering (AGENTS.md, CLAUDE.md, .cursorrules) makes AI tools effective.
+Compare Claude Code and Cursor by building the same Databricks job with both tools. The real story: how context engineering and tool setup will make either tool effective.
 
 ---
 
 ## Video Goals
 
 Viewers will learn:
-1. What AGENTS.md is and why it matters (open standard, 60K+ projects, 20+ tools)
-2. How Claude Code's context system works (CLAUDE.md + custom agents + custom commands)
-3. How Cursor's context system works (AGENTS.md + .cursorrules + Agent mode)
-4. How to build a Databricks job using either tool
-5. When to choose Claude Code vs Cursor based on your workflow
+1. What Cursor is, and how it differs from Claude Code
+2. How Cursor's context system works (AGENTS.md + .cursorrules + Agent mode) compared to Claude Code's
+3. How to build a Databricks job using either tool
+4. Why you can utilize Claude Code and Cursor to complete your data analysis workflows
 
 ---
 
@@ -24,12 +23,6 @@ Data engineers and analysts are adopting AI coding tools but don't know how to c
 
 ### The Solution
 Context engineering - structuring your project so AI tools understand your codebase, standards, and workflow. This video shows how the same task produces quality results in BOTH tools when you invest in context files.
-
-### Why This Matters
-- AGENTS.md is a universal standard (Linux Foundation, 60K+ projects)
-- One context file works across Cursor, Codex, Gemini CLI, Copilot, and more
-- Claude Code extends this with tool-specific capabilities (agents, commands)
-- The tool matters less than the context you give it
 
 ---
 
@@ -45,41 +38,6 @@ Context engineering - structuring your project so AI tools understand your codeb
 
 ---
 
-## What We'll Cover
-
-### Section 1: AGENTS.md - The Universal Standard
-- What is AGENTS.md and why does it exist
-- Linux Foundation stewardship, 60K+ projects
-- Supported tools: Cursor, Codex, Gemini CLI, Copilot, Windsurf, 20+ more
-- How it coexists with CLAUDE.md (brain for Claude Code vs brain for everything else)
-- Nearest-file hierarchy for monorepos
-
-### Section 2: The Task - Building a Databricks Job
-- Arizona weather data collection using Open-Meteo API
-- 10 cities, monthly aggregation, scheduled job
-- Originally Demo 2 from the AZ Emerging Tech Meetup (January 2026)
-- Same prompt given to both tools
-
-### Section 3: Claude Code Demo
-- Context engineering setup: CLAUDE.md (700+ lines), custom agents, custom commands
-- CLI-native tool access: Databricks CLI, AWS CLI, Jira CLI, GitHub CLI
-- Live demo: giving Claude Code the prompt and narrating the process
-- Key observations: what Claude Code does well
-
-### Section 4: Cursor Demo
-- Context engineering setup: AGENTS.md + .cursorrules
-- IDE-native environment: Agent mode, inline diffs, visual file tree
-- Live demo: giving Cursor the same prompt and narrating the process
-- Key observations: what Cursor does well
-
-### Section 5: Head-to-Head Comparison
-- Side-by-side code review (Python script, job config, documentation)
-- Context engineering systems compared
-- Tool access and workflow automation
-- Developer experience tradeoffs
-- When to use which tool
-
----
 
 ## Comparison Framework
 
@@ -170,10 +128,7 @@ gh pr create --title "feat: description"
 | File | Purpose |
 |------|---------|
 | `README.md` | This file - video overview and structure |
-| `CLAUDE.md` | Technical context for Claude sessions on this project |
-| `AGENTS.md` | Agent context at project level (for Cursor demo) |
-| `final_deliverables/script_outline.md` | Full video script |
 | `instructions/demo_prompt.md` | Exact prompts used in both demos |
 | `instructions/cursor_setup.md` | Cursor setup guide |
-| `demo_workspace/claude_code/` | Output from Claude Code demo (populated during recording) |
-| `demo_workspace/cursor/` | Output from Cursor demo (populated during recording) |
+| `databricks_jobs_claude` | Output from Claude Code demo (populated during recording) |
+| `databricks_jobs_cursor` | Output from Cursor demo (populated during recording) |
