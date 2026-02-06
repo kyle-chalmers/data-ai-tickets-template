@@ -18,7 +18,7 @@ Phoenix, Tucson, Mesa, Chandler, Scottsdale, Glendale, Tempe, Peoria, Flagstaff,
 - Collects previous month's data
 
 ## Delta Table
-- **Location:** `default.arizona_climate_data`
+- **Location:** `climate_demo_claude.default.monthly_arizona_weather`
 - **Partitioned by:** `year`, `month`
 - **Mode:** Append
 
