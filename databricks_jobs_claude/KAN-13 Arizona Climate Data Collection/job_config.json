@@ -1,0 +1,21 @@
+{
+  "name": "KAN-13 Arizona Climate Data Collection",
+  "tasks": [
+    {
+      "task_key": "arizona_climate_data_task",
+      "notebook_task": {
+        "notebook_path": "/Users/kylechalmers@kclabs.ai/arizona_climate_data_collection",
+        "source": "WORKSPACE"
+      },
+      "timeout_seconds": 3600
+    }
+  ],
+  "schedule": {
+    "quartz_cron_expression": "0 0 6 3 * ?",
+    "timezone_id": "America/Phoenix"
+  },
+  "max_concurrent_runs": 1,
+  "email_notifications": {
+    "on_failure": ["kylechalmers@kclabs.ai"]
+  }
+}
