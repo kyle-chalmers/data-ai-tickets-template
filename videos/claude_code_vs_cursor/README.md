@@ -86,13 +86,17 @@ Context engineering - structuring your project so AI tools understand your codeb
 | Dimension | Claude Code | Cursor |
 |-----------|-------------|--------|
 | Context System | CLAUDE.md (700+ lines) | AGENTS.md + .cursorrules |
-| Custom Agents | Yes (code-review, sql-quality, qc-validator, docs-review) | No equivalent |
-| Custom Commands | Yes (/save-work, /review-work, /initiate-request) | No equivalent |
+| Modes | Plan, bypass permissions, accept edits, etc. | Plan, debug, agent, ask |
+| Models | Anthropic | Can source various models |
+| Custom Agents | Yes | Yes |
+| Custom Commands | Yes | Yes |
 | Tool Access | CLI-native (direct terminal access) | IDE terminal (embedded) |
-| Environment | Terminal | VS Code fork |
+| Environment and UI | Terminal-based, calls features as needed and displays them as used | VS Code fork, viewable in UI with some other default features like context, web search, to-dos, and plans more easily viewable |
+| Other Features | Comes with Claude app and Cowork, can be installed in Github | Only available within Cursor, can be installed in Github |
 | AGENTS.md Support | Via CLAUDE.md (same content) | Built-in |
+| Cost | $20 for pro$ | $20 for pro$ |
 | Best For | CLI-heavy workflows, multi-tool orchestration | IDE-centric development, visual feedback |
-
+But ultimately they can both do very similar things...
 ---
 
 ## Demo Task Details
@@ -108,7 +112,7 @@ Context engineering - structuring your project so AI tools understand your codeb
 - Databricks job configuration (scheduled 3rd of month, 6 AM Phoenix time)
 - README documentation
 
-**Reference implementation:** `databricks_jobs/climate_data_refresh/` (from AZ Meetup Demo 2)
+**Reference implementation:** `databricks_jobs_cursor/climate_data_refresh/` (from AZ Meetup Demo 2)
 
 ---
 
