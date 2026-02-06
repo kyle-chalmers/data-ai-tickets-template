@@ -1,0 +1,13 @@
+{
+  "run_name": "Arizona Climate Data Collection Test Run",
+  "tasks": [
+    {
+      "task_key": "arizona_climate_data_test",
+      "notebook_task": {
+        "notebook_path": "/Users/kylechalmers@kclabs.ai/arizona_climate_data_collection",
+        "source": "WORKSPACE"
+      },
+      "timeout_seconds": 3600
+    }
+  ]
+}
