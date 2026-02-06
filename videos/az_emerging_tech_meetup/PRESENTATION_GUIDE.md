@@ -574,13 +574,16 @@ curl -s "https://archive-api.open-meteo.com/v1/archive?latitude=33.45&longitude=
 
 **Deploy Job:**
 ```bash
-databricks fs cp databricks_jobs/climate_data_refresh/climate_refresh.py \
-  dbfs:/jobs/climate_data_refresh/climate_refresh.py databricks jobs create --json-file databricks_jobs/climate_data_refresh/job_config.json ```
+databricks fs cp databricks_jobs_cursor/climate_data_refresh/climate_refresh.py dbfs:/jobs/climate_data_refresh/climate_refresh.py
+databricks jobs create --json @databricks_jobs_cursor/climate_data_refresh/job_config.json
+```
+(Update job_config.json with your workspace username in notebook_path before creating the job; or import the script as a workspace notebook first and point the job at that path.)
 
 **Trigger Run:**
 ```bash
-JOB_ID=$(databricks jobs list --profile bidev | grep "Climate Data" | awk '{print $1}')
-databricks jobs run-now --job-id $JOB_ID ```
+JOB_ID=$(databricks jobs list --profile bidev --output json | jq -r '.jobs[] | select(.settings.name | contains("Arizona Climate")) | .job_id')
+databricks jobs run-now $JOB_ID --profile bidev
+```
 
 **Close Ticket:**
 ```bash

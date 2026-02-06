@@ -10,7 +10,7 @@ Quick reference for this video project comparing Claude Code and Cursor.
 
 **Origin:** Demo 2 from AZ Emerging Tech Meetup (January 21, 2026) - originally built a Databricks job for Arizona weather data collection. This video redoes that task with both tools.
 
-**Reference Implementation:** `/databricks_jobs/climate_data_refresh/` contains the original meetup output.
+**Reference Implementation:** `/databricks_jobs_cursor/climate_data_refresh/` contains the original meetup output.
 
 ---
 

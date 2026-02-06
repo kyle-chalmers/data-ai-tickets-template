@@ -21,7 +21,7 @@ Databricks CLI available with profiles:
 
 This demo should take ~12 minutes during the presentation.
 
-Create a new folder `databricks_jobs/` in the repository to store the job code.
+Create a new folder `databricks_jobs_cursor/` in the repository to store the job code.
 </context>
 
 <research>
@@ -58,7 +58,7 @@ Document the chosen source with:
    - Python script to fetch external data
    - Job configuration (schedule, cluster settings)
    - Error handling
-   - Store in `databricks_jobs/` folder
+   - Store in `databricks_jobs_cursor/` folder
 
 4. **Job testing** - Show how to:
    - Deploy job to Databricks (bidev profile)
@@ -77,7 +77,7 @@ Create these deliverables:
 
 1. **Databricks job folder**:
    ```
-   databricks_jobs/
+   databricks_jobs_cursor/
    ├── README.md                    # Overview of jobs in this folder
    └── climate_data_refresh/
        ├── climate_refresh.py       # Main job script
@@ -100,10 +100,10 @@ Create these deliverables:
 
 <output>
 Create/update these files:
-1. `./databricks_jobs/README.md` - Jobs folder overview
-2. `./databricks_jobs/climate_data_refresh/climate_refresh.py` - Job script
-3. `./databricks_jobs/climate_data_refresh/job_config.json` - Job config
-4. `./databricks_jobs/climate_data_refresh/README.md` - Job documentation
+1. `./databricks_jobs_cursor/README.md` - Jobs folder overview
+2. `./databricks_jobs_cursor/climate_data_refresh/climate_refresh.py` - Job script
+3. `./databricks_jobs_cursor/climate_data_refresh/job_config.json` - Job config
+4. `./databricks_jobs_cursor/climate_data_refresh/README.md` - Job documentation
 5. `./videos/az_emerging_tech_meetup/DEMO_SCRIPTS.md` - Update Demo 2 section
 6. `./videos/az_emerging_tech_meetup/PRESENTATION_GUIDE.md` - Update Demo 2 section
 </output>

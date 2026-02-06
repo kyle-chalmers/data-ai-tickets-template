@@ -15,7 +15,7 @@ Previous prompts have created:
 
 Review all created materials:
 @videos/az_emerging_tech_meetup/
-@databricks_jobs/
+@databricks_jobs_cursor/
 </context>
 
 <requirements>
