@@ -96,8 +96,9 @@ Context engineering - structuring your project so AI tools understand your codeb
 | AGENTS.md Support | Via CLAUDE.md (same content) | Built-in |
 | Cost | $20 for pro$ | $20 for pro$ |
 | Best For | CLI-heavy workflows, multi-tool orchestration | IDE-centric development, visual feedback |
-But ultimately they can both do very similar things...
 ---
+
+But ultimately they can both do very similar things and it mostly comes down to your context engineering setup and prompting of the tool!
 
 ## Demo Task Details
 
