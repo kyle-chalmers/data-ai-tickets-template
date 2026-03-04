@@ -38,6 +38,11 @@ The `videos/` folder contains complete examples from YouTube videos:
   - Atlassian CLI setup and configuration
   - Atlassian MCP server setup
   - Ticket workflow automation
+- **Integrating AWS S3 and Athena** - CLI + Claude Code workflow for AWS data lakes
+- **PRP Data Object Workflow** - Context engineering framework for building Snowflake data objects:
+  - Product Requirements Prompt (PRP) methodology
+  - AI-assisted data object creation and QC
+  - Four-phase workflow from definition to production deployment
 - **Claude Code vs Cursor** - Head-to-head comparison building the same Databricks job with both tools:
   - AGENTS.md universal standard for AI coding tools
   - Context engineering systems compared (CLAUDE.md vs AGENTS.md + .cursorrules)
@@ -111,12 +116,20 @@ Check the [Kyle Chalmers Data & AI YouTube channel](https://youtube.com/@kylecha
 
 | Video | Description |
 |-------|-------------|
-| [FUTURE PROOF Your Data Career with this Claude Code Deep Dive](https://www.youtube.com/watch?v=g4g4yBcBNuE) | Complete Claude Code guide for data teams |
-| [If You Are in Data and Want to Leverage AI, this is Made for You](https://www.youtube.com/watch?v=NDR0tiJWWEA) | Introduction to the repository and AI-assisted data workflows |
-| [The AI Integration Every Data Professional Needs](https://www.youtube.com/watch?v=q1y7M5mZkkE) | Claude Code + Snowflake workflow demo |
+| [5 Lessons for Every Data Professional Wondering About AI](https://www.youtube.com/watch?v=NDR0tiJWWEA) | Introduction to the repository and AI-assisted data workflows |
+| [Claude Code + Snowflake: The Productivity Game-Changer](https://www.youtube.com/watch?v=q1y7M5mZkkE) | Claude Code + Snowflake workflow demo |
+| [Claude Code vs Manual Jira Ticket Work](https://www.youtube.com/watch?v=WRvgMzYaIVo) | Atlassian CLI and MCP integration guide |
 | [Claude Code Makes Databricks Easy](https://www.youtube.com/watch?v=5_q7j-k8DbM) | Jobs, Notebooks, SQL & Unity Catalog via CLI |
-| [How to SUCCESSFULLY Integrate Claude in Your Jira Workflow](https://www.youtube.com/watch?v=WRvgMzYaIVo) | Atlassian CLI and MCP integration guide |
+| [FUTURE PROOF Your Data Career with this Claude Code Deep Dive](https://www.youtube.com/watch?v=g4g4yBcBNuE) | Complete Claude Code guide for data teams |
+| [UPDATE to settings.json Chapter from FUTURE PROOF Deep Dive](https://www.youtube.com/watch?v=WKt28ytMl3c) | Settings update supplement to the Claude Code Deep Dive |
+| [Stop Waiting: Use AI to Build Better Data Infrastructure](https://www.youtube.com/watch?v=DUK39XqEVm0) | PRP context engineering framework for Snowflake data objects |
+| [The Data Skills AI Can't Replace (And the Ones It Already Has)](https://www.youtube.com/watch?v=fIOyXgfeUQM) | Analysis of data skills in the age of AI |
 | [Skip S3 and Athena in the AWS Console](https://www.youtube.com/watch?v=kCUTStWwErg) | CLI + Claude Code workflow for AWS data lakes |
+| [I Let Claude Code Handle Our Data Team's Workflow](https://www.youtube.com/watch?v=hQh3Pu9vfNY) | End-to-end data team workflow automation with Claude Code |
+| [I Tested Claude Code vs Cursor for Building Databricks Jobs](https://www.youtube.com/watch?v=n9g3xGAeFzA) | Head-to-head comparison with context engineering focus |
+| [Claude Code Storage Bug? Set This Up Once and Never Worry Again](https://www.youtube.com/watch?v=o7tKO4qN_uc) | Solving Claude Code's storage and context persistence |
+| [I Prompted Claude to Build My YouTube Analytics BigQuery Pipeline](https://www.youtube.com/watch?v=on6sR1prls4) | Building an automated YouTube analytics pipeline from a single prompt |
+| [Claude Code Built This Azure Pipeline in Minutes](https://www.youtube.com/watch?v=bn9wnNjG-gc) | AI-powered Azure data pipeline development |
 
 ## 💡 Key Concepts
 
