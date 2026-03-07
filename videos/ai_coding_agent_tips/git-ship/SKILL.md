@@ -67,6 +67,7 @@ Always auto-generate both the commit message and PR description — never ask th
 - Switch back to main: `git checkout main`
 - Pull latest: `git pull`
 - Delete the local feature branch: `git branch -d <branch-name>`
+- Delete the remote branch: `git push origin --delete <branch-name>`
 - Confirm success by showing the merge commit
 
 ## Rules
