@@ -98,3 +98,6 @@ logs/
 LOCAL_*.md
 *_LOCAL.md
 .local/
+
+# Internal / non-public content (scripts, recording notes, private context)
+.internal/
