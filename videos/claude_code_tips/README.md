@@ -34,10 +34,13 @@ Stop typing everything from scratch. Use built-in OS or browser dictation to spe
 Before writing a prompt, ask: *what context does the AI agent need to answer this well?* The more relevant context you provide upfront (goals, constraints, existing code), the better the output.
 
 **Resources:**
-- [Claude Code Best Practices](https://code.claude.com/docs/en/best-practices)
-- [Claude Code Common Workflows](https://code.claude.com/docs/en/common-workflows)
-- [Claude Superpowers (MCP / context tools)](https://claude.com/plugins/superpowers)
-- [taches-cc-resources (community plugins)](https://github.com/glittercowboy/taches-cc-resources)
+
+- **Claude Code:** [Best Practices](https://code.claude.com/docs/en/best-practices) · [Common Workflows](https://code.claude.com/docs/en/common-workflows)
+- **Cursor:** [Agent Best Practices](https://cursor.com/blog/agent-best-practices) · [Working with Context](https://docs.cursor.com/guides/working-with-context)
+- **GitHub Copilot:** [Best Practices](https://docs.github.com/en/copilot/get-started/best-practices) · [Agent Best Practices](https://docs.github.com/copilot/how-tos/agents/copilot-coding-agent/best-practices-for-using-copilot-to-work-on-tasks)
+- **Windsurf:** [Context Awareness Overview](https://docs.windsurf.com/context-awareness/overview) · [Getting Started](https://docs.windsurf.com/windsurf/getting-started)
+- **Codex:** [Overview](https://platform.openai.com/docs/codex/overview) · [Best Practices](https://platform.openai.com/docs/codex)
+- **Context Engineering Frameworks (all agents):** [Superpowers / MCP](https://claude.com/plugins/superpowers) · [taches-cc-resources](https://github.com/glittercowboy/taches-cc-resources)
 
 ---
 
@@ -69,9 +72,11 @@ A custom skill that handles the full git shipping workflow in one command: stage
 
 ## Tip 5: Use AI to Improve the AI
 
-Use Claude to write or refine your own CLAUDE.md, hooks, and skills. The meta-loop: ask Claude what context it would need to help you better, then add that to your global instructions.
+Use your AI agent to write or refine your own global context file, hooks, and skills. The meta-loop: ask the agent what context it would need to help you better, then add that to your global instructions.
 
-**Resources:**
+**Resources (Claude Code examples — other agents have equivalent features):**
+- [Cursor Marketplace](https://cursor.com/marketplace) — plugins, automations, and extensions for Cursor
+- [Claude Plugins](https://claude.com/plugins) — directory for Claude Code and Cowork
 - [Claude Code Plugins / Extensions](https://code.claude.com/docs/en/discover-plugins)
 - [Claude Code Skills](https://code.claude.com/docs/en/skills)
 - [Claude Code Hooks Guide](https://code.claude.com/docs/en/hooks-guide)
@@ -81,7 +86,7 @@ Use Claude to write or refine your own CLAUDE.md, hooks, and skills. The meta-lo
 ## Folder Contents
 
 ```
-videos/claude_code_tips/
+videos/ai_coding_agent_tips/
 ├── README.md                            ← this file
 ├── diagram.excalidraw                   ← visual map of the 5 tips
 ├── diagram.png                          ← rendered diagram (used in README)
