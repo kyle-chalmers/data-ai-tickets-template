@@ -1,6 +1,6 @@
 # 5 Small Coding Agent Tips That Make a Big Difference
 
-**Video:** [VIDEO LINK COMING SOON]
+**Video:** [5 Small Coding Agent Tips That Make a Big Difference](https://www.youtube.com/watch?v=SDEtP1msjos)
 
 A quick reference for all 5 tips covered in the video, with links and example files.
 
@@ -36,10 +36,10 @@ Before writing a prompt, ask: *what context does the AI agent need to answer thi
 **Resources:**
 
 - **Claude Code:** [Best Practices](https://code.claude.com/docs/en/best-practices) · [Common Workflows](https://code.claude.com/docs/en/common-workflows)
-- **Cursor:** [Agent Best Practices](https://cursor.com/blog/agent-best-practices) · [Working with Context](https://docs.cursor.com/guides/working-with-context)
+- **Cursor:** [Agent Best Practices](https://cursor.com/blog/agent-best-practices) · [Rules for AI / Context](https://cursor.com/docs/context/rules)
 - **GitHub Copilot:** [Best Practices](https://docs.github.com/en/copilot/get-started/best-practices) · [Agent Best Practices](https://docs.github.com/copilot/how-tos/agents/copilot-coding-agent/best-practices-for-using-copilot-to-work-on-tasks)
 - **Windsurf:** [Context Awareness Overview](https://docs.windsurf.com/context-awareness/overview) · [Getting Started](https://docs.windsurf.com/windsurf/getting-started)
-- **Codex:** [Overview](https://platform.openai.com/docs/codex/overview) · [Best Practices](https://platform.openai.com/docs/codex)
+- **Codex:** [CLI Overview](https://developers.openai.com/codex/cli) · [AGENTS.md Guide](https://developers.openai.com/codex/guides/agents-md)
 - **Context Engineering Frameworks (all agents):** [Superpowers / MCP](https://claude.com/plugins/superpowers) · [taches-cc-resources](https://github.com/glittercowboy/taches-cc-resources)
 
 ---
