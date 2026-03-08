@@ -29,7 +29,7 @@ Always auto-generate both the commit message and PR description — never ask th
 - `## Summary` section: 3–5 bullet points max, plain English, no technical jargon
 - `## Test plan` section: 1–3 lines on how to verify
 - Total body: 100 words max
-- Footer: `Generated with Claude Code`
+- Footer: `Generated with AI`
 
 ## Pre-flight Checks
 
@@ -56,7 +56,7 @@ Always auto-generate both the commit message and PR description — never ask th
 - Create a PR using `gh pr create` with:
   - A conventional commit title (use the commit message subject line)
   - A body following the Message Guidelines above
-  - Include the `Generated with Claude Code` footer
+  - Include the `Generated with AI` footer
 
 ### Step 4: Squash Merge
 
