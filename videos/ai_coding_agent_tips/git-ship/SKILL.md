@@ -68,6 +68,7 @@ Always auto-generate both the commit message and PR description — never ask th
 - Pull latest: `git pull`
 - Delete the local feature branch: `git branch -d <branch-name>`
 - Delete the remote branch: `git push origin --delete <branch-name>`
+- **Sanity check:** Run `git status --porcelain`. If any files are unexpectedly dirty (i.e., not files you intentionally left unstaged), run `git restore .` to restore them to HEAD. This catches cases where a file-watcher or IDE briefly wrote stale content during the branch-switch window. Report any auto-restored files to the user.
 - Confirm success by showing the merge commit
 
 ## Rules
