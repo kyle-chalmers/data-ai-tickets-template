@@ -16,19 +16,6 @@
       "Glob",
       "Grep"
     ],
-    "ask": [
-      "Bash(snow:*)",
-      "Bash(databricks:*)",
-      "Bash(psql:*)",
-      "Bash(mysql:*)",
-      "Bash(git push:*)",
-      "Bash(git commit:*)",
-      "Bash(gh pr:*)",
-      "Bash(curl:*)",
-      "Bash(wget:*)",
-      "Write(.env*)",
-      "Edit(.env*)"
-    ],
     "deny": [
       "Read(.env)",
       "Read(.env.*)",
