@@ -137,26 +137,37 @@ Then ask OpenCode to write analysis scripts for you.
 ### AI Coding Agents
 | Tool | Cost | Link |
 |------|------|------|
-| OpenCode | Free (open source) | https://opencode.ai |
+| OpenCode | Free (open source, 95K+ GitHub stars) | https://opencode.ai |
 | GitHub Copilot Free | Free (2,000 completions/month) | https://github.com/features/copilot/plans |
-| Aider | Free (open source) | https://aider.chat |
+| Aider | Free (open source, 39K+ GitHub stars) | https://aider.chat |
+| Ollama | Free (run models locally, 8-16 GB RAM) | https://ollama.com |
 
 ### AI IDEs
 | Tool | Free Tier | Link |
 |------|-----------|------|
 | Cursor | Limited completions + agent requests | https://cursor.com |
 | Windsurf | 25 credits/month + unlimited autocomplete | https://windsurf.com |
+| GitHub Codespaces | 60 hrs/month, runs in browser | https://github.com/features/codespaces |
+
+### Free AI Models
+| Provider | Free Tier | Link |
+|----------|-----------|------|
+| OpenRouter | 29 free models, 50 req/day, no credit card | https://openrouter.ai/collections/free-models |
+| Ollama | Unlimited (local, offline capable) | https://ollama.com |
 
 ### Free Databases (Permanent)
 | Database | Free Tier | Link |
 |----------|-----------|------|
-| BigQuery Sandbox | 10 GB + 1 TB queries/month | https://cloud.google.com/bigquery/pricing |
+| BigQuery Sandbox | 10 GB + 1 TB queries/month* | https://cloud.google.com/bigquery/pricing |
 | Databricks Free Edition | Serverless SQL + Python, Genie AI | https://www.databricks.com/learn/free-edition |
 | Azure SQL Database | 32 GB, always free | https://learn.microsoft.com/en-us/azure/azure-sql/database/free-offer |
 | DuckDB | Unlimited (local) | https://duckdb.org |
 | MotherDuck | 10 GB + 10 hrs/month | https://motherduck.com/product/pricing/ |
 | Supabase | 500 MB PostgreSQL | https://supabase.com/pricing |
 | Neon | 0.5 GB + 100 compute hrs/month | https://neon.com/pricing |
+| Google Sheets | 15 GB shared across Drive | https://sheets.google.com |
+
+*BigQuery Sandbox tables expire after 60 days. Enable billing (free tier still applies) to remove this limit.
 
 ### Free Databases (Trials)
 | Database | Credits | Duration | Link |
@@ -204,6 +215,17 @@ These are already loaded in BigQuery. No download needed.
 | NOAA Weather | `bigquery-public-data.noaa_gsod` | Is my city getting hotter over the last 50 years? |
 | US Census | `bigquery-public-data.census_bureau_acs` | Which US cities grew fastest in the last decade? |
 | NYC Taxi | `bigquery-public-data.new_york_taxi_trips` | What are the busiest pickup locations by time of day? |
+
+### Downloadable Datasets
+
+For local analysis with DuckDB or any database:
+
+| Source | Description | Link |
+|--------|-------------|------|
+| Kaggle | Thousands of curated datasets on every topic | https://www.kaggle.com/datasets |
+| World Bank Open Data | Global economic and development indicators | https://data.worldbank.org/ |
+| Data.gov | US government open data | https://data.gov |
+| Your own data | Export CSV from your bank, LinkedIn, etc. | N/A |
 
 ---
 
