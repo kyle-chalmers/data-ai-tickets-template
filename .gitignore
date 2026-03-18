@@ -88,6 +88,9 @@ logs/
 *.swp
 *.swo
 
+# Planning artifacts (AI agent working files)
+.planning/
+
 # Claude Code specific
 .claude/commands/.DS_Store
 
