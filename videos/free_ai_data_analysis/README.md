@@ -1,6 +1,6 @@
 # Getting Started with AI for Data Analysis for Free
 
-> **YouTube:** [Getting Started with AI for Data Analysis for Free](https://youtube.com/@kylechalmersdataai)
+> **YouTube:** [Getting Started with AI for Data Analysis for Free](https://youtu.be/bWEs8Umnrwo)
 
 Complete guide for setting up a free AI-powered data analysis environment from scratch. Uses OpenCode (free AI coding agent), BigQuery Sandbox (free cloud data warehouse), and Cursor/Windsurf (free AI IDE).
 
