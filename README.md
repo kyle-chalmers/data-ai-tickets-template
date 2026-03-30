@@ -131,6 +131,7 @@ Check the [Kyle Chalmers Data & AI YouTube channel](https://youtube.com/@kylecha
 | [I Prompted Claude to Build My YouTube Analytics BigQuery Pipeline](https://www.youtube.com/watch?v=on6sR1prls4) | Building an automated YouTube analytics pipeline from a single prompt |
 | [Claude Code Built This Azure Pipeline in Minutes](https://www.youtube.com/watch?v=bn9wnNjG-gc) | AI-powered Azure data pipeline development |
 | [5 Small Coding Agent Tips That Make a Big Difference](https://www.youtube.com/watch?v=SDEtP1msjos) | Small habits and setup steps that make Claude Code sessions go smoother |
+| [Semantic Layers: The Skill Data Professionals Need Next](https://www.youtube.com/watch?v=2hiELj4Yavw) | Bundled vs standalone semantic layers with Snowflake and dbt MetricFlow demos |
 
 ## 💡 Key Concepts
 
