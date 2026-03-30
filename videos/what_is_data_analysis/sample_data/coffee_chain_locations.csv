@@ -1,0 +1,9 @@
+city,state,monthly_revenue,monthly_foot_traffic,avg_rent_sqft,population,competitors_within_3mi
+Portland,OR,145000,28500,42,654000,8
+Austin,TX,168000,32000,38,979000,12
+Denver,CO,152000,29000,45,715000,10
+Nashville,TN,138000,26000,35,684000,7
+Boise,ID,112000,19500,28,236000,4
+Raleigh,NC,125000,22000,32,474000,6
+Salt Lake City,UT,118000,21000,30,200000,5
+Tampa,FL,132000,24500,36,387000,9
