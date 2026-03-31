@@ -53,27 +53,36 @@ Three-act structure delivering three takeaways:
 
 ## Act 2: Live Demo (30 min)
 
-**Concept: "Automate a Tedious Business Workflow"**
+**Concept: "Automate a Tedious Business Workflow" — with a live tool connection**
 
-Take a universally relatable task — e.g., "I have 50 customer feedback entries in a CSV. Categorize them, extract themes, and draft a summary email to leadership."
+Take a universally relatable task — "I have 50 customer feedback entries in a Google Sheet. Categorize them, extract themes, and draft a summary email to leadership." The key twist: the AI pulls the data directly from Google Sheets via MCP, demonstrating a real tool integration.
 
 **Why this demo:**
 
-- Relatable to technical and non-technical attendees alike
+- Relatable to technical and non-technical attendees alike (everyone uses Google Sheets)
 - Shows AI as a practical work accelerator, not just a coding tool
-- Demonstrates all 4 Context Engineering layers in action
+- Demonstrates all 4 Context Engineering layers in action, including the "Tools" layer with a live MCP connection
 - Has a visible, satisfying output (the summary email)
 - Naturally shows iteration and human-in-the-loop refinement
+- The "AI just read my Google Sheet" moment delivers on the event page promise of connecting widely-used platforms
 
 **Demo flow:**
 
-1. Show the raw problem (messy CSV, tedious manual work)
-2. Show how Context Engineering makes the AI effective (role definition, data context, output format)
-3. Run it live — categorize, extract themes, produce summary
-4. Show the output, refine with follow-up prompts
-5. Emphasize: "The magic isn't the tool — it's the context you gave it"
+1. Show the raw problem (messy Google Sheet with 50 feedback entries, tedious manual categorization)
+2. Show the first tool connection: connect AI to Google Sheets via MCP (this is the "Tools" layer live)
+3. Show how Context Engineering makes the AI effective (role definition, data context, output format)
+4. Run it live — AI reads the Sheet, categorizes feedback, extracts themes, produces summary
+5. Show the second tool connection: load the categorized results into BigQuery and run a quick analysis query. This shows the AI connecting to a real database, not just reading files.
+6. Show the output, refine with follow-up prompts
+7. Emphasize: "The magic isn't the tool — it's the context you gave it. And notice how the AI connected to your Google Sheet, analyzed the data, and loaded it into a database. That's two tool connections in one workflow."
 
-**Specific demo dataset and scenario TBD** — should be finalized closer to the event with realistic but non-sensitive data.
+**Tool connections shown live:**
+- **Google Sheets** (via MCP) — pull feedback data. Universally relatable, everyone uses it.
+- **BigQuery** (via gcloud CLI / bq) — load and query results. Shows a real database connection. BigQuery Sandbox is free, so attendees could replicate this at home.
+
+**Tool connections mentioned in Framework Deep Dive:** During Act 1, when teaching the "Tools" layer, briefly mention other platform integrations available via MCP: Jira for ticket tracking, Slack for messaging, Snowflake for enterprise data, Databricks for jobs. The live demo proves the concept with two integrations; the framework section expands the possibilities.
+
+**Specific demo dataset TBD** — should be finalized closer to the event with realistic but non-sensitive customer feedback data in a Google Sheet.
 
 ---
 
@@ -160,14 +169,17 @@ The January event (`videos/az_emerging_tech_meetup/`) was a 60-minute demo-focus
 | Audience    | Data professionals                            | Mixed (practitioners, founders, leaders, students)              |
 | Takeaway    | "This is cool"                                | Playbook template + started project                             |
 | Depth       | Context Engineering intro + 2 technical demos | Full framework + broadly relatable demo + personalized exercise |
-| Tools shown | Claude Code + Snowflake/AWS/Databricks/Jira   | Tool-agnostic framework (Claude Code, Cursor, Codex)            |
+| Tools shown | Claude Code + Snowflake/AWS/Databricks/Jira   | Tool-agnostic framework + live Google Sheets MCP integration    |
 
 
 ---
 
 ## Open Items
 
-- Finalize demo dataset and scenario (realistic but non-sensitive customer feedback data)
+- Finalize demo dataset and scenario (realistic but non-sensitive customer feedback data in a Google Sheet)
+- Set up and test Google Sheets MCP connection for the live demo
+- Set up and test BigQuery connection (gcloud CLI / bq) for the live demo
+- Prepare BigQuery dataset/table for loading categorized feedback results
 - Create playbook template markdown
 - Build workshop slide deck (if using slides for framework section)
 - Create/update QR codes
