@@ -44,6 +44,8 @@ By the end, you'll have at least one working AI coding tool and understand why *
 | Internet connection | For downloading tools and authenticating |
 | **For Claude Code** | A [Claude subscription](https://claude.ai/pricing) ($20/month minimum) or [Anthropic Console](https://console.anthropic.com/) account |
 | **For OpenCode** | Free. Optionally, an [OpenRouter](https://openrouter.ai) account (also free) for access to free AI models |
+| **GitHub account** | Free at [github.com](https://github.com). Needed for version control and cloning project repos |
+| **Git installed** | Comes with macOS. Windows: install via [git-scm.com](https://git-scm.com/downloads/win). Linux: `sudo apt install git` |
 
 ---
 
@@ -138,6 +140,22 @@ What directory am I in and what files are here?
 ```
 
 Same result. Two tools, same capability, one paid, one free.
+
+---
+
+## GitHub & Git
+
+Both AI coding tools work best inside a project repository. You'll need a [GitHub](https://github.com) account (free) and Git installed on your machine.
+
+If you're starting from scratch, the [Getting Started with AI for Data Analysis for Free](https://youtu.be/bWEs8Umnrwo) video walks through the full setup:
+
+| Chapter | Timestamp | What It Covers |
+|:--------|:----------|:---------------|
+| GitHub Account & Repo Creation | [12:02](https://youtu.be/bWEs8Umnrwo?t=722) | Creating a GitHub account and your first repository |
+| Local GitHub Auth Configuration | [13:31](https://youtu.be/bWEs8Umnrwo?t=811) | Setting up Git credentials on your machine |
+| Clone Your Repo Locally | [19:02](https://youtu.be/bWEs8Umnrwo?t=1142) | Cloning a repo to your local machine |
+
+**Already have GitHub and Git?** Skip ahead to the next section.
 
 ---
 
