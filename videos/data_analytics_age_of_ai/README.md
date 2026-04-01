@@ -1,14 +1,14 @@
-# What Is Data Analysis? How AI Changed It and Why Every Business Needs It
+# What Is Data Analytics in the Age of AI?
 
-Companion materials for the KC Labs AI video explaining data analysis to complete beginners.
+Companion materials for the KC Labs AI video exploring how AI is transforming data analytics -- from the roles that power it to the tools reshaping every step.
 
 [Watch on YouTube](https://www.youtube.com/@kylechalmersdataai) | [KC Labs AI](https://kclabs.ai)
 
 ## What You'll Learn
 
-1. What data analysis actually is and why every business depends on it, with real examples from Spotify, Starbucks, and Netflix
-2. The 4 key data roles (Data Engineer, Data Analyst, Analytics Engineer, BI Developer) and how they each contribute to solving a single business problem
-3. How AI has made data analysis faster and more accessible, and why human judgment still matters more than technical skills
+1. What data analytics is and how AI is transforming it, with real examples from Spotify, Starbucks, and Netflix
+2. The 4 key data roles (Data Engineer, Data Analyst, Analytics Engineer, BI Developer) and how AI is augmenting each one
+3. Why human judgment is the most important skill in the age of AI, and why these careers are growing, not shrinking
 
 ## Try It Yourself
 
@@ -27,6 +27,7 @@ Other free AI tools that can do this:
 
 ## The 4 Data Roles
 
+These four roles form the backbone of data analytics teams. AI is changing how each one works, but it is not replacing any of them.
 
 | Role               | Tagline                 | Tools                                    |
 | ------------------ | ----------------------- | ---------------------------------------- |
@@ -49,6 +50,9 @@ Other free AI tools that can do this:
 | 574M Spotify users receive Wrapped annually                | [Spotify Engineering](https://engineering.atspotify.com/2020/02/spotify-unwrapped-how-we-brought-you-a-decade-of-data) |
 | Starbucks Atlas platform for location selection            | [Esri Case Study](https://www.esri.com/about/newsroom/arcwatch/going-big-with-gis/)                                    |
 | $82-91B global data analytics market (2025)                | Fortune Business Insights                                                                                              |
+| AI has created 1.3M new roles globally                     | [WEF / LinkedIn Data](https://www.weforum.org/stories/2026/01/ai-has-already-added-1-3-million-new-jobs-according-to-linkedin-data/) |
+| 40% of enterprise apps will feature AI agents by 2026      | [Gartner](https://www.gartner.com/en/newsroom/press-releases/2025-08-26-gartner-predicts-40-percent-of-enterprise-apps-will-feature-task-specific-ai-agents-by-2026-up-from-less-than-5-percent-in-2025) |
+| Skills in AI-exposed jobs changing 66% faster              | LinkedIn / WEF Future of Jobs 2025                                                                                     |
 
 
 ## Salary Resources
