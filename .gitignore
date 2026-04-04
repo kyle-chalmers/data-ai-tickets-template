@@ -104,3 +104,6 @@ LOCAL_*.md
 
 # Internal / non-public content (scripts, recording notes, private context)
 .internal/
+
+# Personal data (LinkedIn exports, etc.) — never committed to public repo
+videos/az_tech_week_workshop/linkedin_data/
