@@ -114,7 +114,7 @@ Project 4 archetype options + a wild card on screen. Audience votes by show of h
 
 | Archetype | Primary Tool Connection | Backup |
 |-----------|------------------------|--------|
-| Automate a recurring report | Google Sheets MCP (pull data live) | bq CLI (BigQuery query) |
+| Automate a recurring report | Notion MCP (pull data from database) | Google Sheets via Python (gspread) or bq CLI (BigQuery) |
 | Triage incoming requests | Atlassian/Jira MCP (read tickets) | Slack MCP |
 | Build a simple app or tool | GitHub CLI + filesystem | Vercel CLI for deploy |
 | Build or optimize a website | GitHub CLI + Vercel CLI | filesystem + localhost |
@@ -124,7 +124,7 @@ Project 4 archetype options + a wild card on screen. Audience votes by show of h
 
 ### Backup Demo
 
-If the audience-polled demo goes sideways (tool connection fails, wild card is too complex, time is running short), **Archetype 1 (Automate a recurring report / Google Sheets)** is the designated fallback. It's the most universally relatable, has the strongest "wow moment" (AI reading a live Google Sheet), and will be the most rehearsed.
+If the audience-polled demo goes sideways (tool connection fails, wild card is too complex, time is running short), **Archetype 1 (Automate a recurring report / Notion)** is the designated fallback. It's the most universally relatable, has a strong "wow moment" (AI reading a live Notion database), and will be the most rehearsed.
 
 ### Why Not "Draft Communications"?
 
@@ -142,7 +142,7 @@ Attendees pick the archetype closest to their work. Each is a business problem p
 
 | # | Archetype | Example Problem | Example Tools |
 |---|-----------|----------------|---------------|
-| 1 | **Automate a recurring report** | "Every Monday I manually pull sales numbers and email a summary to leadership" | Google Sheets, SQL/BigQuery, Excel, CLI data tools |
+| 1 | **Automate a recurring report** | "Every Monday I manually pull sales numbers and email a summary to leadership" | Notion, SQL/BigQuery, Excel, CLI data tools |
 | 2 | **Triage incoming requests** | "I have 40 unread support tickets and need to categorize by urgency and route to the right team" | Jira, Linear, HubSpot, Slack, email |
 | 3 | **Build a simple app or tool** | "I need an internal calculator, intake form, or dashboard for my team" | Claude Code, Next.js, Python, Vercel, GitHub CLI |
 | 4 | **Draft communications from raw info** | "Turn my meeting notes and project data into a polished stakeholder update email" | Notion, Google Docs, Slack, email CLI |
@@ -303,7 +303,7 @@ Kyle's LinkedIn export adds a personal, relatable dimension — especially for a
 
 | File | Rows | Workshop Use |
 |------|------|-------------|
-| **Connections.csv** | 3,723 | Archetype 1: network growth over time, industry clusters, company distribution. Load into Google Sheets for live MCP demo. |
+| **Connections.csv** | 3,723 | Archetype 1: network growth over time, industry clusters, company distribution. Load into Notion database for live MCP demo. |
 | **messages.csv** | Large | Archetype 2: triage LinkedIn inbox — categorize by type, identify high-priority messages |
 | **Endorsement_Received_Info.csv** | 324 | Archetype 1: "What skills does my network associate with me?" — skill trends and clusters |
 | **Learning.csv** | 221 | Archetype 1 or 4: "Summarize my learning and recommend what's next" |
@@ -325,7 +325,7 @@ Kyle's LinkedIn export adds a personal, relatable dimension — especially for a
 Ready-to-paste prompts so Kyle can run tool setup and demos quickly without writing from scratch:
 
 **Tool Setup Prompts** (`demo_prompts/tool_setup_prompts.md`):
-- Google Sheets MCP: install, configure, verify connection
+- Notion MCP: verify connection, test reading a database
 - Atlassian/Jira MCP: install, authenticate, verify connection
 - BigQuery CLI (bq): verify auth, test query
 - DuckDB CLI: install, verify with a local CSV
@@ -345,7 +345,7 @@ Before the workshop, every tool connection must be verified working end-to-end:
 
 | Tool | Type | Status | Verification |
 |------|------|--------|-------------|
-| Google Sheets MCP | MCP Server | Needs setup | Read a sheet, return data |
+| Notion MCP | MCP Server | Configured globally | Read a database, return data |
 | Atlassian/Jira MCP | MCP Server | Setup docs exist | Read tickets from a test project |
 | BigQuery CLI (bq) | CLI | Needs verification | Run a query, return results |
 | DuckDB CLI | CLI | Needs verification | Query a local CSV, return results |
@@ -401,7 +401,7 @@ The January event (`videos/az_emerging_tech_meetup/`) was a 60-minute demo-focus
 - Load datasets into appropriate tools (Google Sheet, Jira test project, BigQuery)
 
 ### Tool Setup & Verification
-- Set up and verify Google Sheets MCP connection
+- Verify Notion MCP connection and load demo data into a Notion database
 - Set up and verify Atlassian/Jira MCP connection
 - Verify BigQuery CLI (bq) auth and test query
 - Verify DuckDB CLI install and local CSV query
