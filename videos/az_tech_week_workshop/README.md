@@ -173,7 +173,7 @@ Every demo includes a real tool connection — the AI doesn't just write text, i
 
 | Tool | Purpose | Connection |
 |:----:|:--------|:-----------|
-| [![Google Sheets](https://img.shields.io/badge/-Google_Sheets-34A853?style=flat-square)](https://workspace.google.com/products/sheets/) | Pull data from spreadsheets | [MCP Server](https://modelcontextprotocol.io/) |
+| [![Notion](https://img.shields.io/badge/-Notion-000000?style=flat-square&logo=notion)](https://www.notion.com) | Pull data from databases & docs | [Notion MCP](https://www.notion.com/integrations) (Official) |
 | [![Jira](https://img.shields.io/badge/-Jira-0052CC?style=flat-square)](https://www.atlassian.com/software/jira) | Read and manage tickets | [Atlassian MCP](https://www.atlassian.com/rovo) |
 | [![BigQuery](https://img.shields.io/badge/-BigQuery-4285F4?style=flat-square)](https://cloud.google.com/bigquery) | Query cloud databases | <kbd>[bq](https://cloud.google.com/bigquery/docs/bq-command-line-tool) query "..."</kbd> |
 | [![GitHub](https://img.shields.io/badge/-GitHub-181717?style=flat-square)](https://github.com) | Code & deploy | <kbd>[gh](https://cli.github.com/) repo create ...</kbd> |
@@ -190,11 +190,11 @@ Every demo includes a real tool connection — the AI doesn't just write text, i
 You are a data analyst who specializes in business reporting. You help automate
 recurring reports by pulling data from source systems and producing formatted summaries.
 
-I have customer feedback data in a Google Sheet that I need to summarize every week.
-The sheet contains dates, categories, ratings, and free-text comments.
+I have customer feedback data in a Notion database that I need to summarize every week.
+The database contains dates, categories, ratings, and free-text comments.
 
 Can you help me:
-1. Connect to my Google Sheet and pull the latest feedback data
+1. Connect to my Notion database and pull the latest feedback data
 2. Categorize the feedback by theme (product, service, pricing, etc.)
 3. Calculate average ratings by category
 4. Identify the top 3 issues and top 3 positive trends
@@ -272,7 +272,7 @@ I want something I can show people today.
 
 | # | Archetype | Example Problem | Example Tools |
 |:--|:----------|:----------------|:--------------|
-| 1 | **Automate a recurring report** | "Every Monday I pull sales numbers and email a summary to leadership" | Google Sheets, SQL/BigQuery, Excel, CLI tools |
+| 1 | **Automate a recurring report** | "Every Monday I pull sales numbers and email a summary to leadership" | Notion, SQL/BigQuery, Excel, CLI tools |
 | 2 | **Triage incoming requests** | "40 unread tickets — categorize by urgency and route to the right team" | Jira, Linear, HubSpot, Slack, email |
 | 3 | **Build a simple app or tool** | "I need an internal calculator, intake form, or dashboard for my team" | Claude Code, Next.js, Python, Vercel, GitHub |
 | 4 | **Draft communications from raw info** | "Turn meeting notes and project data into a polished stakeholder email" | Notion, Google Docs, Slack, email |

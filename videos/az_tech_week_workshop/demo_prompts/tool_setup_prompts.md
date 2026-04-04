@@ -4,21 +4,39 @@ Ready-to-paste prompts for Claude Code to install, configure, and verify each to
 
 ---
 
-## Google Sheets MCP
+## Notion MCP
 
-**Status:** Needs setup
+**Status:** Configured globally (SSE at mcp.notion.com) — Official from Notion
 
 ```text
-I need to set up a Google Sheets MCP server so I can read data from Google Sheets
-directly in Claude Code. Please help me:
+I have the Notion MCP server configured. Please verify it's working by:
 
-1. Research the available Google Sheets MCP server options
-2. Install the recommended one
-3. Configure it at the user level (~/.claude.json) so it's available across projects
-4. Verify it works by reading a test Google Sheet
+1. Authenticating the MCP connection (it uses OAuth — I may need to approve in browser)
+2. Searching for my Notion databases
+3. Reading data from a test database
+4. Confirming I can query database entries and their properties
 
-I want to be able to pull data from a Google Sheet during a live workshop demo,
-so reliability is critical. Walk me through each step.
+I need this working reliably for a live workshop demo where I'll pull data
+from a Notion database to generate a report.
+```
+
+---
+
+## Google Sheets via Python (No Official MCP — Use CLI/Python Instead)
+
+**Status:** Available via gspread Python library
+
+```text
+There is no official Google Sheets MCP server. Instead, I want to connect to
+Google Sheets using the gspread Python library. Please help me:
+
+1. Install gspread and google-auth: pip install gspread google-auth
+2. Set up authentication (I have gcloud configured — use application default credentials)
+3. Read data from a test Google Sheet
+4. Confirm I can pull rows and columns programmatically
+
+This is a backup approach for the workshop demo — the primary tool is Notion MCP,
+but Google Sheets via Python is available if needed.
 ```
 
 ---
@@ -120,7 +138,8 @@ are working. Please check each of these in order:
 3. BigQuery CLI (bq) — run a test query against a public dataset
 4. DuckDB — run a test query on a local CSV
 5. Atlassian MCP — check if the MCP connection is active
-6. Google Sheets MCP — check if configured, and if not, flag it
+6. Notion MCP — check if the MCP connection is active
+7. Google Sheets via Python — check if gspread is installed and auth works
 
 For any that fail, tell me what's wrong and how to fix it.
 Report the status of each as PASS or FAIL.

@@ -6,19 +6,39 @@ Starter prompts for each demo archetype. Designed to be adapted live based on au
 
 ## Archetype 1: Automate a Recurring Report
 
-**Tool connection:** Google Sheets MCP (primary) or BigQuery CLI (backup)
+**Tool connection:** Notion MCP (primary) or Google Sheets via Python (backup)
 
-**With Google Sheets MCP:**
+**With Notion MCP (Official):**
+
+```text
+You are a data analyst who specializes in business reporting. You produce concise,
+data-driven summaries for leadership.
+
+I have customer feedback data in a Notion database that I need to summarize every week.
+The database has about 50 entries with dates, categories, ratings, and free-text comments.
+
+Can you help me:
+1. Connect to my Notion database and pull the feedback data
+2. Categorize the feedback by theme (product, service, pricing, support, etc.)
+3. Calculate average ratings by category
+4. Identify the top 3 issues and top 3 positive trends
+5. Draft a summary email I can send to the leadership team
+
+The output should be concise, data-driven, and ready to send.
+```
+
+**With Google Sheets via Python (backup — no official MCP, use CLI/Python instead):**
 
 ```text
 You are a data analyst who specializes in business reporting. You produce concise,
 data-driven summaries for leadership.
 
 I have customer feedback data in a Google Sheet that I need to summarize every week.
-The sheet has about 50 entries with dates, categories, ratings, and free-text comments.
+There's no official Google Sheets MCP, so use Python (gspread library) to connect
+to the sheet and pull the data.
 
 Can you help me:
-1. Connect to my Google Sheet and pull the feedback data
+1. Connect to my Google Sheet using gspread and pull the feedback data
 2. Categorize the feedback by theme (product, service, pricing, support, etc.)
 3. Calculate average ratings by category
 4. Identify the top 3 issues and top 3 positive trends
