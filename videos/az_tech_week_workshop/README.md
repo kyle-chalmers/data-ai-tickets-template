@@ -5,10 +5,8 @@
 
 [![Claude Code](https://img.shields.io/badge/Claude_Code-AI_Agent-blueviolet?style=for-the-badge&logo=anthropic)](https://claude.ai/download)
 [![OpenCode](https://img.shields.io/badge/OpenCode-Free_&_Open_Source-00C853?style=for-the-badge)](https://opencode.ai)
----
 <img src="./slides/kyle_intro_slide.jpg" width="700">
 ---
-
 | **LinkedIn** | **YouTube** | **KC Labs AI** | **Curious Questions** | **Sat. Hike & Coffee** |
 |:---:|:---:|:---:|:---:|:---:|
 | <img src="./qr_codes/linkedin_qr.png" width="180"> | <img src="./qr_codes/youtube_qr.png" width="180"> | <img src="./qr_codes/kclabs_qr.png" width="180"> | <img src="./qr_codes/curious_questions_qr.png" width="180"> | <img src="./qr_codes/saturday_hike_qr.png" width="180"> |
