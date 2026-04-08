@@ -15,15 +15,14 @@
 
 ---
 
-| **LinkedIn** | **YouTube** | **GitHub Repo** |
-|:---:|:---:|:---:|
-| <img src="./qr_codes/linkedin_qr.png" width="150"> | <img src="./qr_codes/youtube_qr.png" width="150"> | <img src="./qr_codes/repo_qr.png" width="150"> |
-| [Connect](https://www.linkedin.com/in/kylechalmers/) | [Subscribe](https://www.youtube.com/@kylechalmersdataai) | [Star](https://github.com/kyle-chalmers/data-ai-tickets-template) |
+<img src="./slides/kyle_intro_slide.jpg" width="700">
 
-| **KC Labs AI** | **Curious Questions** | **Sat. Hike & Coffee** |
-|:---:|:---:|:---:|
-| <img src="./qr_codes/kclabs_qr.png" width="150"> | <img src="./qr_codes/curious_questions_qr.png" width="150"> | <img src="./qr_codes/saturday_hike_qr.png" width="150"> |
-| [kclabs.ai](https://kclabs.ai) | [Built with AI](https://curiousquestions.life) | [RSVP — Sat. April 11](https://partiful.com/e/vMiPKyrTML8yf8Gnf618) |
+---
+
+| **LinkedIn** | **YouTube** | **KC Labs AI** | **Curious Questions** | **Sat. Hike & Coffee** |
+|:---:|:---:|:---:|:---:|:---:|
+| <img src="./qr_codes/linkedin_qr.png" width="180"> | <img src="./qr_codes/youtube_qr.png" width="180"> | <img src="./qr_codes/kclabs_qr.png" width="180"> | <img src="./qr_codes/curious_questions_qr.png" width="180"> | <img src="./qr_codes/saturday_hike_qr.png" width="180"> |
+| [Connect](https://www.linkedin.com/in/kylechalmers/) | [Subscribe](https://www.youtube.com/@kylechalmersdataai) | [kclabs.ai](https://kclabs.ai) | [Built with AI](https://curiousquestions.life) | [RSVP — Sat. April 11](https://partiful.com/e/vMiPKyrTML8yf8Gnf618) |
 
 </div>
 
@@ -38,24 +37,24 @@
 |                                                                           |
 |  +----------+   +-----------+   +------------------+   +-----------+      |
 |  |  Doors   |-->|  Welcome  |-->|    Live Demo     |-->|  Guided   |      |
-|  | & Settle |   | & Framing |   | (audience-polled)|   |  Exercise |      |
+|  | & Settle |   | & Framing |   | (audience-driven)|   |  Exercise |      |
 |  | (15 min) |   |  (15 min) |   |    (35 min)      |   |  (30 min) |      |
 |  +----------+   +-----------+   +------------------+   +-----------+      |
-|   5:30-5:45      5:45-6:00         6:00-6:35           6:35-7:05    |     |
-|                                                                      |    |
-|                  Audience          Audience picks       Pick an       |    |
-|                  pulse check,      archetype,           archetype,   |    |
-|                  4 layers          Kyle builds           apply the   |    |
-|                  overview          it live               playbook    |    |
-|                                                                      |    |
-|         +--------------------------------------------------------+   |    |
-|         v                                                            |    |
-|  +----------+   +------------------------------------------------+  |    |
-|  |   Wrap   |-->|        Open Time & Networking (50+ min)        |  |    |
-|  |  (5 min) |   |     Shares, 1-on-1 help, install assistance    |  |    |
-|  +----------+   +------------------------------------------------+  |    |
-|   7:05-7:10                    7:10 - 8:00+                          |    |
-|                                                                      |    |
+|   5:30-5:45      5:45-6:00         6:00-6:35           6:35-7:05         |
+|                                                                           |
+|                  Audience          Audience shares      Pick a            |
+|                  pulse check,      a problem,           scenario,        |
+|                  4 layers          Kyle builds           apply the       |
+|                  overview          it live               playbook        |
+|                                                                           |
+|         +--------------------------------------------------------+        |
+|         v                                                                 |
+|  +----------+   +------------------------------------------------+       |
+|  |   Wrap   |-->|        Open Time & Networking (50+ min)        |       |
+|  |  (5 min) |   |     Shares, 1-on-1 help, install assistance    |       |
+|  +----------+   +------------------------------------------------+       |
+|   7:05-7:10                    7:10 - 8:00+                               |
+|                                                                           |
 +---------------------------------------------------------------------------+
 ```
 
@@ -81,6 +80,22 @@ curl -fsSL https://claude.ai/install.sh | bash
 # OpenCode (free)
 curl -fsSL https://opencode.ai/install | bash
 ```
+
+---
+
+## AI Vocabulary
+
+<div align="center">
+<img src="./slides/relevant_vocab.jpg" width="700">
+</div>
+
+---
+
+## Where AI Fits: The Entry Point Framework
+
+<div align="center">
+<img src="./slides/entry_points_for_AI.jpg" width="700">
+</div>
 
 ---
 
@@ -134,9 +149,9 @@ Think of it like onboarding a new team member. You wouldn't sit them at a desk a
 
 ---
 
-## Live Demo: Audience Picks the Problem
+## Live Demo: Your Problem, Solved Live
 
-**You choose what we build.** Vote on the scenario, then we'll solve it live using the Context Engineering framework.
+**The best demos come from real problems.** Tell us what you're working on, and we'll build a solution together using the Context Engineering framework. Don't be shy — shout yours out!
 
 ```
 +---------------------------------------------------------------------------+
@@ -145,25 +160,29 @@ Think of it like onboarding a new team member. You wouldn't sit them at a desk a
 |                                                                           |
 |  +----------+   +-----------+   +------------------+   +-----------+      |
 |  | Audience |-->|   Get     |-->|   Build the      |-->|  Run It   |      |
-|  |  Votes   |   |  Details  |   |   Playbook Live  |   |   Live    |      |
+|  | Shares a |   |  Details  |   |   Playbook Live  |   |   Live    |      |
+|  | Problem  |   |           |   |                  |   |           |      |
 |  +----------+   +-----------+   +------------------+   +-----------+      |
-|   Show of        "Who has a      Instructions layer     AI processes      |
-|   hands          real version     Structure layer        the problem       |
-|                  of this?"        Tools layer            and produces      |
-|                                   Workflows layer        output            |
+|   "What's a      "What tool      Instructions layer     AI processes      |
+|    problem you    do you use?     Structure layer        the problem       |
+|    deal with?"    Who gets the    Tools layer            and produces      |
+|                   output?"        Workflows layer        output            |
 |                                                                           |
 +---------------------------------------------------------------------------+
 ```
 
-### Vote on the Archetype
+### Your Problem or Pick a Scenario
 
-| # | Archetype | Example Problem |
+> **Ideal:** Someone describes a real problem they deal with and we solve it live.
+> **Backup:** Pick one of these common scenarios as inspiration.
+
+| # | Example Scenario | Example Problem |
 |:--|:----------|:----------------|
 | 1 | **Automate a recurring report** | "Every Monday I pull numbers from a spreadsheet and email a summary" |
 | 2 | **Triage incoming requests** | "I have 40 unread support tickets — categorize and route them" |
 | 3 | **Build a simple app or tool** | "I need an internal calculator, form, or dashboard for my team" |
 | 4 | **Build or optimize a website** | "I need a landing page or want to improve my site's performance" |
-| 5 | **Wild card — suggest your own** | You describe your real problem in 30 seconds |
+| 5 | **Your own problem** | Describe your real problem in 30 seconds — the best demos are personal |
 
 ### Tool Connections Shown Live
 
@@ -266,11 +285,11 @@ I want something I can show people today.
 
 ## Guided Exercise: Apply the Playbook (30 min)
 
-**Your turn.** Pick the archetype closest to your work and apply the Context Engineering framework to your own business problem.
+**Your turn.** Pick the example scenario closest to your work and apply the Context Engineering framework to your own business problem.
 
-### Pick Your Archetype
+### Pick Your Example Scenario
 
-| # | Archetype | Example Problem | Example Tools |
+| # | Example Scenario | Example Problem | Example Tools |
 |:--|:----------|:----------------|:--------------|
 | 1 | **Automate a recurring report** | "Every Monday I pull sales numbers and email a summary to leadership" | Notion, SQL/BigQuery, Excel, CLI tools |
 | 2 | **Triage incoming requests** | "40 unread tickets — categorize by urgency and route to the right team" | Jira, Linear, HubSpot, Slack, email |
@@ -280,7 +299,7 @@ I want something I can show people today.
 
 ### The Playbook (4 Steps)
 
-**Step 0:** Pick your archetype from the table above (or bring your own)
+**Step 0:** Pick your example scenario from the table above (or bring your own)
 
 **Step 1:** Define your AI assistant's role
 > "You are a [role] who specializes in [domain]. You help with [tasks]."
@@ -349,45 +368,42 @@ Professional consultancy site with portfolio, courses, and contact forms.
 
 ## Key Takeaways
 
-<table>
-<tr>
-<td width="33%" align="center">
-
-### 1. Context is Everything
-
-AI tools are only as good as the context you give them. Instructions, structure, tools, and workflows make AI effective.
-
-</td>
-<td width="33%" align="center">
-
-### 2. The Framework Applies Everywhere
-
-Whether you're automating reports, triaging requests, or building apps — the same 4-layer playbook works.
-
-</td>
-<td width="33%" align="center">
-
-### 3. More Thinking, Less Typing
-
-Your role shifts from execution to oversight. AI handles mechanical work while you focus on critical thinking and quality.
-
-</td>
-</tr>
-</table>
+<div align="center">
+<img src="./slides/takeaways.jpg" width="700">
+</div>
 
 ---
 
 ## Demo Datasets
 
-The following datasets are included in this repo for practicing with the archetypes:
+The following datasets are included in this repo for practicing with the example scenarios:
 
-| Dataset | Rows | Source | Archetype |
+| Dataset | Rows | Source | Example Scenario |
 |:--------|:-----|:-------|:----------|
 | [Coffee Shop Sales](./datasets/coffee_shop_sales.csv) | 149K | [Maven Analytics](https://mavenanalytics.io/data-playground/coffee-shop-sales) | Automate a report |
 | [Customer Support Tickets](./datasets/support_tickets.csv) | ~8.5K | [Kaggle](https://www.kaggle.com/datasets/suraj520/customer-support-ticket-dataset) | Triage requests |
 
 > [!TIP]
 > **Want to use your own data?** Download your [LinkedIn data export](https://www.linkedin.com/mypreferences/d/download-my-data) — connections, messages, endorsements, and more. It takes ~24 hours to generate, but it's a great dataset to practice with.
+
+---
+
+## Context Engineering Resources
+
+After the workshop, go deeper with these resources. Starter templates and a full resource guide are in the [`context_examples/`](./context_examples/) folder.
+
+| Resource | What You'll Learn |
+|:---------|:------------------|
+| [Claude Code Best Practices](https://code.claude.com/docs/en/best-practices) | The definitive guide — CLAUDE.md, context management, subagents |
+| [Effective Context Engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) | Why context beats clever prompts — the theory behind the framework |
+| [GSD Framework](https://github.com/gsd-build/get-shit-done) | Structured multi-phase project execution for Claude Code |
+| [Superpowers](https://github.com/obra/superpowers) | Composable skills enforcing TDD and development discipline |
+| [GitHub Spec Kit](https://github.com/github/spec-kit) | Spec-driven development — works with Claude Code, Copilot, Gemini CLI |
+
+**Starter templates in this repo:**
+- [CLAUDE.md / AGENTS.md Starter](./context_examples/CLAUDE_md_starter.md) — fill-in-the-blank template organized by the 4 layers
+- [Subagent & Skill Starters](./context_examples/agents_and_skills_starter.md) — templates for extending your AI tool
+- [Full Resource Guide](./context_examples/README.md) — curated links, cross-tool reference, recommended reading
 
 ---
 
@@ -449,13 +465,9 @@ A casual 1-hour hike followed by 90 minutes of coffee, donuts, and networking wi
 
 ### Scan to Connect
 
-| **LinkedIn** | **YouTube** | **GitHub** |
-|:---:|:---:|:---:|
-| <img src="./qr_codes/linkedin_qr.png" width="150"> | <img src="./qr_codes/youtube_qr.png" width="150"> | <img src="./qr_codes/repo_qr.png" width="150"> |
-
-| **KC Labs AI** | **Curious Questions** | **Sat. Hike** |
-|:---:|:---:|:---:|
-| <img src="./qr_codes/kclabs_qr.png" width="150"> | <img src="./qr_codes/curious_questions_qr.png" width="150"> | <img src="./qr_codes/saturday_hike_qr.png" width="150"> |
+| **LinkedIn** | **YouTube** | **KC Labs AI** | **Curious Questions** | **Sat. Hike** |
+|:---:|:---:|:---:|:---:|:---:|
+| <img src="./qr_codes/linkedin_qr.png" width="180"> | <img src="./qr_codes/youtube_qr.png" width="180"> | <img src="./qr_codes/kclabs_qr.png" width="180"> | <img src="./qr_codes/curious_questions_qr.png" width="180"> | <img src="./qr_codes/saturday_hike_qr.png" width="180"> |
 
 ---
 

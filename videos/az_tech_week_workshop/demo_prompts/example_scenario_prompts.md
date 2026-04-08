@@ -1,10 +1,10 @@
-# Archetype Demo Prompts
+# Example Scenario Demo Prompts
 
-Starter prompts for each demo archetype. Designed to be adapted live based on audience input — not rigid scripts. Each applies the Context Engineering framework (role + problem + context + tool connection).
+Starter prompts for each demo example scenario. Designed to be adapted live based on audience input — not rigid scripts. Each applies the Context Engineering framework (role + problem + context + tool connection).
 
 ---
 
-## Archetype 1: Automate a Recurring Report
+## Example Scenario 1: Automate a Recurring Report
 
 **Tool connection:** Notion MCP (primary) or Google Sheets via Python (backup)
 
@@ -67,7 +67,7 @@ Use DuckDB or pandas to analyze the data. Show me visualizations if possible.
 
 ---
 
-## Archetype 2: Triage Incoming Requests
+## Example Scenario 2: Triage Incoming Requests
 
 **Tool connection:** Atlassian/Jira MCP (primary) or local CSV (backup)
 
@@ -110,7 +110,7 @@ Use DuckDB or pandas to analyze. Focus on the most urgent items.
 
 ---
 
-## Archetype 3: Build a Simple App or Tool
+## Example Scenario 3: Build a Simple App or Tool
 
 **Tool connection:** GitHub CLI + filesystem (primary), Vercel CLI for deploy
 
@@ -154,7 +154,7 @@ Keep it simple — this should take under 10 minutes.
 
 ---
 
-## Archetype 4: Build or Optimize a Website
+## Example Scenario 4: Build or Optimize a Website
 
 **Tool connection:** GitHub CLI + Vercel CLI
 
