@@ -37,10 +37,14 @@ Useful LinkedIn files for the workshop archetypes:
 
 | File | Rows (Kyle's) | Use Case |
 |:-----|:--------------|:---------|
-| Connections.csv | 3,723 | Network analysis, growth trends, industry clusters |
-| messages.csv | Large | Inbox triage and categorization |
-| Endorsement_Received_Info.csv | 324 | Skills analysis |
+| Connections.csv | 3,729 | Network analysis, growth trends, industry clusters |
+| SearchQueries.csv | 3,456 | Search behavior and interest analysis |
+| Reactions.csv | 932 | Content engagement patterns |
+| Shares.csv | 434 | Posting activity and content strategy |
+| Endorsement_Received_Info.csv | 323 | Skills analysis |
+| Company Follows.csv | 223 | Industry interest analysis |
 | Learning.csv | 221 | Learning summary and recommendations |
-| Company Follows.csv | 221 | Industry interest analysis |
-| Invitations.csv | 205 | Networking activity patterns |
-| Rich_Media.csv | 57 | Posting pattern analysis |
+| Comments.csv | 162 | Engagement and discussion patterns |
+| Skills.csv | 30 | Listed skills inventory |
+| Rich_Media.csv | 25 | Media sharing patterns |
+| Positions.csv | 17 | Career history analysis |
