@@ -8,9 +8,7 @@
 [![OpenCode](https://img.shields.io/badge/OpenCode-Free_&_Open_Source-00C853?style=for-the-badge)](https://opencode.ai)
 
 ---
-
 <img src="./slides/kyle_intro_slide.jpg" width="700">
-
 ---
 
 | **LinkedIn** | **YouTube** | **KC Labs AI** | **Curious Questions** | **Sat. Hike & Coffee** |
