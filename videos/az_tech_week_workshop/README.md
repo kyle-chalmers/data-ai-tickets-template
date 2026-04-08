@@ -2,7 +2,7 @@
 
 # The Practical AI Playbook
 
-### Context Engineering Workshop — From AI Curiosity to AI Execution
+### Context Engineering Workshop — From AI Curiosity to AI Execution #AZTechWeek 
 
 [![Claude Code](https://img.shields.io/badge/Claude_Code-AI_Agent-blueviolet?style=for-the-badge&logo=anthropic)](https://claude.ai/download)
 [![OpenCode](https://img.shields.io/badge/OpenCode-Free_&_Open_Source-00C853?style=for-the-badge)](https://opencode.ai)
