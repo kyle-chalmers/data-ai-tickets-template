@@ -9,8 +9,8 @@ Speaker-only notes. Not shown on screen — the README.md is the presentation ma
 - [ ] Laptop charged and plugged in
 - [ ] Terminal open with Claude Code ready
 - [ ] README.md open in a browser tab (GitHub or local preview) for scrolling through
-- [ ] All 6 tool connections verified working (Google Sheets MCP, Jira MCP, BigQuery CLI, GitHub CLI, Vercel CLI, DuckDB CLI)
-- [ ] Demo datasets loaded (Coffee Shop Sales in Google Sheet, Support Tickets accessible)
+- [ ] All 6 tool connections verified working (Notion MCP, Jira MCP, BigQuery CLI, GitHub CLI, Vercel CLI, DuckDB CLI)
+- [ ] Demo datasets loaded (Coffee Shop Sales CSV, Support Tickets accessible, Notion feedback database populated)
 - [ ] LinkedIn data in `linkedin_data/` folder locally
 - [ ] Zoom link shared and recording started
 - [ ] QR codes visible on screen or projected
@@ -73,7 +73,9 @@ curl -fsSL https://opencode.ai/install | bash
 - If details are thin, fall back to the prepared scenario in the demo prompts
 
 **Building the Playbook Live (~20 min):**
-- Open Claude Code in terminal
+- Run side-by-side: Claude Code (paid) and OpenCode (free) — same prompts, both tools
+- OpenCode does not have MCP configured — use CSV/DuckDB-based prompts there, show MCP connection in Claude Code
+- Show the audience how to add MCP in OpenCode live: `opencode mcp add`
 - Narrate as you go: "First, I'm defining the role — that's the Instructions layer..."
 - Show the tool connection moment explicitly: "Now watch — the AI is connecting to [tool] directly"
 - Let the AI work, show the output, refine with follow-ups
@@ -87,7 +89,7 @@ curl -fsSL https://opencode.ai/install | bash
 - Take questions from the audience about what they just saw
 - If the demo ran fast, do a quick second iteration or show a different angle
 
-**BACKUP PLAN:** If the chosen archetype's tool connection fails, pivot to Archetype 1 (Google Sheets). It's the most rehearsed and has the strongest visual payoff.
+**BACKUP PLAN:** If the chosen archetype's tool connection fails, pivot to Archetype 1 (Notion MCP primary, or Google Sheets via Python/gspread as fallback). It's the most rehearsed and has the strongest visual payoff.
 
 ### Guided Exercise (6:35-7:05)
 
