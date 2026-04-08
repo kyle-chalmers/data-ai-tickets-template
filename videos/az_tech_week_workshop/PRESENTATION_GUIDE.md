@@ -61,11 +61,12 @@ curl -fsSL https://opencode.ai/install | bash
 
 ### Live Demo — Audience-Polled (6:00-6:35)
 
-**The Poll (~2 min):**
-- Scroll to "Vote on the Archetype" in the README
-- Read each option, ask for show of hands or applause
+**Ask for a Real Problem First (~2 min):**
+- Start by asking: "Who has a real problem they want to solve right now?"
+- If someone volunteers, have them describe it in 30 seconds — this is the ideal demo
+- If nobody volunteers or the problem is too niche, fall back to the example scenarios in the README
+- Scroll to "Your Problem or Pick a Scenario" in the README, read each option, ask for show of hands or applause
 - If vote is split, go with the loudest reaction
-- If wild card gets energy, ask the person to describe their problem in 30 seconds
 
 **Getting Details (~3 min):**
 - "Who has a real version of this? What's your data look like? Who receives the output?"
@@ -89,19 +90,19 @@ curl -fsSL https://opencode.ai/install | bash
 - Take questions from the audience about what they just saw
 - If the demo ran fast, do a quick second iteration or show a different angle
 
-**BACKUP PLAN:** If the chosen archetype's tool connection fails, pivot to Archetype 1 (Notion MCP primary, or Google Sheets via Python/gspread as fallback). It's the most rehearsed and has the strongest visual payoff.
+**BACKUP PLAN:** If the chosen example scenario's tool connection fails, pivot to Example Scenario 1 (Notion MCP primary, or Google Sheets via Python/gspread as fallback). It's the most rehearsed and has the strongest visual payoff.
 
 ### Guided Exercise (6:35-7:05)
 
 **Kickoff (~3 min):**
 - Scroll to "Guided Exercise" section in README
-- "Pick the archetype closest to your work. If none fit, bring your own."
+- "Pick the example scenario closest to your work. If none fit, bring your own."
 - Point to the playbook template: "This is your guide — follow Steps 0 through 4."
 - "If you don't have a tool installed, do Steps 0-3 — that's the most valuable thinking. Get help during open time."
 
 **Walking the Room (~25 min):**
 - Move around, check in with people
-- Use the archetype as a conversation starter: "Which one did you pick? What's your problem?"
+- Use the example scenario as a conversation starter: "Which one did you pick? What's your problem?"
 - Common sticking points:
   - Step 1 (Role): People make it too generic. Help them be specific.
   - Step 3 (Context): People skip this. Ask "what does the AI need to know that isn't obvious?"
@@ -136,7 +137,7 @@ curl -fsSL https://opencode.ai/install | bash
 | **Behind by 5+ min** | Shorten the demo Q&A buffer. Skip the exercise checkpoint. |
 | **Behind by 10+ min** | Cut the exercise to 20 min. More time in open networking compensates. |
 | **Ahead of schedule** | Extend the demo with a second iteration. Or start the exercise early and give more time. |
-| **Demo fails** | Pivot to backup (Archetype 1 / Google Sheets). Acknowledge it naturally — "This is live, things break. Let me show you the backup." |
+| **Demo fails** | Pivot to backup (Example Scenario 1 / Notion MCP). Acknowledge it naturally — "This is live, things break. Let me show you the backup." |
 | **Low energy in room** | Ask a direct question to someone specific. Or do a quick "turn to your neighbor" moment. |
 
 ---

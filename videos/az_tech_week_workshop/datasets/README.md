@@ -1,12 +1,12 @@
 # Demo Datasets
 
-Datasets for the workshop demo and exercise archetypes.
+Datasets for the workshop demo and exercise example scenarios.
 
 ## Public Datasets (download manually)
 
 These datasets require free accounts to download. Place the CSV files in this folder.
 
-### Coffee Shop Sales (Archetype 1: Automate a Report)
+### Coffee Shop Sales (Example Scenario 1: Automate a Report)
 
 - **Source:** [Maven Analytics Data Playground](https://mavenanalytics.io/data-playground/coffee-shop-sales)
 - **Size:** 149,116 rows, 11 columns
@@ -15,7 +15,7 @@ These datasets require free accounts to download. Place the CSV files in this fo
 - **Download:** Sign up for a free Maven Analytics account, navigate to the dataset, and download as CSV.
 - **Save as:** `coffee_shop_sales.csv`
 
-### Customer Support Tickets (Archetype 2: Triage Requests)
+### Customer Support Tickets (Example Scenario 2: Triage Requests)
 
 - **Source:** [Kaggle](https://www.kaggle.com/datasets/suraj520/customer-support-ticket-dataset)
 - **Size:** ~8,500 rows, 17 columns
@@ -33,7 +33,7 @@ To use your own LinkedIn data:
 2. Request your data export (takes ~24 hours)
 3. Unzip and place relevant CSV files in `../linkedin_data/`
 
-Useful LinkedIn files for the workshop archetypes:
+Useful LinkedIn files for the workshop example scenarios:
 
 | File | Rows (Kyle's) | Use Case |
 |:-----|:--------------|:---------|

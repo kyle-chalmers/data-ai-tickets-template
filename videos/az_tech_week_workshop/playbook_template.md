@@ -1,14 +1,14 @@
 # Context Engineering Playbook Template
 
-Use this template during the workshop exercise. Pick your archetype, fill in each step, then paste the result into your AI coding tool.
+Use this template during the workshop exercise. Pick your example scenario, fill in each step, then paste the result into your AI coding tool.
 
 ---
 
-## Step 0: Pick Your Archetype
+## Step 0: Pick Your Example Scenario
 
 Choose the one closest to your daily work, or bring your own:
 
-| # | Archetype | If this sounds like you... |
+| # | Example Scenario | If this sounds like you... |
 |:--|:----------|:--------------------------|
 | 1 | **Automate a recurring report** | You regularly pull data, summarize it, and send it to someone |
 | 2 | **Triage incoming requests** | You have a backlog of items to categorize, prioritize, or route |
@@ -16,7 +16,7 @@ Choose the one closest to your daily work, or bring your own:
 | 4 | **Draft communications from raw info** | You turn notes, data, or context into polished messages |
 | 5 | **Build or optimize a website** | You need a landing page, portfolio site, or want to improve an existing one |
 
-**My archetype:** _______________
+**My example scenario:** _______________
 
 ---
 
@@ -31,9 +31,9 @@ You help with [specific tasks].
 Your standards are [quality expectations].
 ```
 
-**Examples by archetype:**
+**Examples by scenario:**
 
-| Archetype | Example Role |
+| Example Scenario | Example Role |
 |:----------|:-------------|
 | Recurring report | "You are a data analyst who specializes in business reporting. You produce concise, data-driven summaries for leadership." |
 | Triage requests | "You are an operations specialist who categorizes and prioritizes incoming requests by urgency and routes them to the right team." |
