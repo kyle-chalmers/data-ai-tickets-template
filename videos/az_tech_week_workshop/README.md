@@ -9,12 +9,6 @@
 
 ---
 
-| **Date & Time** | **Venue** | **Presenter** |
-|:---:|:---:|:---:|
-| Wed, April 8, 2026 — 5:30-8:00 PM MST | 1951 @ SkySong — 1475 N Scottsdale Rd, Scottsdale | Kyle Chalmers — AZ Tech Week |
-
----
-
 <img src="./slides/kyle_intro_slide.jpg" width="700">
 
 ---
