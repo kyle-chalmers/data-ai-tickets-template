@@ -16,6 +16,8 @@ A quick reference for all 5 tips covered in the video, with links and example fi
 4. [/git:ship Skill](#tip-4-gitship-skill)
 5. [Use AI to Improve the AI](#tip-5-use-ai-to-improve-the-ai)
 
+**Bonus:** [/encourage Skill — research-backed encouragement for hard problems](#bonus-encourage-skill)
+
 ---
 
 ## Tip 1: Dictation / Voice Input
@@ -83,6 +85,24 @@ Use your AI agent to write or refine your own global context file, hooks, and sk
 
 ---
 
+## Bonus: /encourage Skill
+
+Telling a language model "you can do this" sounds silly — but published prompt-engineering research shows that simple emotional / motivational framing measurably improves performance on hard tasks. The `/encourage` skill is a small, structured way to apply those findings on demand: when Claude is stuck on a tough problem, type `/encourage` and it will read a short, research-backed message reaffirming capability before continuing the task.
+
+**Why it works (briefly):**
+- Microsoft Research's *EmotionPrompt* (2023) showed phrases like "believe in your abilities" and "take pride in your work" lifted LLM performance by ~8% on simple tasks and up to 115% on harder reasoning benchmarks. [arxiv.org/abs/2307.11760](https://arxiv.org/abs/2307.11760)
+- A 2025 follow-up on *Verbal Efficacy Stimulations* found encouraging prompts produced the most consistent gains, with the biggest lifts on moderately hard problems — exactly when you'd want this skill. [arxiv.org/abs/2502.06669](https://arxiv.org/abs/2502.06669)
+- The skill includes deliberate guardrails because the same research shows positive framing can increase sycophancy: it encourages capability and persistence, not conclusions, and won't make Claude retract a correct objection.
+
+**Example files in this repo:**
+- [`encourage/SKILL.md`](./encourage/SKILL.md) — the skill definition
+- [`encourage/RESEARCH.md`](./encourage/RESEARCH.md) — fuller summary of the research and design choices
+
+**Where to put skills:**
+- Claude Code: `~/.claude/skills/<skill-name>/SKILL.md`
+
+---
+
 ## Folder Contents
 
 ```
@@ -93,6 +113,9 @@ videos/ai_coding_agent_tips/
 ├── global_context_examples/
 │   ├── CLAUDE.md                        ← global CLAUDE.md example (~/.claude/CLAUDE.md)
 │   └── AGENTS.md                        ← global AGENTS.md example (~/.codex/AGENTS.md)
-└── git-ship/
-    └── SKILL.md                         ← /git:ship skill definition
+├── git-ship/
+│   └── SKILL.md                         ← /git:ship skill definition
+└── encourage/
+    ├── SKILL.md                         ← /encourage skill definition
+    └── RESEARCH.md                      ← background + citations
 ```
