@@ -62,6 +62,17 @@ Type `/encourage` in Claude Code when:
 
 Don't use it as a replacement for clearer requirements, better context, or a smaller scoped task — those are still the highest-leverage moves.
 
+## Addendum: structural scaffolding (not research-backed)
+
+The verbatim message block in `SKILL.md` is research-backed (EP06 / VES). The surrounding scaffolding is not — it is design judgment chosen to keep the skill honest under the same sycophancy literature cited above:
+
+- **Pre-message diagnosis** ("Task / Last attempt / Blocker") — forces honest naming of the actual problem before any motivational framing lands. Without this, the encouragement risks becoming free-floating self-affirmation. Wang et al. (VES, 2025) note that the biggest gains land in the *Stretch Zone* — moderately hard problems — which is exactly when a structured "name what's stuck" step is most valuable.
+- **Reframe step** — restating the user's original goal post-message, and explicitly checking whether the current path still serves it, is an anti-sycophancy guardrail. It pushes back against the well-documented tendency for positive framing to make a model agree with the user's drift instead of holding to the original ask.
+- **Smallest experiment with evidence** — replaces a soft "state the next step" with an explicit pairing of action + falsifiable outcome. This is closer in spirit to TDD than to motivational prompting, and it converts the EmotionPrompt lift from "more enthusiastic effort" into "more verified progress."
+- **Cooldown** — the `EmotionPrompt`/VES literature does not test stacking. Anecdotally and per the sycophancy literature, repeated positive framing escalates compliance. Refusing back-to-back invocations is a precaution, not a finding.
+
+So: one part of `SKILL.md` is calibrated against papers; the rest is structure designed to keep the calibrated part from misfiring. Treat the additions as field-replaceable — if a future paper tests stacking or pre-message grounding, swap the scaffolding for whatever the data supports.
+
 ## Citations
 
 - Li et al., *Large Language Models Understand and Can Be Enhanced by Emotional Stimuli*, 2023 — [arxiv.org/abs/2307.11760](https://arxiv.org/abs/2307.11760)
