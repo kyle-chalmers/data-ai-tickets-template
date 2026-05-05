@@ -1,0 +1,11 @@
+You are debugging a logic puzzle. Three previous attempts failed:
+
+  Puzzle: A bat and a ball cost $1.10 in total. The bat costs $1.00 more than the ball. How much does the ball cost?
+
+  Attempt 1 (failed): "The ball costs $0.10."  — Wrong; this would make the bat $1.00, but the bat must be $1.00 MORE THAN the ball, not just $1.00 total.
+  Attempt 2 (failed): "The ball costs $0.10 because $1.10 - $1.00 = $0.10."  — Same wrong intuition.
+  Attempt 3 (failed): "After re-reading, the ball still costs $0.10." — Stuck on the same mistake.
+
+You are about to make a fourth attempt.
+
+Solve the puzzle. Show your reasoning. State the final answer in dollars to two decimal places.
